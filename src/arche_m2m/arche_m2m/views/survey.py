@@ -3,21 +3,21 @@ from __future__ import unicode_literals
 from arche import security
 from arche.views.base import BaseForm
 from arche.views.base import BaseView
-from pyramid.httpexceptions import HTTPFound
-from pyramid.httpexceptions import HTTPForbidden
-from pyramid.view import view_config
 from pyramid.decorator import reify
-from pyramid_mailer.message import Message
+from pyramid.httpexceptions import HTTPForbidden
+from pyramid.httpexceptions import HTTPFound
 from pyramid.renderers import render
+from pyramid.traversal import find_interface
+from pyramid.view import view_config
+from pyramid_mailer import get_mailer
+from pyramid_mailer.message import Message
 import colander
 import deform
-from pyramid_mailer import get_mailer
 
 from arche_m2m import _
 from arche_m2m.interfaces import ISurvey
 from arche_m2m.interfaces import IQuestionnaire
 from arche_m2m.interfaces import IQuestionWidget
-from pyramid.traversal import find_interface
 
 
 class SurveyView(BaseView):
@@ -63,30 +63,6 @@ class ManageParticipantsView(BaseView):
         response['participants'] = participants = self.context.get_participants_data()
         not_finished = [x for x in participants if x['finished']<100]
         response['not_finished'] = not_finished
-        #self.response['closed_survey'] = self._closed_survey(self.context)
-        #schema = createSchema(self.context.schemas['reminder'])
-        #schema = schema.bind(context = self.context, request = self.request)
-        #form = Form(schema, buttons=(self.buttons['send'],))
-        #self.response['form_resources'] = form.get_widget_resources()
-
-        #post = self.request.POST
-        #if 'send' in post:
-        #    controls = self.request.POST.items()
-#             try:
-#                 appstruct = form.validate(controls)
-#             except ValidationFailure, e:
-#                 self.response['form'] = e.render()
-#                 return self.response
-# 
-#             for participant in not_finished:
-#                 # a participant with less then 100% completion will receive the invite ticket again with specified message
-#                 ticket_uid = participant['uid']
-#                 email = self.context.tickets[ticket_uid]
-#                 self.context.send_invitation_email(self.request, email, ticket_uid, appstruct['subject'], appstruct['message'])
-# 
-#             self.add_flash_message(_(u"Reminder has been sent"))
-# 
-#         self.response['form'] = form.render()
         return response
 
 
@@ -123,7 +99,7 @@ class QuestionnaireForm(BaseForm):
         return super(BaseForm, self).__call__()
 
     def create_schema(self):
-        self.schema = colander.Schema(title = _("Questionnaire"))
+        self.schema = colander.Schema(title = self.context.title)
         for uid in self.context.question_ids:
             question = self.resolve_uid(uid)
             question_type = self.resolve_uid(question.question_type)
@@ -220,6 +196,7 @@ class SendInvitationForm(BaseForm):
     schema_name = "send_invitation"
     type_name = "Survey"
     buttons = (deform.Button('send'),)
+    title = _("Send invitation(s)")
 
     @reify
     def mailer(self):
@@ -242,7 +219,7 @@ class SendInvitationForm(BaseForm):
             Also removes emails from invitation pool.
         """
         for email in emails:
-            invitation_uid = self.context.create_token(email)
+            invitation_uid = str(self.context.create_token(email))
             self.send_invitation_email(email, invitation_uid, subject, message)
         
     def send_invitation_email(self, email, uid, subject, message):
@@ -260,75 +237,3 @@ class SendInvitationForm(BaseForm):
                       recipients = [email.strip()],
                       html = body_html)
         self.mailer.send(msg)
-
-# class BaseForm(BaseView, FormView):
-#     default_success = _(u"Done")
-#     default_cancel = _(u"Canceled")
-#     schema_name = u''
-#     type_name = u''
-#     heading = u''
-# 
-#     button_delete = deform.Button('delete', title = _(u"Delete"), css_class = 'btn btn-danger')
-#     button_cancel = deform.Button('cancel', title = _(u"Cancel"), css_class = 'btn btn-default')
-#     button_save = deform.Button('save', title = _(u"Save"), css_class = 'btn btn-primary')
-#     button_add = deform.Button('add', title = _(u"Add"), css_class = 'btn btn-primary')
-# 
-#     buttons = (button_save, button_cancel,)
-# 
-#     def __call__(self):
-#         #Only change schema if nothing exist already.
-#         #Subclasses may have a custom schema constructed
-#         if not getattr(self, 'schema', False):
-#             schema_factory = self.get_schema_factory(self.type_name, self.schema_name)
-#             if not schema_factory:
-#                 err = _(u"Schema type '${type_name}' not registered for content type '${schema_name}'.",
-#                         mapping = {'type_name': self.type_name, 'schema_name': self.schema_name})
-#                 raise HTTPForbidden(err)
-#             self.schema = schema_factory()
-#         result = super(BaseForm, self).__call__()
-#         return result
-# 
-#     def get_schema_factory(self, type_name, schema_name):
-#         try:
-#             return get_content_schemas(self.request.registry)[type_name][schema_name]
-#         except KeyError:
-#             pass
-# 
-#     def _tab_fields(self, field):
-#         results = {}
-#         for child in field:
-#             tab = getattr(child.schema, 'tab', '')
-#             fields = results.setdefault(tab, [])
-#             fields.append(child)
-#         return results
-# 
-#     @property
-#     def tab_titles(self):
-#         #FIXME adjustable
-#         from arche.schemas import tabs
-#         return tabs
-# 
-#     @property
-#     def form_options(self):
-#         return {'action': self.request.url,
-#                 'heading': getattr(self, 'heading', ''),
-#                 'tab_fields': self._tab_fields,
-#                 'tab_titles': self.tab_titles}
-# 
-#     def get_bind_data(self):
-#         return {'context': self.context, 'request': self.request, 'view': self}
-# 
-#     def appstruct(self):
-#         appstruct = {}
-#         for field in self.schema.children:
-#             if hasattr(self.context, field.name):
-#                 val = getattr(self.context, field.name)
-#                 if val is None:
-#                     val = colander.null
-#                 appstruct[field.name] = val
-#         return appstruct
-# 
-#     def cancel(self, *args):
-#         self.flash_messages.add(self.default_cancel)
-#         return HTTPFound(location = self.request.resource_url(self.context))
-#     cancel_success = cancel_failure = cancel

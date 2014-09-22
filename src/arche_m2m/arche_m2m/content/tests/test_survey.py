@@ -32,3 +32,11 @@ class SurveyTests(TestCase):
         token = obj.create_token(email)
         self.assertTrue(token.valid)
         self.assertEqual(len(obj.tokens), 1)
+
+    def test_get_participants_data(self):
+        obj = self._cut()
+        obj.create_token("testing@example.com")
+        from arche_m2m.content.questionnaire import Questionnaire
+        obj['qnaire'] = qnaire = Questionnaire()
+        qnaire.responses["testing@example.com"] = {'one': 1, 'two': "tvaa"}
+        self.assertEqual(len(obj.get_participants_data()), 1)

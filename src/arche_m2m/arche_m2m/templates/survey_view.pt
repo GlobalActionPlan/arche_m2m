@@ -8,7 +8,10 @@
 <div metal:fill-slot="main-content">
 
     <h1>${context.title}</h1>
-
+    
+    <a href="${request.resource_url(context, 'invite')}" i18n:translate="">Invite</a>
+    <a href="${request.resource_url(context, 'participants')}" i18n:translate="">Participants</a>
+    
     <ul>
         <tal:iterate repeat="obj context.values()">
             <li><a href="${request.resource_url(obj)}">${obj.title}</a></li>

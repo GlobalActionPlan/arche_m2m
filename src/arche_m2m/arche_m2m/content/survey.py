@@ -40,7 +40,7 @@ class Survey(Content):
         """Returns the participants with statistics on the survey
         """
         participants = []
-        for (uid, email) in self.tokens.items():
+        for (email, uid) in self.tokens.items():
             participant = {} 
             participant['uid'] = uid
             participant['email'] = email
