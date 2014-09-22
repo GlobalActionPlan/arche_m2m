@@ -4,5 +4,5 @@ _ = TranslationStringFactory('arche_m2m')
 
 
 def includeme(config):
-    config.include('.content')
+    config.include('.models')
     config.include('.views')
