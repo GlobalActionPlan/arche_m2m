@@ -1,0 +1,20 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="view.macro('arche:templates/base_view.pt', 'arche:templates/inline.pt')"
+      i18n:domain="arche_m2m">
+<body>
+<div metal:fill-slot="main-content">
+
+    <h1>${context.title}</h1>
+
+    <ul>
+        <tal:iterate repeat="obj context.values()">
+            <li><a href="${request.resource_url(obj)}">${obj.title}</a></li>
+        </tal:iterate>
+    </ul>
+
+</div>
+</body>
+</html>

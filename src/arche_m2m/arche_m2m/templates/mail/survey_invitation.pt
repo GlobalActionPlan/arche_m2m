@@ -1,0 +1,13 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:tal="http://xml.zope.org/namespaces/tal"
+xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+i18n:domain="arche_m2m">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+    <body>
+        <h1 tal:content="subject">Survey invitation</h1>
+        <div tal:content="structure message">Message</div>
+        <div><a href="${access_link}" tal:content="access_link">link</a></div>
+    </body>
+</html>
