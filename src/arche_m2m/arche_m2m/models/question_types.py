@@ -11,6 +11,7 @@ from arche_m2m import _
 
 #@implementer(IBase)
 class QuestionTypes(Content):
+    title = ""
     type_title = _("Question types")
     type_name = "QuestionTypes"
     add_permission = "Add %s" % type_name

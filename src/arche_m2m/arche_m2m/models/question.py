@@ -1,9 +1,9 @@
 from __future__ import unicode_literals
 
-from zope.interface import implementer
+from arche import security
 from arche.api import Content
 from arche.views.base import BaseForm
-from arche import security
+from zope.interface import implementer
 import colander
 import deform
 
@@ -22,8 +22,7 @@ class Question(Content):
     listing_visible = True
     search_visible = True
     question_type = None
-
-    #FIXME: Setters and getters for question_type?
+    language = ''
 
 
 @colander.deferred
@@ -35,10 +34,28 @@ def deferred_question_type_widget(node, kw):
         choices.append((obj.uid, title))
     return deform.widget.RadioChoiceWidget(values = choices)
 
+@colander.deferred
+def deferred_lang_widget(node, kw):
+    request = kw['request']
+    choices = []
+    languages = request.registry.settings.get('m2m.languages', 'en').split()
+    for lang in languages:
+        choices.append((lang, lang))
+    return deform.widget.SelectWidget(values = choices)
+
+@colander.deferred
+def deferred_default_lang(node, kw):
+    request = kw['request']
+    return request.locale_name
+
 
 class QuestionSchema(colander.Schema):
     title = colander.SchemaNode(colander.String(),
                                 title = _("Title"))
+    language = colander.SchemaNode(colander.String(),
+                                   title = _("Language"),
+                                   default = deferred_default_lang,
+                                   widget = deferred_lang_widget)
     question_type = colander.SchemaNode(colander.String(),
                                         title = _(u"Question type"),
                                         widget=deferred_question_type_widget,)
