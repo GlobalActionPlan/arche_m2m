@@ -9,6 +9,7 @@ from arche_m2m import _
 from arche_m2m.interfaces import IQuestion
 from arche_m2m.interfaces import IQuestions
 from arche_m2m.interfaces import IQuestionType
+from arche_m2m.interfaces import IQuestionTypes
 from arche_m2m.interfaces import IQuestionWidget
 
 
@@ -73,21 +74,13 @@ class QuestionsView(BaseView):
         if question.language in languages:
             languages.remove(question.language)
         return self.catalog_search(resolve = True, language = languages, cluster = question.cluster)
-        
 
-#     def cluster_questions(self):
-#         results = {}
-#         for obj in self.context.values():
-#             if obj.type_name != 'Question':
-#                 continue
-#             if obj.cluster:
-#                 key = obj.cluster
-#             else:
-#                 key = ''
-#             
-#                 current = results.setdefault(obj.cluster, set()))
-#                 current.add(obj)
-#             else:
-                
-        
 
+@view_config(context = IQuestionTypes,
+             name = 'view',
+             permission = security.PERM_VIEW,
+             renderer = 'arche_m2m:templates/question_types.pt')
+class QuestionTypesView(BaseView):
+
+    def __call__(self):
+        return {}

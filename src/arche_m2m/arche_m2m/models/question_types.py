@@ -1,15 +1,14 @@
 from __future__ import unicode_literals
 
-#from zope.interface import implementer
 from arche.api import Content
-#from arche.views.base import BaseView
-#from arche import widgets as arche_widgets
+from zope.interface import implementer
 import colander
 
 from arche_m2m import _
+from arche_m2m.interfaces import IQuestionTypes
 
 
-#@implementer(IBase)
+@implementer(IQuestionTypes)
 class QuestionTypes(Content):
     title = ""
     type_title = _("Question types")

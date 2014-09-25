@@ -1,15 +1,18 @@
 from __future__ import unicode_literals
 
-from zope.interface import implementer
 from arche.api import Base
 from arche.api import Content
+from zope.interface import implementer
 import colander
 import deform
 
-from arche_m2m.interfaces import IChoice
-from arche_m2m.interfaces import IQuestionWidget
-from arche_m2m.interfaces import IQuestionType
 from arche_m2m import _
+from arche_m2m.interfaces import IChoice
+from arche_m2m.interfaces import IQuestionType
+from arche_m2m.interfaces import IQuestionWidget
+from arche_m2m.models.question import deferred_cluster_id
+from arche_m2m.models.question import deferred_default_lang
+from arche_m2m.models.question import deferred_lang_widget
 
 
 @implementer(IQuestionType)
@@ -35,6 +38,9 @@ class Choice(Base):
     type_name = "Choice"
     add_permission = "Add %s" % type_name
     title = ""
+    description = ""
+    cluster = ""
+    language = ""
 
 
 @colander.deferred
@@ -59,9 +65,14 @@ class QuestionTypeSchema(colander.Schema):
 class ChoiceSchema(colander.Schema):
     title = colander.SchemaNode(colander.String(),
                                 title = _("Text on choice"))
-
-
-
+    language = colander.SchemaNode(colander.String(),
+                                   title = _("Language"),
+                                   default = deferred_default_lang,
+                                   widget = deferred_lang_widget)
+    cluster = colander.SchemaNode(colander.String(),
+                                  missing = "",
+                                  default = deferred_cluster_id,
+                                  widget = deform.widget.HiddenWidget())
 
 
 def includeme(config):

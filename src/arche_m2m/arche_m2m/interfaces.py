@@ -12,6 +12,8 @@ class IQuestions(Interface):
 class IQuestionType(Interface):
     pass
 
+class IQuestionTypes(Interface):
+    pass
 
 class IQuestionWidget(Interface):
     pass
