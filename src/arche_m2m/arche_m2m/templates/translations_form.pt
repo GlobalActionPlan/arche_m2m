@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      metal:use-macro="view.macro('arche:templates/master.pt')"
+      i18n:domain="Arche">
+  <div metal:fill-slot="content">
+  	<div class="row" tal:define="siblings view.get_siblings()">
+  	  <div class="col-md-12">
+  	    Other translations:
+  	    <div class="btn-group">
+    	    <tal:iterate repeat="obj siblings">
+    	      <a href="${request.resource_url(obj)}" title="${obj.title}" class="btn btn-default">${obj.language}</a>
+    	    </tal:iterate>
+        </div>
+  	  </div>
+  	</div>
+  	<hr/>
+    <div class="row">
+      <div class="col-md-12">
+        <form tal:replace="structure form" />
+      </div>
+    </div>
+  </div>
+</html>

@@ -1,12 +1,10 @@
 def includeme(config):
-#    config.include('.languages')
     config.include('.question')
     config.include('.question_type')
     config.include('.question_types')
     config.include('.question_widgets')
     config.include('.questionnaire')
     config.include('.questions')
-#    config.include('.relations')
     config.include('.survey')
 
     from arche.security import get_acl_registry

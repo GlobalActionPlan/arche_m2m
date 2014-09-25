@@ -1,12 +1,8 @@
 from __future__ import unicode_literals
 
-#from persistent.list import PersistentList
 from zope.interface import implementer
 from arche.api import Base
 from arche.api import Content
-from arche.views.base import BaseForm
-#from arche import widgets as arche_widgets
-from arche import security
 import colander
 import deform
 
@@ -65,18 +61,7 @@ class ChoiceSchema(colander.Schema):
                                 title = _("Text on choice"))
 
 
-class QuestionTypePreview(BaseForm):
-    buttons = ()
 
-    def __call__(self):
-        self.schema = colander.Schema(title = _("Preview"))
-        question_widget = self.request.registry.queryAdapter(self.context,
-                                                             IQuestionWidget,
-                                                             name = self.context.input_widget)
-        if question_widget:
-            self.schema.add(question_widget.node(self.context.__name__))
-        result = super(BaseForm, self).__call__()
-        return result
 
 
 def includeme(config):
@@ -90,8 +75,3 @@ def includeme(config):
     config.add_content_schema('Choice', ChoiceSchema, 'add')
     config.add_content_schema('Choice', ChoiceSchema, 'edit')
     config.add_content_schema('Choice', ChoiceSchema, 'view')
-    config.add_view(QuestionTypePreview,
-                    name='view',
-                    context=IQuestionType,
-                    permission=security.PERM_VIEW,
-                    renderer='arche:templates/form.pt')

@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+from uuid import uuid4
 
 from arche import security
 from arche.api import Content
@@ -23,6 +24,7 @@ class Question(Content):
     search_visible = True
     question_type = None
     language = ''
+    cluster = ''
 
 
 @colander.deferred
@@ -46,7 +48,12 @@ def deferred_lang_widget(node, kw):
 @colander.deferred
 def deferred_default_lang(node, kw):
     request = kw['request']
-    return request.locale_name
+    return request.GET.get('language', request.locale_name)
+
+@colander.deferred
+def deferred_cluster_id(node, kw):
+    request = kw['request']
+    return request.GET.get('cluster', str(uuid4()))
 
 
 class QuestionSchema(colander.Schema):
@@ -57,23 +64,12 @@ class QuestionSchema(colander.Schema):
                                    default = deferred_default_lang,
                                    widget = deferred_lang_widget)
     question_type = colander.SchemaNode(colander.String(),
-                                        title = _(u"Question type"),
+                                        title = _("Question type"),
                                         widget=deferred_question_type_widget,)
-
-
-class QuestionPreview(BaseForm):
-    buttons = ()
-
-    def __call__(self):
-        self.schema = colander.Schema(title = _("Preview"))
-        question_type = self.resolve_uid(self.context.question_type)
-        question_widget = self.request.registry.queryAdapter(question_type,
-                                                             IQuestionWidget,
-                                                             name = getattr(question_type, 'input_widget', ''))
-        if question_widget:
-            self.schema.add(question_widget.node(self.context.__name__, title = self.context.title))
-        result = super(BaseForm, self).__call__()
-        return result
+    cluster = colander.SchemaNode(colander.String(),
+                                  missing = "",
+                                  default = deferred_cluster_id,
+                                  widget = deform.widget.HiddenWidget())
 
 
 def includeme(config):
@@ -82,8 +78,4 @@ def includeme(config):
     config.add_content_schema('Question', QuestionSchema, 'edit')
     config.add_content_schema('Question', QuestionSchema, 'add')
     config.add_content_schema('Question', QuestionSchema, 'view')
-    config.add_view(QuestionPreview,
-                    name='view',
-                    context=IQuestion,
-                    permission=security.PERM_VIEW,
-                    renderer='arche:templates/form.pt')
+

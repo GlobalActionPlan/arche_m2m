@@ -6,6 +6,9 @@ class IQuestion(Interface):
     #Should be inherited from some contentish type
     pass
 
+class IQuestions(Interface):
+    pass
+
 class IQuestionType(Interface):
     pass
 
@@ -25,6 +28,9 @@ class IQuestionnaire(Interface):
 
 
 #Adapters
+class ITranslations(Interface):
+    pass
+
 # class ILanguages(Interface):
 #     pass
 # 
