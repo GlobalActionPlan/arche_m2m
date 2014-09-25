@@ -1,20 +1,17 @@
 from __future__ import unicode_literals
 from decimal import Decimal
 
-from pyramid.httpexceptions import HTTPForbidden
-from pyramid.traversal import find_root
-from zope.interface import implementer
-from arche.api import Content
-from arche import security
-from arche.api import Token
 from BTrees.OOBTree import OOBTree
+from arche.api import Content
+from arche.api import Token
+from zope.interface import implementer
 import colander
 import deform
 
 from arche_m2m import _
+from arche_m2m.interfaces import IQuestionnaire
 from arche_m2m.interfaces import ISurvey
 from arche_m2m.schemas.validators import multiple_email_validator
-from arche_m2m.interfaces import IQuestionnaire
 
 
 @implementer(ISurvey)
