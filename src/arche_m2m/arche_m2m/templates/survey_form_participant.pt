@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      metal:use-macro="view.macro('arche:templates/master.pt')"
+      i18n:domain="Arche">
+  <div metal:fill-slot="content">
+    <div class="row">
+      <div class="col-md-12">
+        <form tal:replace="structure form" />
+      </div>
+    </div>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $("form input").keypress(function (e) {
+          if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
+            //debugger;
+            $('button.submit-default').click();
+            return false;
+          } else {
+            return true;
+          }
+        });
+      });
+    </script>
+  </div>
+</html>

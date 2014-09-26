@@ -130,7 +130,7 @@ class ManageParticipantsView(BaseView):
 
 @view_config(context = IQuestionnaire,
              permission = security.NO_PERMISSION_REQUIRED,
-             renderer = "arche:templates/form.pt")
+             renderer = "arche_m2m:templates/survey_form_participant.pt")
 class QuestionnaireForm(BaseForm):
 
     @property
@@ -146,9 +146,9 @@ class QuestionnaireForm(BaseForm):
         #Check if this is first etc
         buttons = []
         if self._previous_section():
-            buttons.append(deform.Button(name = 'previous', type = 'button', css_class = 'btn btn-default'))
+            buttons.append(deform.Button(name = 'previous', css_class = 'btn btn-default'))
         #XXX
-        buttons.append(deform.Button(name = 'next', css_class = 'btn btn-primary'))
+        buttons.append(deform.Button(name = 'next', css_class = 'btn btn-primary submit-default'))
         return buttons
 
     def __call__(self):
@@ -162,14 +162,21 @@ class QuestionnaireForm(BaseForm):
 
     def create_schema(self):
         self.schema = colander.Schema(title = self.context.title)
-        for uid in self.context.question_ids:
-            question = self.resolve_uid(uid)
-            question_type = self.resolve_uid(question.question_type)
-            question_widget = self.request.registry.queryAdapter(question_type,
-                                                                 IQuestionWidget,
-                                                                 name = getattr(question_type, 'input_widget', ''))
-            if question_widget:
-                self.schema.add(question_widget.node(question.uid, title = question.title))
+        for qid in self.context.question_ids:
+            docids = self.catalog_search(cluster = qid, language = self.request.locale_name)
+            if docids:
+                for question in self.resolve_docids(docids):
+                    pass
+                question_type = self.resolve_uid(question.question_type)
+                question_widget = self.request.registry.queryAdapter(question_type,
+                                                                     IQuestionWidget,
+                                                                     name = getattr(question_type, 'input_widget', ''))
+                if question_widget:
+                    self.schema.add(question_widget.node(question.uid, title = question.title))
+            else:
+                self.schema.add(colander.SchemaNode(colander.String(),
+                                                    widget = deform.widget.TextInputWidget(readonly = True),
+                                                    title = _("<Missing question>"),))
 
     def appstruct(self):
         return self.context.responses.get(self.participant_uid, {})
