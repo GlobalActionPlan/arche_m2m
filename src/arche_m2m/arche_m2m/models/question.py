@@ -67,7 +67,6 @@ class QuestionSchema(colander.Schema):
                                         title = _("Question type"),
                                         widget=deferred_question_type_widget,)
     cluster = colander.SchemaNode(colander.String(),
-                                  missing = "",
                                   default = deferred_cluster_id,
                                   widget = deform.widget.HiddenWidget())
 

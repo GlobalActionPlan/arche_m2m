@@ -3,7 +3,6 @@ from __future__ import unicode_literals
 from persistent.list import PersistentList
 from zope.interface import implementer
 from arche.api import Content
-from arche import widgets as arche_widgets
 from BTrees.OOBTree import OOBTree
 import colander
 
@@ -37,10 +36,6 @@ class Questionnaire(Content):
 class QuestionnaireSchema(colander.Schema):
     title = colander.SchemaNode(colander.String(),
                                 title = _("Title"))
-    question_ids = colander.SchemaNode(colander.List(),
-                                       title = _(u"Questions"),
-                                       missing = (),
-                                       widget = arche_widgets.ReferenceWidget(query_params = {'type_name': 'Question'}),)
 
 
 def includeme(config):

@@ -70,7 +70,6 @@ class ChoiceSchema(colander.Schema):
                                    default = deferred_default_lang,
                                    widget = deferred_lang_widget)
     cluster = colander.SchemaNode(colander.String(),
-                                  missing = "",
                                   default = deferred_cluster_id,
                                   widget = deform.widget.HiddenWidget())
 
