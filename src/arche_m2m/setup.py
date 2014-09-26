@@ -12,6 +12,7 @@ requires = [
     'fanstatic',
     'lingua',
     'Babel',
+    'js.jqueryui',
     ]
 
 setup(name='arche_m2m',

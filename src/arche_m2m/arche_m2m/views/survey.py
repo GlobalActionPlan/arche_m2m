@@ -18,6 +18,7 @@ from arche_m2m import _
 from arche_m2m.interfaces import ISurvey
 from arche_m2m.interfaces import IQuestionnaire
 from arche_m2m.interfaces import IQuestionWidget
+from arche_m2m.fanstatic import survey_manage, manage_css
 
 
 class SurveyView(BaseView):
@@ -42,13 +43,74 @@ class SurveyView(BaseView):
         return {'start_link': self.request.resource_url(next_section, query = {'uid': uid})}
 
 
-@view_config(context = ISurvey, name = "view", permission = security.PERM_EDIT,
-             renderer = "arche_m2m:templates/survey_view.pt")
 class ManageSurveyView(BaseView):
     """ View for administrators
     """
-    def __call__(self):
+    @view_config(context = ISurvey, name = "view", permission = security.PERM_EDIT,
+                 renderer = "arche_m2m:templates/survey_view.pt")
+    def view(self):
         return {}
+
+    def process_question_ids(self):
+        sect_id_questions = self.request.POST.dict_of_lists()
+        for section in self.context.values():
+            if IQuestionnaire.providedBy(section):
+                sect_id_questions.setdefault(section.__name__, [])
+        for (sect_id, question_ids) in sect_id_questions.items():
+            if sect_id in self.context: #Might be other things than section ids within the post
+                self.context[sect_id].question_ids = question_ids
+
+    @view_config(context = ISurvey,
+                 name = "manage",
+                 permission = security.PERM_EDIT,
+                 renderer = "arche_m2m:templates/survey_manage.pt")
+    def manage(self):
+        survey_manage.need()
+        manage_css.need()
+        post = self.request.POST
+        if 'cancel' in self.request.POST:
+            self.flash_messages.add(_("Canceled"))
+            url = self.request.resource_url(self.context)
+            return HTTPFound(location = url)
+        if 'save' in post:
+            self.process_question_ids()
+            self.flash_messages.add(_("Saved"))
+            url = self.request.resource_url(self.context, 'manage')
+            return HTTPFound(location = url)
+
+        #self.response['organisation'] = org = find_interface(self.context, IOrganisation)
+        response = {}
+        picked_questions = set()
+        survey_sections = []
+        for section in self.context.values():
+            if not IQuestionnaire.providedBy(section):
+                continue
+            picked_questions.update(section.question_ids)
+            survey_sections.append(section)
+        response['survey_sections'] = survey_sections
+        if not survey_sections:
+            msg = _(u"no_sections_added_notice",
+                    default = u"You need to add survey sections and then use this view to manage the questions.")
+            self.flash_messages.add(msg, auto_destruct = False)
+        #Load all question objects that haven't been picked
+#        questions = org.questions
+        #self.response['available_questions'] = [questions[x] for x in questions if x not in picked_questions]
+        response['available_questions'] = self.get_questions(exclude = picked_questions)
+        return response
+
+    def get_qnaire_questions(self, qnaire):
+        #Why not just sort according to question_ids instead?
+        results = []
+        for cluster_id in qnaire.question_ids:
+            for obj in self.catalog_search(resolve = True, cluster = cluster_id, language = self.request.locale_name):
+                results.append(obj)
+        return results
+
+    def get_questions(self, exclude = ()):
+        #Should be optimized
+        for obj in self.catalog_search(resolve = True, type_name = 'Question', language = self.request.locale_name):
+            if obj.cluster not in exclude:
+                yield obj
 
 
 @view_config(name='participants',

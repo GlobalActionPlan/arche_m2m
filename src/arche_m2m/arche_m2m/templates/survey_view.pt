@@ -12,7 +12,8 @@
     
     <a href="${request.resource_url(context, 'invite')}" i18n:translate="">Invite</a>
     <a href="${request.resource_url(context, 'participants')}" i18n:translate="">Participants</a>
-    
+    <a href="${request.resource_url(context, 'manage')}" i18n:translate="">Manage</a>
+        
     <ul>
         <tal:iterate repeat="obj context.values()">
             <li><a href="${request.resource_url(obj)}">${obj.title}</a></li>
