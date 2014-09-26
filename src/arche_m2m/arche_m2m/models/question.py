@@ -1,16 +1,14 @@
 from __future__ import unicode_literals
 from uuid import uuid4
 
-from arche import security
 from arche.api import Content
-from arche.views.base import BaseForm
+from arche.schemas import tagging_widget
 from zope.interface import implementer
 import colander
 import deform
 
-from arche_m2m.interfaces import IQuestion
-from arche_m2m.interfaces import IQuestionWidget
 from arche_m2m import _
+from arche_m2m.interfaces import IQuestion
 
 
 @implementer(IQuestion)
@@ -66,6 +64,10 @@ class QuestionSchema(colander.Schema):
     question_type = colander.SchemaNode(colander.String(),
                                         title = _("Question type"),
                                         widget=deferred_question_type_widget,)
+    tags = colander.SchemaNode(colander.List(),
+                               title = _("Tags"),
+                               missing = "",
+                               widget = tagging_widget)
     cluster = colander.SchemaNode(colander.String(),
                                   default = deferred_cluster_id,
                                   widget = deform.widget.HiddenWidget())

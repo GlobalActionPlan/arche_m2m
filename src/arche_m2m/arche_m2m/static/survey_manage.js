@@ -52,19 +52,21 @@ $(document).ready(function(){
     /* Click handler for add-from-tag-button */
     $('.add_questions').click(function() {
         var tag = $(this).siblings('.add_from_tag').val();
-        var name = $(this).parent().siblings('ul').attr('name');
-        if (tag != '(tags)') {
+        var name = $(this).attr('name');
+        if (tag != '') {
             $('#tag_listing .tag_' + tag).attr('name', name);
-            $('#tag_listing .tag_' + tag).parent().appendTo($(this).parents('li').find('ul'));
+            $('#tag_listing .tag_' + tag).parent().appendTo( $('.survey_section[name=' + name + ']') );
         }
     });
 
     /* Click handler for del-from-tag-button */
-    $('.del_questions').click(function() {
+    $('.del_questions').click( function() {
         var tag = $(this).siblings('.add_from_tag').val();
-        if (tag != '(tags)') {
-            $(this).parents('li').find('.question .tag_' + tag).attr('name', '');
-            $(this).parents('li').find('.question .tag_' + tag).parent().appendTo($('#tag_listing'));
+        var name = $(this).attr('name');
+        if (tag != '') {
+            var section = $('.survey_section[name=' + name + ']');
+            section.find('.question .tag_' + tag).attr('name', '');
+            section.find('.question .tag_' + tag).parent().appendTo($('#tag_listing'));
         }
     });
     

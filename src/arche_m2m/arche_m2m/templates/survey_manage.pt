@@ -21,10 +21,12 @@
           <div class="panel panel-default">
             <div class="panel-heading">
               <span class="sectiontags pull-right">
-                  <select class="add_from_tag"><option>(tags)</option></select>
+                  <select class="add_from_tag"><option value="" i18n:translate="">(tags)</option></select>
                   <button type="button" class="add_questions btn btn-success btn-xs"
+                          name="${section.__name__}"
                           title="Add from selected tag" i18n:attributes="title">&lt;</button>
                   <button type="button" class="del_questions btn btn-danger btn-xs"
+                          name="${section.__name__}"
                           title="Remove from selected tag" i18n:attributes="title">&gt;</button>
               </span>
               <h4><a href="javascript:">${section.title}</a></h4>
