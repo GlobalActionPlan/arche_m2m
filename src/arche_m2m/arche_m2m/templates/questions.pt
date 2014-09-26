@@ -27,7 +27,9 @@
               ${obj.title}
             </a>
           </td>
-          <td>${obj.question_type}</td>
+          <td tal:define="question_type view.resolve_uid(obj.question_type)">
+            ${question_type.title}
+          </td>
           <td tal:define="siblings view.get_siblings(obj)">
             <tal:iterate repeat="sibling siblings">
               <a href="${request.resource_url(sibling)}" title="${sibling.title}">
