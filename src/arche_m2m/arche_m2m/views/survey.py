@@ -31,9 +31,10 @@ class SurveyView(BaseView):
                  permission = security.NO_PERMISSION_REQUIRED,
                  renderer = "arche_m2m:templates/survey_start.pt")
     def do_survey(self):
-        #if self.request.has_permission(security.PERM_EDIT):
-        #   url = self.request.resource_url(self.context, 'view')
-        #   return HTTPFound(location = url)
+        if len(self.context.languages) == 1 and self.request.locale_name not in self.context.languages:
+            #Select only available language choice before proceeding
+            self.request.response.set_cookie('_LOCALE_', value = self.context.languages[0])
+            return HTTPFound(location = self.request.url, headers = self.request.response.headers)
         #first section
         next_section = None
         for obj in self.context.values():
@@ -41,6 +42,18 @@ class SurveyView(BaseView):
             break
         uid = self.request.GET.get('uid', '')
         return {'start_link': self.request.resource_url(next_section, query = {'uid': uid})}
+
+    @view_config(context = ISurvey,
+                 name = "done",
+                 permission = security.NO_PERMISSION_REQUIRED,
+                 renderer = "arche_m2m:templates/survey_done.pt")
+    def survey_done(self):
+        previous_section = None
+        for obj in reversed(self.context.values()):
+            previous_section = obj
+            break
+        uid = self.request.GET.get('uid', '')
+        return {'previous_link': self.request.resource_url(previous_section, query = {'uid': uid})}    
 
 
 class ManageSurveyView(BaseView):
@@ -93,8 +106,6 @@ class ManageSurveyView(BaseView):
                     default = u"You need to add survey sections and then use this view to manage the questions.")
             self.flash_messages.add(msg, auto_destruct = False)
         #Load all question objects that haven't been picked
-#        questions = org.questions
-        #self.response['available_questions'] = [questions[x] for x in questions if x not in picked_questions]
         response['available_questions'] = self.get_questions(exclude = picked_questions)
         return response
 
@@ -145,8 +156,7 @@ class QuestionnaireForm(BaseForm):
     def buttons(self):
         #Check if this is first etc
         buttons = []
-        if self._previous_section():
-            buttons.append(deform.Button(name = 'previous', css_class = 'btn btn-default'))
+        buttons.append(deform.Button(name = 'previous', css_class = 'btn btn-default'))
         #XXX
         buttons.append(deform.Button(name = 'next', css_class = 'btn btn-primary submit-default'))
         return buttons
@@ -208,9 +218,9 @@ class QuestionnaireForm(BaseForm):
         except IndexError:
             return  
 
-    def _link(self, obj):
+    def _link(self, obj, *args):
         uid = self.request.GET.get('uid', '')
-        return self.request.resource_url(obj, query = {'uid': uid})
+        return self.request.resource_url(obj, *args, query = {'uid': uid})
 
     def next_success(self, appstruct):
         #FIXME: Is this an okay way to save data? It should always be marked as dirty
@@ -218,6 +228,8 @@ class QuestionnaireForm(BaseForm):
         self.context.responses[self.participant_uid] = appstruct
         next_section = self._next_section()
         #Do stuff if finished
+        if not next_section:
+            return HTTPFound(location = self._link(self.context.__parent__, 'done'))
         return HTTPFound(location = self._link(next_section))
 
     def previous_success(self, appstruct):
@@ -227,8 +239,10 @@ class QuestionnaireForm(BaseForm):
     def go_previous(self, *args):
         previous = self._previous_section()
         if previous is None:
-            previous = self.context.__parent__        
-        return HTTPFound(location = self._link(previous))
+            return HTTPFound(location = self._link(self.context.__parent__, 'do'))
+        else:
+            return HTTPFound(location = self._link(previous))
+
     previous_failure = go_previous
 
 
@@ -242,7 +256,7 @@ class DummyQuestionnaireForm(QuestionnaireForm):
         self.create_schema()
         return super(BaseForm, self).__call__()
 
-    def _link(self, obj):
+    def _link(self, obj, *args):
         return self.request.resource_url(obj, 'view')
 
     def next_success(self, *args):

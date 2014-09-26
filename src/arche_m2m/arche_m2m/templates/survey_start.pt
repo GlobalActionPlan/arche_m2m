@@ -10,7 +10,19 @@
 
     <h1>${context.title}</h1>
 
-    <tal:has_section condition="start_link">
+    <tal:lang condition="len(context.languages) > 1">
+      <tal:iterate repeat="lang context.languages">
+        <a href="${request.resource_url(view.root, 'set_language', query = {'lang': lang, 'return_url': request.url})}"
+           class="btn btn-default">
+          <span tal:condition="request.locale_name == lang" class="glyphicon glyphicon-ok"></span>
+          ${lang}
+        </a>
+      </tal:iterate>
+    </tal:lang>
+
+    <hr/>
+
+    <tal:has_section condition="start_link and request.locale_name in context.languages">
         <a class="btn btn-success" href="${start_link}">
             Start
         </a>

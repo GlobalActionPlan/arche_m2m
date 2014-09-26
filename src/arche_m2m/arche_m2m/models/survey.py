@@ -24,6 +24,11 @@ class Survey(Content):
         self.tokens = OOBTree()
         super(Survey, self).__init__(**kw)
 
+    @property
+    def languages(self): return getattr(self, '__languages__', ())
+    @languages.setter
+    def languages(self, value): self.__languages__ = tuple(value)
+
     def create_token(self, email, size = 15, hours = 0, overwrite = False):
         """ Create a survey invitation token."""
         if email not in self.tokens or (email in self.tokens and overwrite == True):
@@ -55,9 +60,22 @@ class Survey(Content):
         return participants
 
 
+@colander.deferred
+def deferred_languages_widget(node, kw):
+    request = kw['request']
+    choices = []
+    languages = request.registry.settings.get('m2m.languages', 'en').split()
+    for lang in languages:
+        choices.append((lang, lang))
+    return deform.widget.CheckboxChoiceWidget(values = choices)
+
+
 class SurveySchema(colander.Schema):
     title = colander.SchemaNode(colander.String(),
                                 title = _("Title"))
+    languages = colander.SchemaNode(colander.List(),
+                                    title = _("Available languages"),
+                                    widget = deferred_languages_widget)
 
 
 class SurveyInvitationSchema(colander.Schema):
