@@ -26,8 +26,15 @@
           <ul>
           <tal:lang repeat="lang context.languages">
             <li tal:define="q_lang len(obj.get_questions(lang)); q_total len(obj.question_ids);">
-              <b>${lang}</b>
-              <span class="label ${q_lang == q_total and 'label-success' or 'label-danger'}">${q_lang} / ${q_total}</span>
+              <form method="post" action="${request.resource_url(obj, 'translate_questions')}">
+                <b>${lang}</b>
+                <span class="label ${q_lang == q_total and 'label-success' or 'label-danger'}">${q_lang} / ${q_total}</span>
+                <input type="hidden" name="language" value="${lang}" />
+                <a tal:condition="request.locale_name != lang"
+                  class="btn btn-default btn-xs"
+                  href="${request.resource_url(obj, 'translate_questions', query = {'to_lang': lang})}"
+                  i18n:translate="">Translate</a>
+              </form>
             </li>
           </tal:lang>
           </ul>

@@ -28,6 +28,10 @@ class Question(Content):
 @colander.deferred
 def deferred_question_type_widget(node, kw):
     view = kw['view']
+    request = kw['request']
+    question_type = request.GET.get('question_type', None)
+    if question_type:
+        return deform.widget.HiddenWidget()
     choices = []
     for obj in view.catalog_search(resolve = True, type_name = 'QuestionType'):
         title = obj.description and "%s - %s" % (obj.title, obj.description) or obj.title
@@ -35,8 +39,15 @@ def deferred_question_type_widget(node, kw):
     return deform.widget.RadioChoiceWidget(values = choices)
 
 @colander.deferred
+def deferred_question_type_default(node, kw):
+    request = kw['request']
+    return request.GET.get('question_type', '')
+
+@colander.deferred
 def deferred_lang_widget(node, kw):
     request = kw['request']
+    if request.GET.get('language', None):
+        return deform.widget.HiddenWidget()
     choices = []
     languages = request.registry.settings.get('m2m.languages', 'en').split()
     for lang in languages:
@@ -63,7 +74,8 @@ class QuestionSchema(colander.Schema):
                                    widget = deferred_lang_widget)
     question_type = colander.SchemaNode(colander.String(),
                                         title = _("Question type"),
-                                        widget=deferred_question_type_widget,)
+                                        widget=deferred_question_type_widget,
+                                        default = deferred_question_type_default)
     tags = colander.SchemaNode(colander.List(),
                                title = _("Tags"),
                                missing = "",
