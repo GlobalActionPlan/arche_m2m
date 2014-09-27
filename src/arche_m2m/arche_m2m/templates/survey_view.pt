@@ -8,19 +8,33 @@
 <body>
 <div metal:fill-slot="main-content">
 
-    <h1>${context.title}</h1>
-    
-    <a href="${request.resource_url(context, 'invite')}" i18n:translate="">Invite</a>
-    <a href="${request.resource_url(context, 'participants')}" i18n:translate="">Participants</a>
-    <a href="${request.resource_url(context, 'manage')}" i18n:translate="">Manage</a>
+  <h1>${context.title}</h1>
 
-    ${context.languages}
-    
-    <ul>
-        <tal:iterate repeat="obj context.values()">
-            <li><a href="${request.resource_url(obj)}">${obj.title}</a></li>
-        </tal:iterate>
-    </ul>
+  <a href="${request.resource_url(context, 'invite')}" i18n:translate="">Invite</a>
+  <a href="${request.resource_url(context, 'participants')}" i18n:translate="">Participants</a>
+  <a href="${request.resource_url(context, 'manage')}" i18n:translate="">Manage</a>
+
+  <tal:iterate repeat="obj context.values()">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">
+          <a href="${request.resource_url(obj)}">${obj.title}</a>
+        </h3>
+      </div>
+      <div class="panel-body">
+        <div>
+          <ul>
+          <tal:lang repeat="lang context.languages">
+            <li tal:define="q_lang len(obj.get_questions(lang)); q_total len(obj.question_ids);">
+              <b>${lang}</b>
+              <span class="label ${q_lang == q_total and 'label-success' or 'label-danger'}">${q_lang} / ${q_total}</span>
+            </li>
+          </tal:lang>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </tal:iterate>
 
 </div>
 </body>

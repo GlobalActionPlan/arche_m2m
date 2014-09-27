@@ -32,7 +32,7 @@
               <h4><a href="javascript:">${section.title}</a></h4>
             </div>
             <ul class="survey_section pickable_questions list-group" name="${section.__name__}">
-              <tal:questions repeat="question view.get_qnaire_questions(section)">
+              <tal:questions repeat="question section.get_questions(request.locale_name, resolve = True)">
                   <li id="${question.cluster}"
                       class="question list-group-item">
                       <span class="question_text">${question.title}</span>

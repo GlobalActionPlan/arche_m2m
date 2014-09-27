@@ -109,14 +109,6 @@ class ManageSurveyView(BaseView):
         response['available_questions'] = self.get_questions(exclude = picked_questions)
         return response
 
-    def get_qnaire_questions(self, qnaire):
-        #Why not just sort according to question_ids instead?
-        results = []
-        for cluster_id in qnaire.question_ids:
-            for obj in self.catalog_search(resolve = True, cluster = cluster_id, language = self.request.locale_name):
-                results.append(obj)
-        return results
-
     def get_questions(self, exclude = ()):
         #Should be optimized
         for obj in self.catalog_search(resolve = True, type_name = 'Question', language = self.request.locale_name):
