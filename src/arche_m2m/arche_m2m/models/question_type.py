@@ -1,7 +1,12 @@
 from __future__ import unicode_literals
 
+from arche import security
 from arche.api import Base
 from arche.api import Content
+from arche.interfaces import IIndexedContent
+from pyramid.threadlocal import get_current_request
+from pyramid.traversal import find_resource
+from pyramid.traversal import find_root
 from zope.interface import implementer
 import colander
 import deform
@@ -25,14 +30,29 @@ class QuestionType(Content):
     type_name = "QuestionType"
     add_permission = "Add %s" % type_name
     #default_view = "view"
-    nav_visible = True
+    nav_visible = False
     listing_visible = True
     search_visible = True
     input_widget = ""
-    #Have settings or similar stored here? Probably
+
+    def get_choices(self, lang, resolve = False):
+        root = find_root(self)
+        docids = []
+        results = []
+        for qid in self.question_ids:
+            for docid in root.catalog.search(cluster = qid, language = lang)[1]:
+                docids.append(docid)
+        if resolve:
+            request = get_current_request()
+            for docid in docids:
+                path = root.document_map.address_for_docid(docid)
+                obj = find_resource(root, path)
+                if request.has_permission(security.PERM_VIEW, obj):
+                    results.append(obj)
+        return resolve and results or docids
 
 
-@implementer(IChoice)
+@implementer(IChoice, IIndexedContent)
 class Choice(Base):
     type_title = _("Choice")
     type_name = "Choice"
@@ -62,9 +82,12 @@ class QuestionTypeSchema(colander.Schema):
                                        widget=deferred_input_widget, )
 
 
-class ChoiceSchema(colander.Schema):
+class EditChoiceSchema(colander.Schema):
     title = colander.SchemaNode(colander.String(),
                                 title = _("Text on choice"))
+
+
+class AddChoiceSchema(EditChoiceSchema):
     language = colander.SchemaNode(colander.String(),
                                    title = _("Language"),
                                    default = deferred_default_lang,
@@ -82,6 +105,6 @@ def includeme(config):
     #config.add_content_schema('QuestionType', QuestionTypeSchema, 'view')
     config.add_content_schema('QuestionType', QuestionTypeSchema, 'edit')
     config.add_content_schema('QuestionType', QuestionTypeSchema, 'add')
-    config.add_content_schema('Choice', ChoiceSchema, 'add')
-    config.add_content_schema('Choice', ChoiceSchema, 'edit')
-    config.add_content_schema('Choice', ChoiceSchema, 'view')
+    config.add_content_schema('Choice', AddChoiceSchema, 'add')
+    config.add_content_schema('Choice', EditChoiceSchema, 'edit')
+    config.add_content_schema('Choice', EditChoiceSchema, 'view')

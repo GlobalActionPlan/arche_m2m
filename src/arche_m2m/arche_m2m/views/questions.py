@@ -1,11 +1,13 @@
 from pyramid.view import view_config
 from arche import security
-from arche.views.base import BaseForm
+from arche.views.base import BaseForm, DefaultEditForm
 from arche.views.base import BaseView
+from pyramid.decorator import reify
 from pyramid.traversal import resource_path
 import colander
 
 from arche_m2m import _
+from arche_m2m.interfaces import IChoice
 from arche_m2m.interfaces import IQuestion
 from arche_m2m.interfaces import IQuestions
 from arche_m2m.interfaces import IQuestionType
@@ -20,6 +22,11 @@ from arche_m2m.interfaces import IQuestionWidget
 class QuestionPreview(BaseForm):
     buttons = ()
 
+    @reify
+    def languages(self):
+        langs = self.request.registry.settings.get('m2m.languages', 'en').split()
+        return langs
+
     def __call__(self):
         self.schema = colander.Schema(title = _("Preview"))
         question_type = self.resolve_uid(self.context.question_type)
@@ -32,10 +39,27 @@ class QuestionPreview(BaseForm):
         return result
 
     def get_siblings(self):
-        languages = self.request.registry.settings.get('m2m.languages', 'en').split()
-        if self.context.language in languages:
-            languages.remove(self.context.language)
-        return self.catalog_search(resolve = True, language = languages, cluster = self.context.cluster)
+        siblings = {}
+        for obj in self.catalog_search(resolve = True, language = self.languages, cluster = self.context.cluster):
+            siblings[obj.language] = obj
+        return siblings
+
+
+@view_config(context = IChoice,
+             permission = security.PERM_VIEW,
+             renderer='arche_m2m:templates/translations_form.pt')
+class ChoiceView(DefaultEditForm):
+
+    @reify
+    def languages(self):
+        langs = self.request.registry.settings.get('m2m.languages', 'en').split()
+        return langs
+
+    def get_siblings(self):
+        siblings = {}
+        for obj in self.catalog_search(resolve = True, language = self.languages, cluster = self.context.cluster):
+            siblings[obj.language] = obj
+        return siblings
 
 
 @view_config(context = IQuestionType,
