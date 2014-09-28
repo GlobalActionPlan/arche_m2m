@@ -174,7 +174,7 @@ class QuestionnaireForm(BaseForm):
                                                                      IQuestionWidget,
                                                                      name = getattr(question_type, 'input_widget', ''))
                 if question_widget:
-                    self.schema.add(question_widget.node(question.uid, title = question.title))
+                    self.schema.add(question_widget.node(question.cluster, lang = self.request.locale_name, title = question.title))
             else:
                 self.schema.add(colander.SchemaNode(colander.String(),
                                                     widget = deform.widget.TextInputWidget(readonly = True),

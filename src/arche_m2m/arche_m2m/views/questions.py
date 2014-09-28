@@ -27,14 +27,17 @@ class QuestionPreview(BaseForm):
         langs = self.request.registry.settings.get('m2m.languages', 'en').split()
         return langs
 
+    @reify
+    def question_type(self):
+        return self.resolve_uid(self.context.question_type)
+
     def __call__(self):
         self.schema = colander.Schema(title = _("Preview"))
-        question_type = self.resolve_uid(self.context.question_type)
-        question_widget = self.request.registry.queryAdapter(question_type,
+        question_widget = self.request.registry.queryAdapter(self.question_type,
                                                              IQuestionWidget,
-                                                             name = getattr(question_type, 'input_widget', ''))
+                                                             name = getattr(self.question_type, 'input_widget', ''))
         if question_widget:
-            self.schema.add(question_widget.node(self.context.__name__, title = self.context.title))
+            self.schema.add(question_widget.node(self.context.__name__, lang = self.context.language, title = self.context.title))
         result = super(BaseForm, self).__call__()
         return result
 

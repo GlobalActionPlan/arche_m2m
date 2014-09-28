@@ -1,12 +1,8 @@
 from __future__ import unicode_literals
 
-from arche import security
 from arche.api import Base
 from arche.api import Content
 from arche.interfaces import IIndexedContent
-from pyramid.threadlocal import get_current_request
-from pyramid.traversal import find_resource
-from pyramid.traversal import find_root
 from zope.interface import implementer
 import colander
 import deform
@@ -35,21 +31,12 @@ class QuestionType(Content):
     search_visible = True
     input_widget = ""
 
-    def get_choices(self, lang, resolve = False):
-        root = find_root(self)
-        docids = []
+    def get_choices(self, lang):
         results = []
-        for qid in self.question_ids:
-            for docid in root.catalog.search(cluster = qid, language = lang)[1]:
-                docids.append(docid)
-        if resolve:
-            request = get_current_request()
-            for docid in docids:
-                path = root.document_map.address_for_docid(docid)
-                obj = find_resource(root, path)
-                if request.has_permission(security.PERM_VIEW, obj):
-                    results.append(obj)
-        return resolve and results or docids
+        for obj in self.values():
+            if IChoice.providedBy(obj) and obj.language == lang:
+                results.append(obj)
+        return results
 
 
 @implementer(IChoice, IIndexedContent)
@@ -102,7 +89,6 @@ def includeme(config):
     config.add_content_factory(Choice)
     config.add_addable_content("Choice", "QuestionType")
     config.add_addable_content("QuestionType", "QuestionTypes")
-    #config.add_content_schema('QuestionType', QuestionTypeSchema, 'view')
     config.add_content_schema('QuestionType', QuestionTypeSchema, 'edit')
     config.add_content_schema('QuestionType', QuestionTypeSchema, 'add')
     config.add_content_schema('Choice', AddChoiceSchema, 'add')
