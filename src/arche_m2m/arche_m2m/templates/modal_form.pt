@@ -21,7 +21,6 @@
         <script type="text/javascript">
           $('.modal-dialog form').on('submit', function(event) {
             event.preventDefault();
-            console.log(event);
 			var form = $(event.target);
             var request = arche.do_request(form.attr('action'), {data: form.serialize(), method: 'post'});
             request.done(function(data) {
