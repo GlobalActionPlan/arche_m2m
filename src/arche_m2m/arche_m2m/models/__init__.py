@@ -1,4 +1,5 @@
 def includeme(config):
+    config.include('.organisation')
     config.include('.question')
     config.include('.question_type')
     config.include('.question_types')

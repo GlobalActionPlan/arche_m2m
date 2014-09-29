@@ -15,10 +15,12 @@ import colander
 import deform
 
 from arche_m2m import _
-from arche_m2m.interfaces import ISurvey
-from arche_m2m.interfaces import IQuestionnaire
+from arche_m2m.fanstatic import manage_css
+from arche_m2m.fanstatic import survey_manage
+from arche_m2m.interfaces import IOrganisation
 from arche_m2m.interfaces import IQuestionWidget
-from arche_m2m.fanstatic import survey_manage, manage_css
+from arche_m2m.interfaces import IQuestionnaire
+from arche_m2m.interfaces import ISurvey
 
 
 class SurveyView(BaseView):
@@ -59,6 +61,11 @@ class SurveyView(BaseView):
 class ManageSurveyView(BaseView):
     """ View for administrators
     """
+
+    @reify
+    def organisation(self):
+        return find_interface(self.context, IOrganisation)
+
     @view_config(context = ISurvey, name = "view", permission = security.PERM_EDIT,
                  renderer = "arche_m2m:templates/survey_view.pt")
     def view(self):

@@ -96,7 +96,7 @@ class SurveyInvitationSchema(colander.Schema):
 
 def includeme(config):
     config.add_content_factory(Survey)
-    config.add_addable_content("Survey", ("Root", "Document"))
+    config.add_addable_content("Survey", ("Root", "Document", "Organisation"))
     config.add_content_schema('Survey', SurveySchema, 'edit')
     config.add_content_schema('Survey', SurveySchema, 'add')
     config.add_content_schema('Survey', SurveyInvitationSchema, 'send_invitation')

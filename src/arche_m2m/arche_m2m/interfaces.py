@@ -28,6 +28,8 @@ class ISurvey(Interface):
 class IQuestionnaire(Interface):
     pass
 
+class IOrganisation(Interface):
+    pass
 
 #Adapters
 class ITranslations(Interface):

@@ -7,6 +7,7 @@
       i18n:domain="arche_m2m">
 <body>
 <div metal:fill-slot="content">
+<div id="modal"></div><!--  see js for actual template -->
   <div class="row">
     <div class="col-sm-12">
       <h1 i18n:translate="">Manage questions</h1>
@@ -36,6 +37,12 @@
                   <li id="${question.cluster}"
                       class="question list-group-item">
                       <span class="question_text">${question.title}</span>
+                      <a tal:condition="view.organisation" href="${request.resource_url(view.organisation, 'variant', query = {'uid': question.uid})}"
+                        class="btn btn-default btn-xs pull-right"
+                        data-toggle="modal"
+                        data-target="#modal">
+                        <span class="glyphicon glyphicon-edit"></span>
+                      </a>
                       <input type="hidden" class="${' '.join(['tag_' + x for x in question.tags])}" name="${section.__name__}" value="${question.cluster}" />
                   </li>
               </tal:questions>
