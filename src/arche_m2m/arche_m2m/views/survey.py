@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+from decimal import Decimal
 
 from arche import security
 from arche.views.base import BaseForm
@@ -21,6 +22,30 @@ from arche_m2m.interfaces import IOrganisation
 from arche_m2m.interfaces import IQuestionWidget
 from arche_m2m.interfaces import IQuestionnaire
 from arche_m2m.interfaces import ISurvey
+
+
+def calc_percentages(section):
+    survey = find_interface(section, ISurvey)
+    total = 0
+    before = 0
+    current = 0
+    is_before = True
+    for obj in survey.values():
+        this_count = len(getattr(obj, 'question_ids', ()))
+        total += this_count
+        if obj == section:
+            is_before = False
+            current = this_count
+            continue
+        if is_before:
+            before += this_count
+    before_perc = 0
+    current_perc = 0
+    if before:
+        before_perc = int(round(Decimal(before)/Decimal(total) * 100))
+    if current:
+        current_perc = int(round(Decimal(current)/Decimal(total) * 100))
+    return before_perc, current_perc
 
 
 class SurveyView(BaseView):
@@ -97,8 +122,6 @@ class ManageSurveyView(BaseView):
             self.flash_messages.add(_("Saved"))
             url = self.request.resource_url(self.context, 'manage')
             return HTTPFound(location = url)
-
-        #self.response['organisation'] = org = find_interface(self.context, IOrganisation)
         response = {}
         picked_questions = set()
         survey_sections = []
@@ -142,6 +165,8 @@ class ManageParticipantsView(BaseView):
              permission = security.NO_PERMISSION_REQUIRED,
              renderer = "arche_m2m:templates/survey_form_participant.pt")
 class QuestionnaireForm(BaseForm):
+    buttons = (deform.Button(name = 'previous', css_class = 'btn btn-default'),
+               deform.Button(name = 'next', css_class = 'btn btn-primary submit-default'))
 
     @reify
     def survey(self):
@@ -150,15 +175,6 @@ class QuestionnaireForm(BaseForm):
     @property
     def participant_uid(self):
         return self.request.params.get('uid', '')
-
-    @property
-    def buttons(self):
-        #Check if this is first etc
-        buttons = []
-        buttons.append(deform.Button(name = 'previous', css_class = 'btn btn-default'))
-        #XXX
-        buttons.append(deform.Button(name = 'next', css_class = 'btn btn-primary submit-default'))
-        return buttons
 
     @reify
     def organisation(self):
@@ -252,6 +268,9 @@ class QuestionnaireForm(BaseForm):
             return HTTPFound(location = self._link(previous))
 
     previous_failure = go_previous
+
+    def calc_percentages(self):
+        return calc_percentages(self.context)
 
 
 @view_config(context = IQuestionnaire,
