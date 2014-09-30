@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 from BTrees.OOBTree import OOBTree
 from arche.api import Content
+from arche.api import LocalRolesMixin
 from arche.schemas import tagging_widget
 from zope.interface import implementer
 import colander
@@ -12,7 +13,7 @@ from arche_m2m.interfaces import IOrganisation
 
 
 @implementer(IOrganisation)
-class Organisation(Content):
+class Organisation(Content, LocalRolesMixin):
     type_title = _("Organisation")
     type_name = "Organisation"
     add_permission = "Add %s" % type_name
