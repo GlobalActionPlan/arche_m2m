@@ -143,7 +143,7 @@ class ManageParticipantsView(BaseView):
              renderer = "arche_m2m:templates/survey_form_participant.pt")
 class QuestionnaireForm(BaseForm):
 
-    @property
+    @reify
     def survey(self):
         return find_interface(self.context, ISurvey)
 
@@ -159,6 +159,10 @@ class QuestionnaireForm(BaseForm):
         #XXX
         buttons.append(deform.Button(name = 'next', css_class = 'btn btn-primary submit-default'))
         return buttons
+
+    @reify
+    def organisation(self):
+        return find_interface(self.context, IOrganisation)
 
     def __call__(self):
         #FIXME: This is slow and stupid.
@@ -181,7 +185,12 @@ class QuestionnaireForm(BaseForm):
                                                                      IQuestionWidget,
                                                                      name = getattr(question_type, 'input_widget', ''))
                 if question_widget:
-                    self.schema.add(question_widget.node(question.cluster, lang = self.request.locale_name, title = question.title))
+                    title = question.title
+                    if self.organisation:
+                        title = self.organisation.variants.get(question.uid, title)
+                    self.schema.add(question_widget.node(question.cluster,
+                                                         lang = self.request.locale_name,
+                                                         title = title))
             else:
                 self.schema.add(colander.SchemaNode(colander.String(),
                                                     widget = deform.widget.TextInputWidget(readonly = True),
