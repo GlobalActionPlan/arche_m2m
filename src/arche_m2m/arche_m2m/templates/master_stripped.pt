@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:define-macro="main"
+      i18n:domain="arche_m2m">
+<!-- FIXME: Set lang attr from pyramid locale -->
+  <head>
+    <tal:head replace="structure view.render_template('arche:templates/head.pt')" />
+    <metal:head define-slot="head"></metal:head>
+  </head>
+
+  <body class="view-${request.view_name or 'default'}">
+    <div class="container">
+
+      <div tal:replace="structure view.flash_messages.render()">Flash messages, if any</div>
+      <metal:content define-slot="content"></metal:content>
+
+    </div><!-- container -->
+
+    <footer tal:replace="structure view.render_template('arche:templates/footer.pt')" />
+
+  </body>
+</html>

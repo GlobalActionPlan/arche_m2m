@@ -3,16 +3,22 @@
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      metal:use-macro="view.macro('arche:templates/base_view.pt', 'arche:templates/inline.pt')"
-      i18n:domain="Arche">
+      metal:use-macro="view.macro('arche_m2m:templates/master_stripped.pt')"
+      i18n:domain="arche_m2m">
 <body>
-<div metal:fill-slot="main-content">
+<div metal:fill-slot="content">
+
+  <div class="row">
+    <div class="col-sm-12">
 
     <h1 i18n:translate="">Done</h1>
 
     <a class="btn btn-default" href="${previous_link}">
         Previous
     </a>
+
+    </div>
+  </div>
 
 </div>
 </body>

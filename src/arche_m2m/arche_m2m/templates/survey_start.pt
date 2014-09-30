@@ -3,30 +3,35 @@
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      metal:use-macro="view.macro('arche:templates/base_view.pt', 'arche:templates/inline.pt')"
-      i18n:domain="Arche">
+      metal:use-macro="view.macro('arche_m2m:templates/master_stripped.pt')"
+      i18n:domain="arche_m2m">
 <body>
-<div metal:fill-slot="main-content">
+<div metal:fill-slot="content">
 
-    <h1>${context.title}</h1>
+  <div class="row">
+    <div class="col-sm-12">
 
-    <tal:lang condition="len(context.languages) > 1">
-      <tal:iterate repeat="lang context.languages">
-        <a href="${request.resource_url(view.root, 'set_language', query = {'lang': lang, 'return_url': request.url})}"
-           class="btn btn-default">
-          <span tal:condition="request.locale_name == lang" class="glyphicon glyphicon-ok"></span>
-          ${lang}
-        </a>
-      </tal:iterate>
-    </tal:lang>
+      <h1>${context.title}</h1>
 
-    <hr/>
+      <tal:lang condition="len(context.languages) > 1">
+        <tal:iterate repeat="lang context.languages">
+          <a href="${request.resource_url(view.root, 'set_language', query = {'lang': lang, 'return_url': request.url})}"
+             class="btn btn-default">
+            <span tal:condition="request.locale_name == lang" class="glyphicon glyphicon-ok"></span>
+            ${lang}
+          </a>
+        </tal:iterate>
+      </tal:lang>
 
-    <tal:has_section condition="start_link and request.locale_name in context.languages">
-        <a class="btn btn-success" href="${start_link}">
-            Start
-        </a>
-    </tal:has_section>
+      <hr/>
+
+      <tal:has_section condition="start_link and request.locale_name in context.languages">
+          <a class="btn btn-success" href="${start_link}">
+              Start
+          </a>
+      </tal:has_section>
+    </div>
+  </div>
 
 </div>
 </body>
