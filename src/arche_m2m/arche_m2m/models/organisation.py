@@ -21,7 +21,7 @@ class Organisation(Content):
     search_visible = True
 
     def __init__(self, **kw):
-        super(self, Organisation).__init__(**kw)
+        super(Organisation, self).__init__(**kw)
         self.variants = OOBTree()
 
     
