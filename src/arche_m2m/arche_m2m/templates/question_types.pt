@@ -24,7 +24,10 @@
               ${obj.title}
             </a>
           </td>
-          <td>${len(obj) > 0 and len(obj) or ''}</td>
+          <td>
+            <tal:iterate condition="len(obj)" repeat="lang view.languages">
+              ${lang}: ${len(obj.get_choices(lang))}
+            </tal:iterate>
         </tr>
       </tal:iterate>
     </tbody>

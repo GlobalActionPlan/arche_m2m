@@ -109,5 +109,10 @@ class QuestionsView(BaseView):
              renderer = 'arche_m2m:templates/question_types.pt')
 class QuestionTypesView(BaseView):
 
+    @reify
+    def languages(self):
+        langs = self.request.registry.settings.get('m2m.languages', 'en').split()
+        return langs
+
     def __call__(self):
         return {}
