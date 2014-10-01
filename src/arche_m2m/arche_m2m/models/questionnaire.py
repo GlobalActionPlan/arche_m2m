@@ -11,10 +11,13 @@ import colander
 
 from arche_m2m import _
 from arche_m2m.interfaces import IQuestionnaire
+from arche_m2m.models.i18n import TranslationMixin
+from arche_m2m.models.i18n import deferred_translations_node
+
 
 
 @implementer(IQuestionnaire)
-class Questionnaire(Content):
+class Questionnaire(Content, TranslationMixin):
     type_title = _("Questionnaire")
     type_name = "Questionnaire"
     add_permission = "Add %s" % type_name
@@ -51,7 +54,10 @@ class Questionnaire(Content):
 
 class QuestionnaireSchema(colander.Schema):
     title = colander.SchemaNode(colander.String(),
-                                title = _("Title"))
+                                title = _("Title"),
+                                translate = True,
+                                translate_missing = "")
+    translations = deferred_translations_node
 
 
 def includeme(config):

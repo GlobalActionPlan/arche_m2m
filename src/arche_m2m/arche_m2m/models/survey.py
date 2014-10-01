@@ -3,8 +3,8 @@ from decimal import Decimal
 
 from BTrees.OOBTree import OOBTree
 from arche.api import Content
-from arche.api import Token
 from arche.api import LocalRolesMixin
+from arche.api import Token
 from zope.interface import implementer
 import colander
 import deform
@@ -12,11 +12,13 @@ import deform
 from arche_m2m import _
 from arche_m2m.interfaces import IQuestionnaire
 from arche_m2m.interfaces import ISurvey
+from arche_m2m.models.i18n import TranslationMixin
+from arche_m2m.models.i18n import deferred_translations_node
 from arche_m2m.schemas.validators import multiple_email_validator
 
 
 @implementer(ISurvey)
-class Survey(Content, LocalRolesMixin):
+class Survey(Content, LocalRolesMixin, TranslationMixin):
     type_title = _("Survey")
     type_name = "Survey"
     add_permission = "Add %s" % type_name
@@ -24,11 +26,6 @@ class Survey(Content, LocalRolesMixin):
     def __init__(self, **kw):
         self.tokens = OOBTree()
         super(Survey, self).__init__(**kw)
-
-    @property
-    def languages(self): return getattr(self, '__languages__', ())
-    @languages.setter
-    def languages(self, value): self.__languages__ = tuple(value)
 
     def create_token(self, email, size = 15, hours = 0, overwrite = False):
         """ Create a survey invitation token."""
@@ -61,22 +58,12 @@ class Survey(Content, LocalRolesMixin):
         return participants
 
 
-@colander.deferred
-def deferred_languages_widget(node, kw):
-    request = kw['request']
-    choices = []
-    languages = request.registry.settings.get('m2m.languages', 'en').split()
-    for lang in languages:
-        choices.append((lang, lang))
-    return deform.widget.CheckboxChoiceWidget(values = choices)
-
-
 class SurveySchema(colander.Schema):
     title = colander.SchemaNode(colander.String(),
+                                translate = True,
+                                translate_missing = "",
                                 title = _("Title"))
-    languages = colander.SchemaNode(colander.List(),
-                                    title = _("Available languages"),
-                                    widget = deferred_languages_widget)
+    translations = deferred_translations_node
 
 
 class SurveyInvitationSchema(colander.Schema):
