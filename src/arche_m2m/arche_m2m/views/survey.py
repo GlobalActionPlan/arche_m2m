@@ -206,6 +206,7 @@ class QuestionnaireForm(BaseForm):
                         title = self.organisation.variants.get(question.uid, title)
                     self.schema.add(question_widget.node(question.cluster,
                                                          lang = self.request.locale_name,
+                                                         question = question,
                                                          title = title))
             else:
                 self.schema.add(colander.SchemaNode(colander.String(),

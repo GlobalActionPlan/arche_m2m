@@ -87,7 +87,7 @@ class AddChoiceSchema(EditChoiceSchema):
 def includeme(config):
     config.add_content_factory(QuestionType)
     config.add_content_factory(Choice)
-    config.add_addable_content("Choice", "QuestionType")
+    config.add_addable_content("Choice", ("QuestionType", "Question",))
     config.add_addable_content("QuestionType", "QuestionTypes")
     config.add_content_schema('QuestionType', QuestionTypeSchema, 'edit')
     config.add_content_schema('QuestionType', QuestionTypeSchema, 'add')

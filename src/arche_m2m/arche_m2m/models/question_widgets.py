@@ -19,14 +19,16 @@ class QuestionWidget(object):
     description = ""
     data_type = colander.String()
     widget_factory = None
+    question = None
 
     def __init__(self, context):
         self.context = context
 
-    def node(self, name, lang = None, **kwargs):
+    def node(self, name, lang = None, question = None, **kwargs):
         if lang is None:
             request = get_current_request()
             lang = request.locale_name
+        self.question = question
         #kw = copy(self.default_kwargs)
         kw = {}
         kw['name'] = name
@@ -52,6 +54,8 @@ class RadioChoiceWidget(QuestionWidget):
 
     def widget(self, lang, **kw):
         choices = [(choice.cluster, choice.title) for choice in self.context.get_choices(lang)]
+        if self.question:
+            [choices.append((choice.cluster, choice.title)) for choice in self.question.get_choices(lang)]
         return self.widget_factory(values = choices)
 
 

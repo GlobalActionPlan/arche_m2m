@@ -8,6 +8,7 @@ import colander
 import deform
 
 from arche_m2m import _
+from arche_m2m.interfaces import IChoice
 from arche_m2m.interfaces import IQuestion
 
 
@@ -23,6 +24,13 @@ class Question(Content):
     question_type = None
     language = ''
     cluster = ''
+
+    def get_choices(self, lang):
+        results = []
+        for obj in self.values():
+            if IChoice.providedBy(obj) and obj.language == lang:
+                results.append(obj)
+        return results
 
 
 @colander.deferred

@@ -37,7 +37,10 @@ class QuestionPreview(BaseForm):
                                                              IQuestionWidget,
                                                              name = getattr(self.question_type, 'input_widget', ''))
         if question_widget:
-            self.schema.add(question_widget.node(self.context.__name__, lang = self.context.language, title = self.context.title))
+            self.schema.add(question_widget.node(self.context.__name__,
+                                                 lang = self.context.language,
+                                                 question = self.context,
+                                                 title = self.context.title))
         result = super(BaseForm, self).__call__()
         return result
 

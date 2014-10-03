@@ -11,11 +11,13 @@
             <tal:exist condition="obj">
               <a href="${request.resource_url(obj)}"
                 title="${obj.title}"
-                tal:define="choices view.question_type.get_choices(lang)|None"
+                tal:define="choices_glob view.question_type.get_choices(lang)|None;
+                            choices_local context.get_choices(lang)|None;"
                 class="btn ${obj is context and 'btn-default' or 'btn-success'}">
                 ${lang}
-                <tal:choices tal:condition="choices">
-                  (${len(choices)})
+                <tal:choices tal:condition="choices_glob or choices_local">
+                  (${len(choices_glob)})
+                  (${len(choices_local)})
                 </tal:choices>
               </a>
             </tal:exist>
