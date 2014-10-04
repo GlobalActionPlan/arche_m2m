@@ -47,11 +47,24 @@ class TextWidget(QuestionWidget):
     widget_factory = deform.widget.TextInputWidget
 
 
+class TextAreaWidget(QuestionWidget):
+    name = "text_area_widget"
+    title = _("Text area (paragraph)")
+    widget_factory = deform.widget.TextAreaWidget
+
+
 class IntegerWidget(QuestionWidget):
     name = "int_widget"
     title = _("Integer number")
     widget_factory = deform.widget.TextInputWidget
     data_type = colander.Int()
+
+
+class DecimalWidget(QuestionWidget):
+    name = "decimal_widget"
+    title = _("Decimal number")
+    widget_factory = deform.widget.TextInputWidget
+    data_type = colander.Decimal()
 
 
 class RadioChoiceWidget(QuestionWidget):
@@ -81,7 +94,9 @@ class CheckboxMultiChoiceWidget(RadioChoiceWidget):
 
 def includeme(config):
     config.registry.registerAdapter(TextWidget, name = TextWidget.name)
+    config.registry.registerAdapter(TextAreaWidget, name = TextAreaWidget.name)
     config.registry.registerAdapter(IntegerWidget, name = IntegerWidget.name)
+    config.registry.registerAdapter(DecimalWidget, name = DecimalWidget.name)
     config.registry.registerAdapter(RadioChoiceWidget, name = RadioChoiceWidget.name)
     config.registry.registerAdapter(DropdownChoiceWidget, name = DropdownChoiceWidget.name)
     config.registry.registerAdapter(CheckboxMultiChoiceWidget, name = CheckboxMultiChoiceWidget.name)
