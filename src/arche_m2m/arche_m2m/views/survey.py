@@ -133,7 +133,8 @@ class ManageSurveyView(BaseView):
         response['survey_sections'] = survey_sections
         if not survey_sections:
             msg = _(u"no_sections_added_notice",
-                    default = u"You need to add survey sections and then use this view to manage the questions.")
+                    default = u"You need to add a Questionnaire "
+                        "and then use this view to manage the questions.")
             self.flash_messages.add(msg, auto_destruct = False)
         #Load all question objects that haven't been picked
         response['available_questions'] = self.get_questions(exclude = picked_questions)

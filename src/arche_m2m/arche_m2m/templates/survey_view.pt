@@ -10,9 +10,16 @@
 
   <h1>${context.title}</h1>
 
-  <a href="${request.resource_url(context, 'invite')}" i18n:translate="">Invite</a>
-  <a href="${request.resource_url(context, 'participants')}" i18n:translate="">Participants</a>
-  <a href="${request.resource_url(context, 'manage')}" i18n:translate="">Manage</a>
+  <a href="${request.resource_url(context, 'invite')}"
+    class="btn btn-primary btn-sm"
+    i18n:translate="">Invite</a>
+  <a href="${request.resource_url(context, 'participants')}"
+    class="btn btn-primary btn-sm"
+    i18n:translate="">Participants</a>
+  <a href="${request.resource_url(context, 'manage')}"
+    class="btn btn-primary btn-sm"
+    i18n:translate="">Manage</a>
+  <br/><br/>
 
   <tal:iterate repeat="obj context.values()">
     <div class="panel panel-default">
