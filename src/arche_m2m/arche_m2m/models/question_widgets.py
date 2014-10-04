@@ -47,6 +47,13 @@ class TextWidget(QuestionWidget):
     widget_factory = deform.widget.TextInputWidget
 
 
+class IntegerWidget(QuestionWidget):
+    name = "int_widget"
+    title = _("Integer number")
+    widget_factory = deform.widget.TextInputWidget
+    data_type = colander.Int()
+
+
 class RadioChoiceWidget(QuestionWidget):
     name = "radio_choice_widget"
     title = _("Radio choice")
@@ -74,6 +81,7 @@ class CheckboxMultiChoiceWidget(RadioChoiceWidget):
 
 def includeme(config):
     config.registry.registerAdapter(TextWidget, name = TextWidget.name)
+    config.registry.registerAdapter(IntegerWidget, name = IntegerWidget.name)
     config.registry.registerAdapter(RadioChoiceWidget, name = RadioChoiceWidget.name)
     config.registry.registerAdapter(DropdownChoiceWidget, name = DropdownChoiceWidget.name)
     config.registry.registerAdapter(CheckboxMultiChoiceWidget, name = CheckboxMultiChoiceWidget.name)
