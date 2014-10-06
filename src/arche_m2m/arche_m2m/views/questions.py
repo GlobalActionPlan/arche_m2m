@@ -5,6 +5,7 @@ from arche.views.base import BaseView
 from pyramid.decorator import reify
 from pyramid.traversal import resource_path
 import colander
+import deform
 
 from arche_m2m import _
 from arche_m2m.interfaces import IChoice
@@ -13,14 +14,37 @@ from arche_m2m.interfaces import IQuestions
 from arche_m2m.interfaces import IQuestionType
 from arche_m2m.interfaces import IQuestionTypes
 from arche_m2m.interfaces import IQuestionWidget
+from pyramid.httpexceptions import HTTPFound
+
+
+@view_config(context = IQuestionType,
+             name = 'view',
+             permission = security.PERM_VIEW,
+             renderer = 'arche:templates/form.pt')
+class QuestionTypePreview(BaseForm):
+    buttons = (deform.Button(name = 'check', css_class = 'btn btn-primary'),)
+
+    def __call__(self):
+        self.schema = colander.Schema(title = _("Preview"))
+        question_widget = self.request.registry.queryAdapter(self.context,
+                                                             IQuestionWidget,
+                                                             name = self.context.input_widget)
+        if question_widget:
+            self.schema.add(question_widget.node(self.context.__name__))
+        result = super(BaseForm, self).__call__()
+        return result
+
+    def check_success(self, appstruct):
+        self.flash_messages.add(_('Success, captured: ${appstruct}',
+                                  mapping = {'appstruct': appstruct}))
+        return HTTPFound(location = self.request.resource_url(self.context))
 
 
 @view_config(context = IQuestion,
              name = 'view',
              permission = security.PERM_VIEW,
              renderer='arche_m2m:templates/translations_form.pt')
-class QuestionPreview(BaseForm):
-    buttons = ()
+class QuestionPreview(QuestionTypePreview):
 
     @reify
     def languages(self):
@@ -66,24 +90,6 @@ class ChoiceView(DefaultEditForm):
         for obj in self.catalog_search(resolve = True, language = self.languages, cluster = self.context.cluster):
             siblings[obj.language] = obj
         return siblings
-
-
-@view_config(context = IQuestionType,
-             name = 'view',
-             permission = security.PERM_VIEW,
-             renderer = 'arche:templates/form.pt')
-class QuestionTypePreview(BaseForm):
-    buttons = ()
-
-    def __call__(self):
-        self.schema = colander.Schema(title = _("Preview"))
-        question_widget = self.request.registry.queryAdapter(self.context,
-                                                             IQuestionWidget,
-                                                             name = self.context.input_widget)
-        if question_widget:
-            self.schema.add(question_widget.node(self.context.__name__))
-        result = super(BaseForm, self).__call__()
-        return result
 
 
 @view_config(context = IQuestions,
