@@ -25,7 +25,7 @@ class IChoice(Interface):
 class ISurvey(Interface):
     pass
 
-class IQuestionnaire(Interface):
+class ISurveySection(Interface):
     pass
 
 class IOrganisation(Interface):

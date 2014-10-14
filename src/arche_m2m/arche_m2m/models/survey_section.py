@@ -10,16 +10,16 @@ from zope.interface import implementer
 import colander
 
 from arche_m2m import _
-from arche_m2m.interfaces import IQuestionnaire
+from arche_m2m.interfaces import ISurveySection
 from arche_m2m.models.i18n import TranslationMixin
 from arche_m2m.models.i18n import deferred_translations_node
 
 
 
-@implementer(IQuestionnaire)
-class Questionnaire(Content, TranslationMixin):
-    type_title = _("Questionnaire")
-    type_name = "Questionnaire"
+@implementer(ISurveySection)
+class SurveySection(Content, TranslationMixin):
+    type_title = _("Survey section")
+    type_name = "SurveySection"
     add_permission = "Add %s" % type_name
 #    default_view = u"view"
     nav_visible = True
@@ -28,7 +28,7 @@ class Questionnaire(Content, TranslationMixin):
 
     def __init__(self, **kwargs):
         self.responses = OOBTree()
-        super(Questionnaire, self).__init__(**kwargs) #BaseMixin!
+        super(SurveySection, self).__init__(**kwargs) #BaseMixin!
 
     @property
     def question_ids(self): return getattr(self, '__question_ids__', ())
@@ -52,7 +52,7 @@ class Questionnaire(Content, TranslationMixin):
         return resolve and results or docids
 
 
-class QuestionnaireSchema(colander.Schema):
+class SurveySectionSchema(colander.Schema):
     title = colander.SchemaNode(colander.String(),
                                 title = _("Title"),
                                 translate = True,
@@ -61,7 +61,7 @@ class QuestionnaireSchema(colander.Schema):
 
 
 def includeme(config):
-    config.add_content_factory(Questionnaire)
-    config.add_addable_content("Questionnaire", "Survey")
-    config.add_content_schema('Questionnaire', QuestionnaireSchema, 'edit')
-    config.add_content_schema('Questionnaire', QuestionnaireSchema, 'add')
+    config.add_content_factory(SurveySection)
+    config.add_addable_content("SurveySection", "Survey")
+    config.add_content_schema('SurveySection', SurveySectionSchema, 'edit')
+    config.add_content_schema('SurveySection', SurveySectionSchema, 'add')

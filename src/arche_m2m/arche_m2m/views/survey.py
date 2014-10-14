@@ -20,7 +20,7 @@ from arche_m2m.fanstatic import manage_css
 from arche_m2m.fanstatic import survey_manage
 from arche_m2m.interfaces import IOrganisation
 from arche_m2m.interfaces import IQuestionWidget
-from arche_m2m.interfaces import IQuestionnaire
+from arche_m2m.interfaces import ISurveySection
 from arche_m2m.interfaces import ISurvey
 
 
@@ -99,7 +99,7 @@ class ManageSurveyView(BaseView):
     def process_question_ids(self):
         sect_id_questions = self.request.POST.dict_of_lists()
         for section in self.context.values():
-            if IQuestionnaire.providedBy(section):
+            if ISurveySection.providedBy(section):
                 sect_id_questions.setdefault(section.__name__, [])
         for (sect_id, question_ids) in sect_id_questions.items():
             if sect_id in self.context: #Might be other things than section ids within the post
@@ -126,14 +126,14 @@ class ManageSurveyView(BaseView):
         picked_questions = set()
         survey_sections = []
         for section in self.context.values():
-            if not IQuestionnaire.providedBy(section):
+            if not ISurveySection.providedBy(section):
                 continue
             picked_questions.update(section.question_ids)
             survey_sections.append(section)
         response['survey_sections'] = survey_sections
         if not survey_sections:
             msg = _(u"no_sections_added_notice",
-                    default = u"You need to add a Questionnaire "
+                    default = u"You need to add a Survey section "
                         "and then use this view to manage the questions.")
             self.flash_messages.add(msg, auto_destruct = False)
         #Load all question objects that haven't been picked
@@ -162,10 +162,10 @@ class ManageParticipantsView(BaseView):
         return response
 
 
-@view_config(context = IQuestionnaire,
+@view_config(context = ISurveySection,
              permission = security.NO_PERMISSION_REQUIRED,
              renderer = "arche_m2m:templates/survey_form_participant.pt")
-class QuestionnaireForm(BaseForm):
+class SurveySectionForm(BaseForm):
     buttons = (deform.Button(name = 'previous', css_class = 'btn btn-default'),
                deform.Button(name = 'next', css_class = 'btn btn-primary submit-default'))
 
@@ -275,11 +275,11 @@ class QuestionnaireForm(BaseForm):
         return calc_percentages(self.context)
 
 
-@view_config(context = IQuestionnaire,
+@view_config(context = ISurveySection,
              name = 'view',
              permission = security.NO_PERMISSION_REQUIRED,
              renderer = "arche:templates/form.pt")
-class DummyQuestionnaireForm(QuestionnaireForm):
+class DummySurveySectionForm(SurveySectionForm):
 
     def __call__(self):
         self.create_schema()

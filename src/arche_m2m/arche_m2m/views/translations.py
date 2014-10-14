@@ -3,12 +3,12 @@ from arche.views.base import BaseView
 from pyramid.view import view_config
 
 from arche_m2m.interfaces import ISurvey
-from arche_m2m.interfaces import IQuestionnaire
+from arche_m2m.interfaces import ISurveySection
 
 
 class TranslateView(BaseView):
 
-    @view_config(context = IQuestionnaire,
+    @view_config(context = ISurveySection,
                  name = "translate_questions",
                  permission = security.PERM_EDIT,
                  renderer = "arche_m2m:templates/survey_translate_questions.pt")

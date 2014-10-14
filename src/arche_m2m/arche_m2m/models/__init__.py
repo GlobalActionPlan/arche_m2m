@@ -5,7 +5,7 @@ def includeme(config):
     config.include('.question_type')
     config.include('.question_types')
     config.include('.question_widgets')
-    config.include('.questionnaire')
+    config.include('.survey_section')
     config.include('.questions')
     config.include('.survey')
 

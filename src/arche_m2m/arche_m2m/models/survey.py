@@ -10,7 +10,7 @@ import colander
 import deform
 
 from arche_m2m import _
-from arche_m2m.interfaces import IQuestionnaire
+from arche_m2m.interfaces import ISurveySection
 from arche_m2m.interfaces import ISurvey
 from arche_m2m.models.i18n import TranslationMixin
 from arche_m2m.models.i18n import deferred_translations_node
@@ -46,7 +46,7 @@ class Survey(Content, LocalRolesMixin, TranslationMixin):
             participant['email'] = email
             response = 0
             questions = 0
-            sections = [x for x in self.values() if IQuestionnaire.providedBy(x)]
+            sections = [x for x in self.values() if ISurveySection.providedBy(x)]
             for section in sections:
                 response += len(section.responses.get(uid, {}))
                 questions += len(section.question_ids)
