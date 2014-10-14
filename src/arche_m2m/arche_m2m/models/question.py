@@ -5,6 +5,7 @@ from arche.api import Content
 from arche.interfaces import ICataloger
 from arche.interfaces import IObjectAddedEvent
 from arche.interfaces import IObjectUpdatedEvent
+from arche.interfaces import IObjectWillBeRemovedEvent
 from arche.schemas import tagging_widget
 from pyramid.threadlocal import get_current_request
 from pyramid.traversal import find_resource
@@ -66,7 +67,6 @@ def update_siblings(context, event):
     ctags = IClusterTags(root, None)
     if ctags is None:
         return
-    context.cluster
     for docid in root.catalog.search(cluster = context.cluster)[1]:
         path = root.document_map.address_for_docid(docid)
         obj = find_resource(root, path)
@@ -74,6 +74,16 @@ def update_siblings(context, event):
             continue
         ICataloger(obj).index_object()
 
+def remove_tags_on_last_obj_delete(context, event):
+    root = find_root(context)
+    for docid in root.catalog.search(cluster = context.cluster)[1]:
+        path = root.document_map.address_for_docid(docid)
+        obj = find_resource(root, path)
+        if obj != context:
+            return
+    #This point should never be reached if other items exist
+    ctags = IClusterTags(root, {})
+    ctags.pop(context.cluster, None)
 
 @colander.deferred
 def deferred_question_type_widget(node, kw):
@@ -148,13 +158,10 @@ class QuestionSchema(colander.Schema):
                                   widget = deform.widget.HiddenWidget())
 
 
-
-
-
-
 def includeme(config):
     config.add_subscriber(update_siblings, [IQuestion, IObjectAddedEvent])
     config.add_subscriber(update_siblings, [IQuestion, IObjectUpdatedEvent])
+    config.add_subscriber(remove_tags_on_last_obj_delete, [IQuestion, IObjectWillBeRemovedEvent])
     config.add_content_factory(Question)
     config.add_addable_content("Question", "Questions")
     config.add_content_schema('Question', QuestionSchema, 'edit')

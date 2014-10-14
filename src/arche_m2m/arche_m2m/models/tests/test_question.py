@@ -7,7 +7,7 @@ from zope.interface.verify import verifyClass
 from zope.interface.verify import verifyObject
 
 from arche_m2m.interfaces import IQuestion
-
+from arche_m2m.interfaces import IClusterTags
 
 
 class QuestionTests(TestCase):
@@ -27,7 +27,11 @@ class QuestionTests(TestCase):
         from arche.api import Root
         root = Root()
         request = testing.DummyRequest(context = root)
-        self.config = testing.setUp(registry = self.config.registry, request = request)
+        self.config = testing.setUp(request = request)
+        self.config.include('arche.catalog')
+        self.config.include('arche.populators')
+        self.config.include('arche.utils')
+        self.config.include('arche.security')
         return root
 
     def test_verify_class(self):
@@ -50,15 +54,25 @@ class QuestionTests(TestCase):
         self.assertEqual(root['q1'].tags, second.tags)
 
     def test_tags_set_updates_catalog(self):
-        self.config.include('arche')
-        self.config.include('arche_m2m')
         root = self._fixture()
+        self.config.include('arche_m2m')
         populator = self.config.registry.getAdapter(root, IPopulator, name = 'm2m_populator')
         populator.populate()
-
         root['q1'] = self._cut(tags = ['one', 'two'], cluster = '1')
         second = self._cut(tags = ['one', 'two', 'three'], cluster = '1')
         root['q2'] = second
-        #print root.catalog.search(tags = 'three')
         self.assertEqual(root.catalog.search(tags = 'three')[0].total, 2) 
-        
+
+    def test_deleting_last_question_clears_global_tags(self):
+        root = self._fixture()
+        self.config.include('arche_m2m')
+        populator = self.config.registry.getAdapter(root, IPopulator, name = 'm2m_populator')
+        populator.populate()
+        root['q1'] = self._cut(tags = ['one', 'two'], cluster = '1')
+        root['q2'] = self._cut(tags = ['one', 'two', 'three'], cluster = '1')
+        ctags = IClusterTags(root)
+        self.assertIn('1', ctags)
+        del root['q1']
+        self.assertIn('1', ctags)
+        del root['q2']
+        self.assertNotIn('1', ctags)
