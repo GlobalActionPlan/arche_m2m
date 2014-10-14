@@ -35,6 +35,9 @@ class IOrganisation(Interface):
 class ITranslations(Interface):
     pass
 
+class IClusterTags(Interface):
+    pass
+
 # class ILanguages(Interface):
 #     pass
 # 

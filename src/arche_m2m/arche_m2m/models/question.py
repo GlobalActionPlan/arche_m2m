@@ -2,13 +2,20 @@ from __future__ import unicode_literals
 from uuid import uuid4
 
 from arche.api import Content
+from arche.interfaces import ICataloger
+from arche.interfaces import IObjectAddedEvent
+from arche.interfaces import IObjectUpdatedEvent
 from arche.schemas import tagging_widget
+from pyramid.threadlocal import get_current_request
+from pyramid.traversal import find_resource
+from pyramid.traversal import find_root
 from zope.interface import implementer
 import colander
 import deform
 
 from arche_m2m import _
 from arche_m2m.interfaces import IChoice
+from arche_m2m.interfaces import IClusterTags
 from arche_m2m.interfaces import IQuestion
 
 
@@ -25,12 +32,47 @@ class Question(Content):
     language = ''
     cluster = ''
 
+    def __init__(self, **kw):
+        #Make sure cluster is set before anytjing else!
+        self.cluster = kw.pop('cluster', '')
+        super(Question, self).__init__(**kw)
+
     def get_choices(self, lang):
         results = []
         for obj in self.values():
             if IChoice.providedBy(obj) and obj.language == lang:
                 results.append(obj)
         return results
+
+    @property
+    def tags(self):
+        request = get_current_request()
+        root = find_root(request.context)
+        ctags = IClusterTags(root, {})
+        return ctags.get(self.cluster, ())
+
+    @tags.setter
+    def tags(self, value):
+        request = get_current_request()
+        root = find_root(request.context)
+        ctags = IClusterTags(root, None)
+        assert self.cluster
+        if ctags is not None:
+            ctags[self.cluster] = value
+
+
+def update_siblings(context, event):
+    root = find_root(context)
+    ctags = IClusterTags(root, None)
+    if ctags is None:
+        return
+    context.cluster
+    for docid in root.catalog.search(cluster = context.cluster)[1]:
+        path = root.document_map.address_for_docid(docid)
+        obj = find_resource(root, path)
+        if obj == context:
+            continue
+        ICataloger(obj).index_object()
 
 
 @colander.deferred
@@ -72,6 +114,18 @@ def deferred_cluster_id(node, kw):
     request = kw['request']
     return request.GET.get('cluster', str(uuid4()))
 
+@colander.deferred
+def deferred_existing_cluster_tags(node, kw):
+    """ Make sure tags don't get overwritten when forms
+        are invoket on new objects that aren't attached to the
+        resource tree yet.
+    """
+    request = kw['request']
+    cluster_id = request.GET.get('cluster', '')
+    view = kw['view']
+    ctags = IClusterTags(view.root, {})
+    return ctags.get(cluster_id, ())
+
 
 class QuestionSchema(colander.Schema):
     title = colander.SchemaNode(colander.String(),
@@ -87,13 +141,20 @@ class QuestionSchema(colander.Schema):
     tags = colander.SchemaNode(colander.List(),
                                title = _("Tags"),
                                missing = "",
+                               default = deferred_existing_cluster_tags,
                                widget = tagging_widget)
     cluster = colander.SchemaNode(colander.String(),
                                   default = deferred_cluster_id,
                                   widget = deform.widget.HiddenWidget())
 
 
+
+
+
+
 def includeme(config):
+    config.add_subscriber(update_siblings, [IQuestion, IObjectAddedEvent])
+    config.add_subscriber(update_siblings, [IQuestion, IObjectUpdatedEvent])
     config.add_content_factory(Question)
     config.add_addable_content("Question", "Questions")
     config.add_content_schema('Question', QuestionSchema, 'edit')
