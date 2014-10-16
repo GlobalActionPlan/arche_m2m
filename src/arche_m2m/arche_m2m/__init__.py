@@ -1,5 +1,8 @@
-from pyramid.i18n import TranslationStringFactory
 from arche.populators import Populator
+from arche.security import ROLE_EDITOR
+from arche.security import get_acl_registry
+from arche.utils import get_content_factories
+from pyramid.i18n import TranslationStringFactory
 from repoze.catalog.indexes.field import CatalogFieldIndex
 
 _ = TranslationStringFactory('arche_m2m')
@@ -28,3 +31,11 @@ def includeme(config):
     config.include('.models')
     config.include('.views')
     config.add_populator(M2MPopulator)
+    #Adjusting add perms to all Editors is kind of reckless. This will probably change in Arche.
+    factories = get_content_factories(config.registry)
+    add_perms = []
+    for factory in factories.values():
+        if hasattr(factory, 'add_permission'):
+            add_perms.append(factory.add_permission)
+    aclreg = get_acl_registry(config.registry)
+    aclreg.default.add(ROLE_EDITOR, add_perms)

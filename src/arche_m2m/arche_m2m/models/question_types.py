@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 from arche.api import Content
+from arche.api import ContextACLMixin
 from arche.api import LocalRolesMixin
 from zope.interface import implementer
 import colander
@@ -10,7 +11,7 @@ from arche_m2m.interfaces import IQuestionTypes
 
 
 @implementer(IQuestionTypes)
-class QuestionTypes(Content, LocalRolesMixin):
+class QuestionTypes(Content, ContextACLMixin, LocalRolesMixin):
     title = ""
     type_title = _("Question types")
     type_name = "QuestionTypes"
