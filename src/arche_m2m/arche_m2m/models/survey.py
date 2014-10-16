@@ -3,6 +3,7 @@ from decimal import Decimal
 
 from BTrees.OOBTree import OOBTree
 from arche.api import Content
+from arche.api import ContextACLMixin
 from arche.api import LocalRolesMixin
 from arche.api import Token
 from zope.interface import implementer
@@ -18,7 +19,7 @@ from arche_m2m.schemas.validators import multiple_email_validator
 
 
 @implementer(ISurvey)
-class Survey(Content, LocalRolesMixin, TranslationMixin):
+class Survey(Content, ContextACLMixin, LocalRolesMixin, TranslationMixin):
     type_title = _("Survey")
     type_name = "Survey"
     add_permission = "Add %s" % type_name

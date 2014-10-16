@@ -11,7 +11,7 @@ from arche_m2m.interfaces import IOrganisation
 @view_config(name='view',
              context=IOrganisation,
              renderer='arche_m2m:templates/organisation.pt',
-             permission=security.PERM_EDIT)
+             permission=security.PERM_VIEW)
 class OrganisationView(BaseView):
 
     def __call__(self):

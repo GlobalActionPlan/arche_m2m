@@ -22,6 +22,7 @@ from arche_m2m.interfaces import IOrganisation
 from arche_m2m.interfaces import IQuestionWidget
 from arche_m2m.interfaces import ISurveySection
 from arche_m2m.interfaces import ISurvey
+from arche_m2m.permissions import PARTICIPATE_SURVEY
 
 
 def calc_percentages(section):
@@ -58,6 +59,8 @@ class SurveyView(BaseView):
                  permission = security.NO_PERMISSION_REQUIRED,
                  renderer = "arche_m2m:templates/survey_start.pt")
     def do_survey(self):
+        if not self.request.has_permission(PARTICIPATE_SURVEY):
+            return HTTPFound(location = self.request.resource_url(self.context, 'closed'))
         if len(self.context.languages) == 1 and self.request.locale_name not in self.context.languages:
             #Select only available language choice before proceeding
             self.request.response.set_cookie('_LOCALE_', value = self.context.languages[0])
@@ -82,6 +85,13 @@ class SurveyView(BaseView):
         uid = self.request.GET.get('uid', '')
         return {'previous_link': self.request.resource_url(previous_section, query = {'uid': uid})}    
 
+    @view_config(context = ISurvey,
+                 name = "closed",
+                 permission = security.NO_PERMISSION_REQUIRED,
+                 renderer = "arche_m2m:templates/survey_closed.pt")
+    def survey_closed(self):
+        return {}
+
 
 class ManageSurveyView(BaseView):
     """ View for administrators
@@ -91,7 +101,7 @@ class ManageSurveyView(BaseView):
     def organisation(self):
         return find_interface(self.context, IOrganisation)
 
-    @view_config(context = ISurvey, name = "view", permission = security.PERM_EDIT,
+    @view_config(context = ISurvey, name = "view", permission = security.PERM_VIEW,
                  renderer = "arche_m2m:templates/survey_view.pt")
     def view(self):
         return {}
@@ -183,7 +193,7 @@ class SurveySectionForm(BaseForm):
 
     def __call__(self):
         #FIXME: This is slow and stupid.
-        if not self.participant_uid and self.request.has_permission(security.PERM_EDIT):
+        if not self.participant_uid and self.request.has_permission(security.PERM_VIEW):
             return HTTPFound(location = self.request.resource_url(self.context, 'view'))
         if not self.participant_uid in self.survey.tokens.values():
             raise HTTPForbidden("Invalid ticket")
@@ -266,8 +276,7 @@ class SurveySectionForm(BaseForm):
         previous = self._previous_section()
         if previous is None:
             return HTTPFound(location = self._link(self.context.__parent__, 'do'))
-        else:
-            return HTTPFound(location = self._link(previous))
+        return HTTPFound(location = self._link(previous))
 
     previous_failure = go_previous
 
@@ -277,7 +286,7 @@ class SurveySectionForm(BaseForm):
 
 @view_config(context = ISurveySection,
              name = 'view',
-             permission = security.NO_PERMISSION_REQUIRED,
+             permission = security.PERM_VIEW,
              renderer = "arche:templates/form.pt")
 class DummySurveySectionForm(SurveySectionForm):
 
@@ -291,13 +300,17 @@ class DummySurveySectionForm(SurveySectionForm):
     def next_success(self, *args):
         next_section = self._next_section()
         #Do stuff if finished
+        if not next_section:
+            return HTTPFound(location = self._link(self.context.__parent__, 'done'))
         return HTTPFound(location = self._link(next_section))
 
     next_failure = next_success
 
     def previous_success(self, appstruct):
-        return self.go_previous()
-
+        previous = self._previous_section()
+        if previous is None:
+            return HTTPFound(location = self._link(self.context.__parent__))
+        return HTTPFound(location = self._link(previous))
 
 
 @view_config(context = ISurvey,

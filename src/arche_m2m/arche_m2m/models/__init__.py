@@ -8,6 +8,7 @@ def includeme(config):
     config.include('.survey_section')
     config.include('.questions')
     config.include('.survey')
+    config.include('.workflows')
 
     from arche.security import get_acl_registry
     from arche.utils import get_content_factories
