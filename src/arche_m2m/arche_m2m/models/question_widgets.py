@@ -6,8 +6,10 @@ from zope.interface import implementer
 import colander
 import deform
 
-from arche_m2m.interfaces import IQuestionWidget
+from arche_m2m.interfaces import IQuestion
 from arche_m2m.interfaces import IQuestionType
+from arche_m2m.interfaces import IQuestionWidget
+from arche_m2m.interfaces import ISurveySection
 from arche_m2m import _
 
 
@@ -39,6 +41,14 @@ class QuestionWidget(object):
 
     def widget(self, lang, **kw):
         return self.widget_factory(**kw)
+
+    def responses(self, section, question):
+        assert ISurveySection.providedBy(section), "Not a survey section"
+        assert IQuestion.providedBy(question), "Not a question"
+        results = []
+        for response in section.responses.values():
+            results.append(response.get(question.cluster, ''))
+        return results
 
 
 class TextWidget(QuestionWidget):
@@ -78,6 +88,18 @@ class RadioChoiceWidget(QuestionWidget):
             [choices.append((choice.cluster, choice.title)) for choice in self.question.get_choices(lang)]
         return self.widget_factory(values = choices)
 
+    def responses(self, section, question):
+        assert ISurveySection.providedBy(section), "Not a survey section"
+        assert IQuestion.providedBy(question), "Not a question"
+        results = {}
+        for response in section.responses.values():
+            val =  response.get(question.cluster, '')
+            if val in results:
+                results[val] += 1
+            else:
+                results[val] = 1
+        return results
+
 
 class DropdownChoiceWidget(RadioChoiceWidget):
     name = "dropdown_choice_widget"
@@ -90,6 +112,20 @@ class CheckboxMultiChoiceWidget(RadioChoiceWidget):
     title = _("Checkbox multichoice")
     data_type = colander.Set()
     widget_factory = deform.widget.CheckboxChoiceWidget
+
+    def responses(self, section, question):
+        assert ISurveySection.providedBy(section), "Not a survey section"
+        assert IQuestion.providedBy(question), "Not a question"
+        results = {}
+        for response in section.responses.values():
+            vals =  response.get(question.cluster, '')
+            for val in vals:
+                if val in results:
+                    results[val] += 1
+                else:
+                    results[val] = 1
+        return results
+
 
 
 def includeme(config):

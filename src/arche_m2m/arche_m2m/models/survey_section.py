@@ -15,7 +15,6 @@ from arche_m2m.models.i18n import TranslationMixin
 from arche_m2m.models.i18n import deferred_translations_node
 
 
-
 @implementer(ISurveySection)
 class SurveySection(Content, TranslationMixin):
     type_title = _("Survey section")
