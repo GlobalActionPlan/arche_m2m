@@ -13,7 +13,11 @@
 
     <h1 i18n:translate="">Done</h1>
 
-    <a class="btn btn-default" href="${previous_link}">
+    <p i18n:translate="participant_done_text">
+      Thank you for filling out the survey. In case you need to change anything, simply press the button below.
+    </p>
+
+    <a class="btn btn-default" href="${previous_link}" i18n:translate="">
         Previous
     </a>
 
