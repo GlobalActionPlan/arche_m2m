@@ -32,6 +32,7 @@ class Question(Content):
     question_type = None
     language = ''
     cluster = ''
+    required = False
 
     def __init__(self, **kw):
         #Make sure cluster is set before anytjing else!
@@ -144,6 +145,10 @@ class QuestionSchema(colander.Schema):
                                    title = _("Language"),
                                    default = deferred_default_lang,
                                    widget = deferred_lang_widget)
+    required = colander.SchemaNode(colander.Bool(),
+                                   title = _("Required"),
+                                   default = False,
+                                   missing = False)
     question_type = colander.SchemaNode(colander.String(),
                                         title = _("Question type"),
                                         widget=deferred_question_type_widget,

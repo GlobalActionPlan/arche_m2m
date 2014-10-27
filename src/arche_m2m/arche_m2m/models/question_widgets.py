@@ -22,6 +22,7 @@ class QuestionWidget(object):
     data_type = colander.String()
     widget_factory = None
     question = None
+    missing = ""
 
     def __init__(self, context):
         self.context = context
@@ -36,6 +37,8 @@ class QuestionWidget(object):
         kw['name'] = name
         kw['title'] = self.context.title
         kw['widget'] = self.widget(lang)
+        if self.question and not getattr(self.question, 'required', False):
+            kw['missing'] = self.missing
         kw.update(kwargs)
         return colander.SchemaNode(self.data_type, **kw)
 
@@ -112,6 +115,7 @@ class CheckboxMultiChoiceWidget(RadioChoiceWidget):
     title = _("Checkbox multichoice")
     data_type = colander.Set()
     widget_factory = deform.widget.CheckboxChoiceWidget
+    missing = ()
 
     def responses(self, section, question):
         assert ISurveySection.providedBy(section), "Not a survey section"
@@ -125,7 +129,6 @@ class CheckboxMultiChoiceWidget(RadioChoiceWidget):
                 else:
                     results[val] = 1
         return results
-
 
 
 def includeme(config):
