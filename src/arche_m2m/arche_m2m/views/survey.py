@@ -205,9 +205,11 @@ class SurveySectionForm(BaseForm):
         for qid in self.context.question_ids:
             docids = self.catalog_search(cluster = qid, language = self.request.locale_name)
             if docids:
-                for question in self.resolve_docids(docids):
+                question = None
+                for question in self.resolve_docids(docids, perm = None):
+                    #Only one or none
                     pass
-                question_type = self.resolve_uid(question.question_type)
+                question_type = self.resolve_uid(question.question_type, perm = None)
                 question_widget = self.request.registry.queryAdapter(question_type,
                                                                      IQuestionWidget,
                                                                      name = getattr(question_type, 'input_widget', ''))
