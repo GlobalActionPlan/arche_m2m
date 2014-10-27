@@ -28,7 +28,7 @@
               ${obj.title}
             </a>
           </td>
-          <td tal:define="question_type view.resolve_uid(obj.question_type)">
+          <td tal:define="question_type view.resolve_uid(obj.question_type, perm = None)">
             ${question_type.title}
           </td>
           <td tal:define="siblings view.get_siblings(obj)">
