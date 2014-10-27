@@ -46,8 +46,7 @@ class SurveySection(Content, TranslationMixin):
             for docid in docids:
                 path = root.document_map.address_for_docid(docid)
                 obj = find_resource(root, path)
-                if request.has_permission(security.PERM_VIEW, obj):
-                    results.append(obj)
+                results.append(obj)
         return resolve and results or docids
 
 

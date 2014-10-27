@@ -21,7 +21,7 @@ class ExportView(BaseView):
     def csv(self):
         output = StringIO()
         lang_name = self.request.locale_name
-        writer = csv.writer(output, delimiter=';', quotechar='"', quoting=csv.QUOTE_ALL)
+        writer = csv.writer(output, delimiter=';', quotechar='"', quoting=csv.QUOTE_ALL, dialect = csv.excel)
         writer.writerow([self.context.title.encode('utf-8')])
         writer.writerow([_('Export using language:'), lang_name])
         
