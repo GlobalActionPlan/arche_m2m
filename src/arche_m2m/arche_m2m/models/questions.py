@@ -27,7 +27,6 @@ class QuestionsSchema(colander.Schema):
 
 
 def includeme(config):
-    config.add_content_factory(Questions)
-    config.add_addable_content("Questions", ("Document", "Root"))
+    config.add_content_factory(Questions, addable_to = ("Document", "Root", "Organisation"))
     config.add_content_schema('Questions', QuestionsSchema, 'edit')
     config.add_content_schema('Questions', QuestionsSchema, 'add')

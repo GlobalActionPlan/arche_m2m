@@ -7,8 +7,23 @@
       i18n:domain="arche_m2m">
 <body>
 <div metal:fill-slot="main-content">
-  <h3>${context.title}</h3>
-  
+  <div class="row">
+    <div class="col-sm-6">
+      <h1>${context.title}</h1>
+    </div>
+    <div class="col-sm-6">
+    <tal:local condition="questions">
+      <h3 i18n:translate="">Local questions:</h3>
+        <tal:iterate repeat="obj questions">
+          <a class="btn btn-primary btn-sm" href="${request.resource_url(obj)}">
+            ${obj.title}
+          </a>
+        </tal:iterate>
+      <div class="clearfix"></div>
+      </tal:local>
+    </div>
+  </div>
+  <h3 i18n:translate="">Surveys</h3>
   <table class="table table-hover table-responsive table-striped">
     <thead>
       <tr>
@@ -18,7 +33,7 @@
       </tr>
     </thead>
     <tbody>
-      <tal:iterate repeat="obj context.values()">
+      <tal:iterate repeat="obj surveys">
         <tr>
           <td>
             <a href="${request.resource_url(obj)}">
