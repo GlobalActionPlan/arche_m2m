@@ -10,7 +10,7 @@
           <div class="progress-bar progress-bar-success" style="width: ${completed}%"></div>
           <div class="progress-bar progress-bar-warning progress-bar-striped" style="width: ${current}%"></div>
         </div>
-        <br/><br/>
+        <p>&nbsp;</p>
         <form tal:replace="structure form" />
       </div>
     </div>

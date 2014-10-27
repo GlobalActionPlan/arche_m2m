@@ -13,6 +13,7 @@ from arche_m2m import _
 from arche_m2m.interfaces import ISurveySection
 from arche_m2m.models.i18n import TranslationMixin
 from arche_m2m.models.i18n import deferred_translations_node
+import deform
 
 
 @implementer(ISurveySection)
@@ -20,10 +21,10 @@ class SurveySection(Content, TranslationMixin):
     type_title = _("Survey section")
     type_name = "SurveySection"
     add_permission = "Add %s" % type_name
-#    default_view = u"view"
     nav_visible = True
     listing_visible = True
     search_visible = True
+    body = ""
 
     def __init__(self, **kwargs):
         self.responses = OOBTree()
@@ -55,11 +56,15 @@ class SurveySectionSchema(colander.Schema):
                                 title = _("Title"),
                                 translate = True,
                                 translate_missing = "")
+    body = colander.SchemaNode(colander.String(),
+                                title = _("Body"),
+                                widget = deform.widget.RichTextWidget(),
+                                translate = True,
+                                translate_missing = "")
     translations = deferred_translations_node
 
 
 def includeme(config):
-    config.add_content_factory(SurveySection)
-    config.add_addable_content("SurveySection", "Survey")
+    config.add_content_factory(SurveySection, addable_to = ("Survey",))
     config.add_content_schema('SurveySection', SurveySectionSchema, 'edit')
     config.add_content_schema('SurveySection', SurveySectionSchema, 'add')
