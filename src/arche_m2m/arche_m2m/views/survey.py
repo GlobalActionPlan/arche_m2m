@@ -201,7 +201,10 @@ class SurveySectionForm(BaseForm):
         return super(BaseForm, self).__call__()
 
     def create_schema(self):
-        self.schema = colander.Schema(title = self.context.title, description = self.context.body)
+        locale_name = self.request.locale_name
+        title = self.context.translate('title', locale_name)
+        description = self.context.translate('body', locale_name)
+        self.schema = colander.Schema(title = title, description = description)
         for qid in self.context.question_ids:
             docids = self.catalog_search(cluster = qid, language = self.request.locale_name)
             if docids:
