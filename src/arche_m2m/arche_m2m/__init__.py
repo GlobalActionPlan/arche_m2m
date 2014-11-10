@@ -30,6 +30,7 @@ class M2MPopulator(Populator):
 def includeme(config):
     config.include('.models')
     config.include('.views')
+    config.add_translation_dirs('arche_m2m:locale')
     config.add_populator(M2MPopulator)
     #Adjusting add perms to all Editors is kind of reckless. This will probably change in Arche.
     factories = get_content_factories(config.registry)
