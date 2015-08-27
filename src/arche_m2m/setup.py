@@ -10,8 +10,6 @@ requires = [
     'Arche',
     'pyramid',
     'fanstatic',
-    'lingua',
-    'Babel',
     'js.jqueryui',
     ]
 
@@ -40,8 +38,4 @@ setup(name='arche_m2m',
       [fanstatic.libraries]
       arche_m2m = arche_m2m.fanstatic:lib_m2m
       """,
-      message_extractors = { '.': [
-              ('**.py',   'lingua_python', None ),
-              ('**.pt',   'lingua_xml', None ),
-              ]},
       )
