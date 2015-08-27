@@ -18,5 +18,5 @@ parts
 Data.fs*
 .tmp*
 *.egg-info
-
+Scripts
 local
