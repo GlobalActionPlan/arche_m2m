@@ -1,5 +1,5 @@
-from arche.workflow import Workflow
-from arche.workflow import Transition
+from arche.models.workflow import Workflow
+from arche.models.workflow import Transition
 from arche import security
 
 from arche_m2m import _
@@ -35,18 +35,16 @@ class SurveyWorkflow(Workflow):
     def init_acl(cls, registry):
         acl_reg = security.get_acl_registry(registry)
         open_name = "%s:open" % cls.name
-        acl_reg[open_name] = security.ACLEntry()
-        acl_reg[open_name].add(security.ROLE_ADMIN, security.ALL_PERMISSIONS)
-        acl_reg[open_name].add(security.ROLE_EDITOR,
-                               [security.PERM_VIEW, security.PERM_EDIT, "Add SurveySection"])
-        acl_reg[open_name].add(security.ROLE_VIEWER, [security.PERM_VIEW])
-        acl_reg[open_name].add(security.Everyone, [permissions.PARTICIPATE_SURVEY])
+        acl_open = acl_reg.new_acl(open_name)
+        acl_open.add(security.ROLE_ADMIN, security.ALL_PERMISSIONS)
+        acl_open.add(security.ROLE_EDITOR, [security.PERM_VIEW, security.PERM_EDIT, "Add SurveySection"])
+        acl_open.add(security.ROLE_VIEWER, [security.PERM_VIEW])
+        acl_open.add(security.Everyone, [permissions.PARTICIPATE_SURVEY])
         closed_name = "%s:closed" % cls.name
-        acl_reg[closed_name] = security.ACLEntry()
-        acl_reg[closed_name].add(security.ROLE_ADMIN, security.ALL_PERMISSIONS)
-        acl_reg[closed_name].add(security.ROLE_EDITOR,
-                                 [security.PERM_VIEW, security.PERM_EDIT, "Add SurveySection"])
-        acl_reg[closed_name].add(security.ROLE_VIEWER, [security.PERM_VIEW])
+        acl_closed = acl_reg.new_acl(closed_name)
+        acl_closed.add(security.ROLE_ADMIN, security.ALL_PERMISSIONS)
+        acl_closed.add(security.ROLE_EDITOR, [security.PERM_VIEW, security.PERM_EDIT, "Add SurveySection"])
+        acl_closed.add(security.ROLE_VIEWER, [security.PERM_VIEW])
 
 
 def includeme(config):

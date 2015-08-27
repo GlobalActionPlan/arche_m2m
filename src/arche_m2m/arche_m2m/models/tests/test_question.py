@@ -27,11 +27,7 @@ class QuestionTests(TestCase):
         from arche.api import Root
         root = Root()
         request = testing.DummyRequest(context = root)
-        self.config = testing.setUp(request = request)
-        self.config.include('arche.catalog')
-        self.config.include('arche.populators')
-        self.config.include('arche.utils')
-        self.config.include('arche.security')
+        self.config = testing.setUp(request = request, registry = self.config.registry)
         return root
 
     def test_verify_class(self):
@@ -41,12 +37,16 @@ class QuestionTests(TestCase):
         verifyObject(IQuestion, self._cut())
 
     def test_tags_set_single(self):
+        self.config.include('arche.testing')
+        self.config.include('arche.testing.catalog')
         self._fixture()
         self.config.include('arche_m2m.models.cluster_tags')
         question = self._cut(tags = ('Hello',), cluster = '1')
         self.assertEqual(question.tags, ('Hello',))
 
     def test_tags_set_multiple(self):
+        self.config.include('arche.testing')
+        self.config.include('arche.testing.catalog')
         root = self._fixture()
         self.config.include('arche_m2m.models.cluster_tags')
         root['q1'] = self._cut(tags = ['one', 'two'], cluster = '1')
@@ -54,20 +54,22 @@ class QuestionTests(TestCase):
         self.assertEqual(root['q1'].tags, second.tags)
 
     def test_tags_set_updates_catalog(self):
-        root = self._fixture()
+        self.config.include('arche.testing')
+        self.config.include('arche.testing.catalog')
+        self.config.include('arche.models.workflow')
         self.config.include('arche_m2m')
-        populator = self.config.registry.getAdapter(root, IPopulator, name = 'm2m_populator')
-        populator.populate()
+        root = self._fixture()
         root['q1'] = self._cut(tags = ['one', 'two'], cluster = '1')
         second = self._cut(tags = ['one', 'two', 'three'], cluster = '1')
         root['q2'] = second
         self.assertEqual(root.catalog.search(tags = 'three')[0].total, 2) 
 
     def test_deleting_last_question_clears_global_tags(self):
-        root = self._fixture()
+        self.config.include('arche.testing')
+        self.config.include('arche.testing.catalog')
+        self.config.include('arche.models.workflow')
         self.config.include('arche_m2m')
-        populator = self.config.registry.getAdapter(root, IPopulator, name = 'm2m_populator')
-        populator.populate()
+        root = self._fixture()
         root['q1'] = self._cut(tags = ['one', 'two'], cluster = '1')
         root['q2'] = self._cut(tags = ['one', 'two', 'three'], cluster = '1')
         ctags = IClusterTags(root)
