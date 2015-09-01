@@ -197,14 +197,13 @@ class SurveySectionForm(BaseForm):
             return HTTPFound(location = self.request.resource_url(self.context, 'view'))
         if not self.participant_uid in self.survey.tokens.values():
             raise HTTPForbidden("Invalid ticket")
-        self.create_schema()
         return super(BaseForm, self).__call__()
 
-    def create_schema(self):
+    def get_schema(self):
         locale_name = self.request.locale_name
         title = self.context.translate('title', locale_name)
         description = self.context.translate('body', locale_name)
-        self.schema = colander.Schema(title = title, description = description)
+        schema = colander.Schema(title = title, description = description)
         for qid in self.context.question_ids:
             docids = self.catalog_search(cluster = qid, language = self.request.locale_name)
             if docids:
@@ -220,14 +219,15 @@ class SurveySectionForm(BaseForm):
                     title = question.title
                     if self.organisation:
                         title = self.organisation.variants.get(question.uid, title)
-                    self.schema.add(question_widget.node(question.cluster,
+                    schema.add(question_widget.node(question.cluster,
                                                          lang = self.request.locale_name,
                                                          question = question,
                                                          title = title))
             else:
-                self.schema.add(colander.SchemaNode(colander.String(),
+                schema.add(colander.SchemaNode(colander.String(),
                                                     widget = deform.widget.TextInputWidget(readonly = True),
                                                     title = _("<Missing question>"),))
+        return schema
 
     def appstruct(self):
         return self.context.responses.get(self.participant_uid, {})
@@ -296,7 +296,6 @@ class SurveySectionForm(BaseForm):
 class DummySurveySectionForm(SurveySectionForm):
 
     def __call__(self):
-        self.create_schema()
         return super(BaseForm, self).__call__()
 
     def _link(self, obj, *args):

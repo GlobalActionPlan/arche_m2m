@@ -24,15 +24,14 @@ from pyramid.httpexceptions import HTTPFound
 class QuestionTypePreview(BaseForm):
     buttons = (deform.Button(name = 'check', css_class = 'btn btn-primary'),)
 
-    def __call__(self):
-        self.schema = colander.Schema(title = _("Preview"))
+    def get_schema(self):
+        schema = colander.Schema(title = _("Preview"))
         question_widget = self.request.registry.queryAdapter(self.context,
                                                              IQuestionWidget,
                                                              name = self.context.input_widget)
         if question_widget:
-            self.schema.add(question_widget.node(self.context.__name__))
-        result = super(BaseForm, self).__call__()
-        return result
+            schema.add(question_widget.node(self.context.__name__))
+        return schema
 
     def check_success(self, appstruct):
         self.flash_messages.add(_('Success, captured: ${appstruct}',
@@ -55,18 +54,17 @@ class QuestionPreview(QuestionTypePreview):
     def question_type(self):
         return self.resolve_uid(self.context.question_type)
 
-    def __call__(self):
-        self.schema = colander.Schema(title = _("Preview"))
+    def get_schema(self):
+        schema = colander.Schema(title = _("Preview"))
         question_widget = self.request.registry.queryAdapter(self.question_type,
                                                              IQuestionWidget,
                                                              name = getattr(self.question_type, 'input_widget', ''))
         if question_widget:
-            self.schema.add(question_widget.node(self.context.__name__,
-                                                 lang = self.context.language,
-                                                 question = self.context,
-                                                 title = self.context.title))
-        result = super(BaseForm, self).__call__()
-        return result
+            schema.add(question_widget.node(self.context.__name__,
+                                            lang = self.context.language,
+                                            question = self.context,
+                                            title = self.context.title))
+        return schema
 
     def get_siblings(self):
         siblings = {}
