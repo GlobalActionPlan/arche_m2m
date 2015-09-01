@@ -1,12 +1,12 @@
-# 
+#
 # SOME DESCRIPTIVE TITLE
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2015.
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2014-11-10 18:30+0100\n"
+"POT-Creation-Date: 2015-09-01 09:57+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,9 +14,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: \n"
+"Generated-By: Lingua 3.11\n"
 
 #: ./src/arche_m2m/arche_m2m/models/i18n.py:67
-#: ./src/arche_m2m/arche_m2m/templates/questions.pt:63
+#: ./src/arche_m2m/arche_m2m/templates/questions.pt:46
 msgid "Translations"
 msgstr ""
 
@@ -36,13 +37,13 @@ msgstr ""
 
 #: ./src/arche_m2m/arche_m2m/models/organisation.py:33
 #: ./src/arche_m2m/arche_m2m/models/question.py:157
-#: ./src/arche_m2m/arche_m2m/templates/questions.pt:66
+#: ./src/arche_m2m/arche_m2m/templates/questions.pt:47
 msgid "Tags"
 msgstr ""
 
 #: ./src/arche_m2m/arche_m2m/models/question.py:25
-#: ./src/arche_m2m/arche_m2m/templates/question_types.pt:16
-#: ./src/arche_m2m/arche_m2m/templates/questions.pt:57
+#: ./src/arche_m2m/arche_m2m/templates/question_types.pt:15
+#: ./src/arche_m2m/arche_m2m/templates/questions.pt:44
 msgid "Question"
 msgstr ""
 
@@ -121,23 +122,23 @@ msgstr ""
 msgid "Will be visible in the subject line, and as a header in the email body."
 msgstr ""
 
+#. Default: Message - please note that the link will be added as a new line
+#. below the message
 #: ./src/arche_m2m/arche_m2m/models/survey.py:75
-msgid ""
-"Message - please note that the link will be added as a new line below the "
-"message!"
+msgid "survey_invitation_message_title"
 msgstr ""
 
-#: ./src/arche_m2m/arche_m2m/models/survey.py:77
+#: ./src/arche_m2m/arche_m2m/models/survey.py:78
 msgid "Please fill in the survey. Click the link below to access it:"
 msgstr ""
 
-#: ./src/arche_m2m/arche_m2m/models/survey.py:79
+#: ./src/arche_m2m/arche_m2m/models/survey.py:80
 msgid "Participant email addresses - add one per row."
 msgstr ""
 
 #. Default: Remember to only add users who should recieve the message in this
 #. language.
-#: ./src/arche_m2m/arche_m2m/models/survey.py:80
+#: ./src/arche_m2m/arche_m2m/models/survey.py:81
 msgid "invitation_emails_lang_notice"
 msgstr ""
 
@@ -164,7 +165,7 @@ msgstr ""
 
 #: ./src/arche_m2m/arche_m2m/models/workflows.py:20
 #: ./src/arche_m2m/arche_m2m/models/workflows.py:29
-#: ./src/arche_m2m/arche_m2m/templates/survey_closed.pt:10
+#: ./src/arche_m2m/arche_m2m/templates/survey_closed.pt:12
 msgid "Closed"
 msgstr ""
 
@@ -177,57 +178,57 @@ msgstr ""
 msgid "The following addresses is invalid: ${emails}"
 msgstr ""
 
-#: ./src/arche_m2m/arche_m2m/templates/modal_form.pt:12
+#: ./src/arche_m2m/arche_m2m/templates/modal_form.pt:10
 msgid "Variant"
 msgstr ""
 
-#: ./src/arche_m2m/arche_m2m/templates/modal_form.pt:27
-#: ./src/arche_m2m/arche_m2m/templates/survey_manage.pt:71
+#: ./src/arche_m2m/arche_m2m/templates/modal_form.pt:17
+#: ./src/arche_m2m/arche_m2m/templates/survey_manage.pt:44
 msgid "Save"
 msgstr ""
 
-#: ./src/arche_m2m/arche_m2m/templates/modal_form.pt:30
+#: ./src/arche_m2m/arche_m2m/templates/modal_form.pt:18
 msgid "Close"
 msgstr ""
 
-#: ./src/arche_m2m/arche_m2m/templates/organisation.pt:19
+#: ./src/arche_m2m/arche_m2m/templates/organisation.pt:16
 msgid "Local questions:"
 msgstr ""
 
-#: ./src/arche_m2m/arche_m2m/templates/organisation.pt:39
+#: ./src/arche_m2m/arche_m2m/templates/organisation.pt:26
 msgid "Surveys"
 msgstr ""
 
-#: ./src/arche_m2m/arche_m2m/templates/organisation.pt:48
+#: ./src/arche_m2m/arche_m2m/templates/organisation.pt:30
 msgid "Name"
 msgstr ""
 
-#: ./src/arche_m2m/arche_m2m/templates/organisation.pt:51
-#: ./src/arche_m2m/arche_m2m/templates/survey_view.pt:14
+#: ./src/arche_m2m/arche_m2m/templates/organisation.pt:31
+#: ./src/arche_m2m/arche_m2m/templates/survey_view.pt:18
 msgid "Participants"
 msgstr ""
 
-#: ./src/arche_m2m/arche_m2m/templates/organisation.pt:54
+#: ./src/arche_m2m/arche_m2m/templates/organisation.pt:32
 msgid "Sections"
 msgstr ""
 
-#: ./src/arche_m2m/arche_m2m/templates/question_types.pt:19
+#: ./src/arche_m2m/arche_m2m/templates/question_types.pt:16
 msgid "Choices"
 msgstr ""
 
-#: ./src/arche_m2m/arche_m2m/templates/questions.pt:28
+#: ./src/arche_m2m/arche_m2m/templates/questions.pt:29
 msgid "listing"
 msgstr ""
 
-#: ./src/arche_m2m/arche_m2m/templates/questions.pt:37
+#: ./src/arche_m2m/arche_m2m/templates/questions.pt:34
 msgid "Filtered list on:"
 msgstr ""
 
-#: ./src/arche_m2m/arche_m2m/templates/questions.pt:42
+#: ./src/arche_m2m/arche_m2m/templates/questions.pt:36
 msgid "<dynamic element>"
 msgstr ""
 
-#: ./src/arche_m2m/arche_m2m/templates/questions.pt:60
+#: ./src/arche_m2m/arche_m2m/templates/questions.pt:45
 msgid "Type"
 msgstr ""
 
@@ -235,7 +236,7 @@ msgstr ""
 msgid "This survey is closed and not open for participation."
 msgstr ""
 
-#: ./src/arche_m2m/arche_m2m/templates/survey_done.pt:12
+#: ./src/arche_m2m/arche_m2m/templates/survey_done.pt:14
 msgid "Done"
 msgstr ""
 
@@ -245,11 +246,11 @@ msgstr ""
 msgid "participant_done_text"
 msgstr ""
 
-#: ./src/arche_m2m/arche_m2m/templates/survey_done.pt:22
+#: ./src/arche_m2m/arche_m2m/templates/survey_done.pt:20
 msgid "Previous"
 msgstr ""
 
-#: ./src/arche_m2m/arche_m2m/templates/survey_manage.pt:13
+#: ./src/arche_m2m/arche_m2m/templates/survey_manage.pt:15
 msgid "Manage questions"
 msgstr ""
 
@@ -257,31 +258,31 @@ msgstr ""
 msgid "Drag and select..."
 msgstr ""
 
-#: ./src/arche_m2m/arche_m2m/templates/survey_manage.pt:19
+#: ./src/arche_m2m/arche_m2m/templates/survey_manage.pt:17
 msgid "Working with"
 msgstr ""
 
-#: ./src/arche_m2m/arche_m2m/templates/survey_manage.pt:41
+#: ./src/arche_m2m/arche_m2m/templates/survey_manage.pt:27
 msgid "(tags)"
 msgstr ""
 
-#: ./src/arche_m2m/arche_m2m/templates/survey_manage.pt:44
+#: ./src/arche_m2m/arche_m2m/templates/survey_manage.pt:30
 msgid "Add from selected tag"
 msgstr ""
 
-#: ./src/arche_m2m/arche_m2m/templates/survey_manage.pt:47
+#: ./src/arche_m2m/arche_m2m/templates/survey_manage.pt:33
 msgid "Remove from selected tag"
 msgstr ""
 
-#: ./src/arche_m2m/arche_m2m/templates/survey_manage.pt:73
+#: ./src/arche_m2m/arche_m2m/templates/survey_manage.pt:45
 msgid "Cancel"
 msgstr ""
 
-#: ./src/arche_m2m/arche_m2m/templates/survey_manage.pt:85
+#: ./src/arche_m2m/arche_m2m/templates/survey_manage.pt:51
 msgid "Question pool"
 msgstr ""
 
-#: ./src/arche_m2m/arche_m2m/templates/survey_participans.pt:7
+#: ./src/arche_m2m/arche_m2m/templates/survey_participans.pt:11
 msgid "Manage participants"
 msgstr ""
 
@@ -289,36 +290,36 @@ msgstr ""
 msgid "Invited"
 msgstr ""
 
-#: ./src/arche_m2m/arche_m2m/templates/survey_participans.pt:24
+#: ./src/arche_m2m/arche_m2m/templates/survey_participans.pt:18
 msgid "Finished"
 msgstr ""
 
-#: ./src/arche_m2m/arche_m2m/templates/survey_participans.pt:34
+#: ./src/arche_m2m/arche_m2m/templates/survey_participans.pt:22
 msgid "Remaining"
 msgstr ""
 
 #. Default: There aren't any participants invited yet. Try clicking the
 #. invitations link and invite some.
-#: ./src/arche_m2m/arche_m2m/templates/survey_participans.pt:47
+#: ./src/arche_m2m/arche_m2m/templates/survey_participans.pt:28
 msgid "no_participants_invited"
 msgstr ""
 
-#: ./src/arche_m2m/arche_m2m/templates/survey_participans.pt:52
-#: ./src/arche_m2m/arche_m2m/templates/survey_view.pt:11
+#: ./src/arche_m2m/arche_m2m/templates/survey_participans.pt:31
+#: ./src/arche_m2m/arche_m2m/templates/survey_view.pt:15
 msgid "Invite"
 msgstr ""
 
-#: ./src/arche_m2m/arche_m2m/templates/survey_participans.pt:60
+#: ./src/arche_m2m/arche_m2m/templates/survey_participans.pt:35
 msgid "Send reminder"
 msgstr ""
 
 #. Default: Will only be sent to participants who haven't done 100 percent of
 #. the survey.
-#: ./src/arche_m2m/arche_m2m/templates/survey_participans.pt:63
+#: ./src/arche_m2m/arche_m2m/templates/survey_participans.pt:36
 msgid "send_reminder_description_text"
 msgstr ""
 
-#: ./src/arche_m2m/arche_m2m/templates/survey_translate_questions.pt:10
+#: ./src/arche_m2m/arche_m2m/templates/survey_translate_questions.pt:12
 msgid "Translate questions"
 msgstr ""
 
@@ -326,15 +327,15 @@ msgstr ""
 msgid "Translating"
 msgstr ""
 
-#: ./src/arche_m2m/arche_m2m/templates/survey_view.pt:17
+#: ./src/arche_m2m/arche_m2m/templates/survey_view.pt:21
 msgid "Manage"
 msgstr ""
 
-#: ./src/arche_m2m/arche_m2m/templates/survey_view.pt:20
+#: ./src/arche_m2m/arche_m2m/templates/survey_view.pt:24
 msgid "Export results"
 msgstr ""
 
-#: ./src/arche_m2m/arche_m2m/templates/survey_view.pt:61
+#: ./src/arche_m2m/arche_m2m/templates/survey_view.pt:46
 msgid "Translate"
 msgstr ""
 
@@ -393,4 +394,8 @@ msgstr ""
 
 #: ./src/arche_m2m/arche_m2m/views/survey.py:230
 msgid "<Missing question>"
+msgstr ""
+
+#: ./src/arche_m2m/arche_m2m/views/user.py:4
+msgid "Hello world"
 msgstr ""
