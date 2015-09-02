@@ -11,17 +11,17 @@ from pyramid.renderers import render
 from pyramid.traversal import find_interface
 from pyramid.view import view_config
 from pyramid_mailer import get_mailer
-from pyramid_mailer.message import Message
 import colander
 import deform
 
+from arche.models.workflow import get_context_wf
 from arche_m2m import _
 from arche_m2m.fanstatic import manage_css
 from arche_m2m.fanstatic import survey_manage
 from arche_m2m.interfaces import IOrganisation
 from arche_m2m.interfaces import IQuestionWidget
-from arche_m2m.interfaces import ISurveySection
 from arche_m2m.interfaces import ISurvey
+from arche_m2m.interfaces import ISurveySection
 from arche_m2m.permissions import PARTICIPATE_SURVEY
 
 
@@ -49,6 +49,30 @@ def calc_percentages(section):
     return before_perc, current_perc
 
 
+@view_config(context = ISurvey,
+             name = "add_yourself",
+             permission = security.NO_PERMISSION_REQUIRED,
+             renderer = "arche_m2m:templates/form_participant.pt")
+class SelfInviteForm(BaseForm):
+    schema_name = 'add_yourself'
+    type_name = 'Survey'
+
+    def __call__(self):
+        wf = get_context_wf(self.context)
+        if self.context.allow_anonymous_to_invite_themselves == True and wf.state == 'open':
+            return super(SelfInviteForm, self).__call__()
+        raise HTTPForbidden()
+
+    def save_success(self, appstruct):
+        email = appstruct['email']
+        invitation_uid = str(self.context.create_token(email))
+        subject = self.request.ttwt('link_to_start_survey', 'Link to start survey')
+        _send_invitation_email(self, email, invitation_uid, subject)
+        msg = self.request.ttwt('email_sent', 'Email sent successfully')
+        self.flash_messages.add(msg, type = 'success', auto_destruct = False)
+        return HTTPFound(location = self.request.resource_url(self.context, 'do'))
+
+
 class SurveyView(BaseView):
     """ Will redirect to view for managers if user has edit permission,
         otherwise do the survey
@@ -71,7 +95,7 @@ class SurveyView(BaseView):
             next_section = obj
             break
         uid = self.request.GET.get('uid', '')
-        return {'start_link': self.request.resource_url(next_section, query = {'uid': uid})}
+        return {'uid': uid, 'next_section': next_section}
 
     @view_config(context = ISurvey,
                  name = "done",
@@ -101,10 +125,15 @@ class ManageSurveyView(BaseView):
     def organisation(self):
         return find_interface(self.context, IOrganisation)
 
-    @view_config(context = ISurvey, name = "view", permission = security.PERM_VIEW,
+    @view_config(context = ISurvey, name = "view",
+                 permission = security.NO_PERMISSION_REQUIRED,
                  renderer = "arche_m2m:templates/survey_view.pt")
     def view(self):
-        return {}
+        #Is the current user a manager?
+        if self.request.has_permission(security.PERM_VIEW, self.context):
+            return {}
+        #This is not a manager - in some cases users are allowed to start the survey anyway
+        return HTTPFound(location = self.request.resource_url(self.context, 'do'))
 
     def process_question_ids(self):
         sect_id_questions = self.request.POST.dict_of_lists()
@@ -356,20 +385,14 @@ class SendInvitationForm(BaseForm):
         """
         for email in emails:
             invitation_uid = str(self.context.create_token(email))
-            self.send_invitation_email(email, invitation_uid, subject, message)
-        
-    def send_invitation_email(self, email, uid, subject, message):
-        #sender = self.get_field_value('from_address', '')
-        sender = None #FIXME
-        response = {}
-        response['access_link'] = self.request.resource_url(self.context, 'do', query = {'uid': uid})
-        response['message'] = message
-        response['subject'] = subject
-        body_html = render('arche_m2m:templates/mail/survey_invitation.pt',
-                           response, request = self.request)
-        #Must contain link etc, so each mail must be unique
-        msg = Message(subject = subject,
-                      sender = sender and sender or None,
-                      recipients = [email.strip()],
-                      html = body_html)
-        self.mailer.send(msg)
+            _send_invitation_email(self, email, invitation_uid, subject, message)
+    
+
+def _send_invitation_email(view, email, uid, subject, message = ''):
+    response = {}
+    response['access_link'] = view.request.resource_url(view.context, 'do', query = {'uid': uid})
+    response['message'] = message
+    response['subject'] = subject
+    body_html = render('arche_m2m:templates/mail/survey_invitation.pt',
+                       response, request = view.request)
+    view.request.send_email(subject, [email], body_html)
