@@ -11,14 +11,12 @@
   <div class="row">
     <div class="col-sm-12">
 
-    <h1 i18n:translate="">Done</h1>
+    <h1>${request.ttwt('done', 'Done')}</h1>
 
-    <p i18n:translate="participant_done_text">
-      Thank you for filling out the survey. In case you need to change anything, simply press the button below.
-    </p>
+    <p>${request.ttwt('participant_done_text')}</p>
 
-    <a class="btn btn-default" href="${previous_link}" i18n:translate="">
-        Previous
+    <a class="btn btn-default" href="${previous_link}">
+        ${request.ttwt('previous_btn', 'Previous')}
     </a>
 
     </div>

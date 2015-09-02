@@ -176,8 +176,15 @@ class ManageParticipantsView(BaseView):
              permission = security.NO_PERMISSION_REQUIRED,
              renderer = "arche_m2m:templates/survey_form_participant.pt")
 class SurveySectionForm(BaseForm):
-    buttons = (deform.Button(name = 'previous', css_class = 'btn btn-default'),
-               deform.Button(name = 'next', css_class = 'btn btn-primary submit-default'))
+
+    @property
+    def buttons(self):
+        return (deform.Button(name = 'previous',
+                              title = self.request.ttwt('previous_btn', 'Previous'),
+                              css_class = 'btn btn-default'),
+                deform.Button(name = 'next',
+                              title = self.request.ttwt('next_btn', 'Next'),
+                              css_class = 'btn btn-primary submit-default'))
 
     @reify
     def survey(self):
