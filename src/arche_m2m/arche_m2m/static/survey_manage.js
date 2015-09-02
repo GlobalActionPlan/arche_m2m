@@ -14,19 +14,7 @@ $(window).on('beforeunload', function() {
 });
 */
 
-
 $(document).ready(function(){
-
-  $('[data-toggle="modal"]').on('click', function(e) {
-    $('#modal').remove();
-    e.preventDefault();
-    var $this = $(this)
-      , $remote = $this.data('remote') || $this.attr('href')
-      , $modal = $('<div class="modal fade" id="modal" tabindex="-1" role="dialog"><div class="modal-body"></div></div>');
-    $('body').append($modal);
-    $modal.modal({backdrop: 'static', keyboard: false});
-    $modal.load($remote);
-  });
 
   /* Attach sort function */
   $('.pickable_questions').sortable({

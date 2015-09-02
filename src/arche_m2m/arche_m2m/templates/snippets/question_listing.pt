@@ -7,10 +7,10 @@ tal:define="variants getattr(view.organisation, 'variants', {});
   <li id="${question.cluster}"
       class="question ${variant and 'list-group-item-info' or None} list-group-item">
       <span class="question_text">${variant and variant or question.title}</span>
-      <a tal:condition="view.organisation" href="${request.resource_url(view.organisation, 'variant', query = {'uid': question.uid})}"
+      <a tal:condition="view.organisation"
+        href="${request.resource_url(view.organisation, 'variant', query = {'uid': question.uid})}"
         class="btn btn-default btn-xs pull-right"
-        data-toggle="modal"
-        data-target="#modal">
+        data-open-modal>
         <span class="glyphicon glyphicon-edit"></span>
       </a>
       <input type="hidden" class="${' '.join(['tag_' + x for x in question.tags])}" value="${question.cluster}" 

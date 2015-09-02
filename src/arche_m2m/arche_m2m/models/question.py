@@ -146,7 +146,7 @@ class QuestionSchema(colander.Schema):
                                    default = deferred_default_lang,
                                    widget = deferred_lang_widget)
     required = colander.SchemaNode(colander.Bool(),
-                                   title = _("Required"),
+                                   title = _("Are participants required to answer this?"),
                                    default = False,
                                    missing = False)
     question_type = colander.SchemaNode(colander.String(),

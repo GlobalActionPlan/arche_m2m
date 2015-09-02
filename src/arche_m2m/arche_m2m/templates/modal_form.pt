@@ -3,32 +3,28 @@
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       i18n:domain="arche_m2m">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title" id="modal-title" i18n:translate="">Variant</h4>
-        </div>
-        <form method="post" action="${request.url}">
-          <div class="modal-body">
-            <input type="text" value="${value}" name="variant" class="form-control" width="100%" />
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-success" i18n:translate="">Save</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal" i18n:translate="">Close</button>
-          </div>
-        </form>
-        <script type="text/javascript">
-          $('.modal-dialog form').on('submit', function(event) {
-            event.preventDefault();
-			var form = $(event.target);
-            var request = arche.do_request(form.attr('action'), {data: form.serialize(), method: 'post'});
-            request.done(function(data) {
-              $('#modal').modal('hide');
-              //FIXME: and update the text in the html view
-            });
-          })
-        </script>
-    </div>
+  <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <h4 class="modal-title" id="modal-title" i18n:translate="">Variant</h4>
   </div>
+  <form method="post" action="${request.url}">
+    <div class="modal-body">
+      <input type="text" value="${value}" name="variant" class="form-control" width="100%" />
+    </div>
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-success" i18n:translate="">Save</button>
+      <button type="button" class="btn btn-default" data-dismiss="modal" i18n:translate="">Close</button>
+    </div>
+  </form>
+  <script type="text/javascript">
+    $('.modal-dialog form').on('submit', function(event) {
+      event.preventDefault();
+      var form = $(event.target);
+      var request = arche.do_request(form.attr('action'), {data: form.serialize(), method: 'post'});
+      request.done(function(data) {
+        //FIXME: and update the text in the html view
+        arche.destroy_modal();
+      });
+    })
+  </script>
 </tal:main>
