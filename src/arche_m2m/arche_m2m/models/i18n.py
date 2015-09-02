@@ -1,11 +1,15 @@
 from __future__ import unicode_literals
+from UserDict import IterableUserDict
 
 from BTrees.OOBTree import OOBTree
+from babel import Locale
 from persistent.dict import PersistentDict
 from pyramid.threadlocal import get_current_registry
+from zope.interface.declarations import implementer
 import colander
 
 from arche_m2m import _
+from arche_m2m.interfaces import ILangCodes
 
 
 class TranslationMixin(object):
@@ -75,3 +79,20 @@ def deferred_translations_node(nodes, kw):
                 clone.missing = missing
             schema[lang].add(clone)
     nodes['translations'] = schema
+
+
+@implementer(ILangCodes)
+class LangCodes(IterableUserDict):
+
+    def __init__(self, registry):
+        self.data = {}
+        languages = registry.settings.get('m2m.languages', 'en').split()
+        default_lang = registry.settings.get('pyramid.default_locale_name', 'en')
+        for lang in languages:
+            ldata = Locale.parse(lang)
+            self[lang] = "%s (%s)" % (ldata.get_display_name(lang), ldata.get_display_name(default_lang))
+
+
+def includeme(config):
+    lang_codes = LangCodes(config.registry)
+    config.registry.registerUtility(lang_codes)

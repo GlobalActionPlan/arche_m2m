@@ -16,9 +16,9 @@
       <tal:lang condition="len(context.languages) > 1">
         <tal:iterate repeat="lang context.languages">
           <a href="${request.resource_url(view.root, 'set_language', query = {'lang': lang, 'return_url': request.url})}"
-             class="btn btn-default">
+             class="btn btn-default ${request.locale_name == lang and 'active' or None}">
             <span tal:condition="request.locale_name == lang" class="glyphicon glyphicon-ok"></span>
-            ${lang}
+            ${lang_codes.get(lang, lang)}
           </a>
         </tal:iterate>
       </tal:lang>

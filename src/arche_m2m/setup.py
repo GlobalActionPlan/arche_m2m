@@ -8,10 +8,11 @@ CHANGES = open(os.path.join(here, 'CHANGES.rst')).read()
 
 requires = [
     'Arche',
-    'pyramid',
+    'Babel',
+    'arche_ttw_translation',
     'fanstatic',
     'js.jqueryui',
-    'arche_ttw_translation',
+    'pyramid',
     ]
 
 setup(name='arche_m2m',

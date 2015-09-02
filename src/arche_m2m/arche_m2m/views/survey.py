@@ -23,6 +23,7 @@ from arche_m2m.interfaces import IQuestionWidget
 from arche_m2m.interfaces import ISurvey
 from arche_m2m.interfaces import ISurveySection
 from arche_m2m.permissions import PARTICIPATE_SURVEY
+from arche_m2m.interfaces import ILangCodes
 
 
 def calc_percentages(section):
@@ -95,7 +96,8 @@ class SurveyView(BaseView):
             next_section = obj
             break
         uid = self.request.GET.get('uid', '')
-        return {'uid': uid, 'next_section': next_section}
+        lang_codes = self.request.registry.getUtility(ILangCodes)
+        return {'uid': uid, 'next_section': next_section, 'lang_codes': lang_codes}
 
     @view_config(context = ISurvey,
                  name = "done",

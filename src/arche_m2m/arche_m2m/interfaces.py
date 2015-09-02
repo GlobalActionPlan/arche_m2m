@@ -1,3 +1,4 @@
+from pyramid.interfaces import IDict
 from zope.interface import Attribute
 from zope.interface import Interface
 
@@ -38,6 +39,11 @@ class ITranslations(Interface):
 class IClusterTags(Interface):
     pass
 
+
+class ILangCodes(IDict):
+    """ Dictionary with the language codes as key,
+        and their name as value.
+    """
 
 # class ILanguages(Interface):
 #     pass
