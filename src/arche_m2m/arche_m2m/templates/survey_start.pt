@@ -27,7 +27,7 @@
 
       <tal:has_section condition="start_link and request.locale_name in context.languages">
           <a class="btn btn-success" href="${start_link}">
-              Start
+              ${request.ttwt('start_btn', 'Start')}
           </a>
       </tal:has_section>
     </div>

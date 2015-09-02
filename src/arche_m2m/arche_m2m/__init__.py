@@ -4,6 +4,7 @@ _ = TranslationStringFactory('arche_m2m')
 
 
 def includeme(config):
+    config.include('.ttw_translations')
     config.include('.models')
     config.include('.views')
     config.include('.permissions')

@@ -11,18 +11,18 @@
 	<h1 i18n:translate="">Manage participants</h1>
 	<ul tal:condition="participants">
 		<li>
-	        <span i18n:translate="">Invited</span>:
-            <strong>${len(participants)}</strong>
+      <span i18n:translate="">Invited</span>:
+      <strong>${len(participants)}</strong>
 		</li>
-        <li>
-            <span i18n:translate="">Finished</span>:
-            <strong>${len(participants) - len(not_finished)}</strong>
-        </li>
-        <li>
-            <span i18n:translate="">Remaining</span>:
-            <strong>${len(not_finished)}</strong>
-        </li>
-    </ul>
+    <li>
+      <span i18n:translate="">Finished</span>:
+      <strong>${len(participants) - len(not_finished)}</strong>
+    </li>
+    <li>
+      <span i18n:translate="">Remaining</span>:
+      <strong>${len(not_finished)}</strong>
+    </li>
+  </ul>
 	
 	<div tal:condition="not participants">
 		<span i18n:translate="no_participants_invited">
@@ -32,7 +32,7 @@
 	</div>
     
 	<tal:resend condition="False|not_finished and not closed_survey">
-	    <h2 i18n:translate="">Send reminder</h2>
+    <h2 i18n:translate="">Send reminder</h2>
 		<div i18n:translate="send_reminder_description_text">Will only be sent to participants who haven't done 100 percent of the survey.</div>
 	    <tal:form content="structure form">Form here</tal:form>
 	</tal:resend>

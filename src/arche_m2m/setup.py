@@ -11,6 +11,7 @@ requires = [
     'pyramid',
     'fanstatic',
     'js.jqueryui',
+    'arche_ttw_translation',
     ]
 
 setup(name='arche_m2m',
