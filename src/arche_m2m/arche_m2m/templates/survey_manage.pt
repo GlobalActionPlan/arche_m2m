@@ -32,13 +32,15 @@
                           name="${section.__name__}"
                           title="Remove from selected tag" i18n:attributes="title">&gt;</button>
               </span>
-              <h4><a href="javascript:">${section.title}</a></h4>
-            </div>
-            <ul class="survey_section pickable_questions list-group" name="${section.__name__}">
-              <tal:questions repeat="question section.get_questions(request.locale_name, resolve = True)">
-                <tal:question replace="structure view.render_template('arche_m2m:templates/snippets/question_listing.pt', question = question, section = section)" />
-              </tal:questions>
-            </ul>
+              <h4><a data-toggle="collapse"
+							href="#${section.__name__}" aria-expanded="false" aria-controls="${section.__name__}"
+							>${section.title}</a></h4>
+            </div>			
+				<ul class="survey_section pickable_questions list-group" name="${section.__name__}" id="${section.__name__}">
+				  <tal:questions repeat="question section.get_questions(request.locale_name, resolve = True)">
+					<tal:question replace="structure view.render_template('arche_m2m:templates/snippets/question_listing.pt', question = question, section = section)" />
+				  </tal:questions>
+				</ul>
           </div>
         </tal:sections>
         <input type="submit" class="btn btn-success" name="save" value="Save" i18n:attributes="value;" />

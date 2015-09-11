@@ -22,6 +22,10 @@
   <a href="${request.resource_url(context, 'export.csv')}"
     class="btn btn-primary btn-sm"
     i18n:translate="">Export results</a>
+	<a href="${request.resource_url(context, 'export.txt')}"
+    class="btn btn-primary btn-sm"
+    i18n:translate="">Export results txt</a>
+	
   <br/><br/>
 
   <tal:iterate repeat="obj context.values()">
