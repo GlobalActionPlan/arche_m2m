@@ -51,6 +51,20 @@ class SurveySection(Content, TranslationMixin):
         return resolve and results or docids
 
 
+    """ New function """
+    def get_question_id(self,lang):
+        """
+            I created this function to recup the ids of questions. And it return a list of this Ids. I think the order of id in the list
+            is correct.
+        """
+        root = find_root(self)
+        list_id=[] # list of id
+        for qid in self.question_ids:
+            for docid in root.catalog.search(cluster=qid,language=lang)[1]:
+                list_id.append(docid)
+        return list_id
+
+
 class SurveySectionSchema(colander.Schema):
     title = colander.SchemaNode(colander.String(),
                                 title = _("Title"),
