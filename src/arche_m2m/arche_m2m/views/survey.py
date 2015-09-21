@@ -340,37 +340,10 @@ class DummySurveySectionForm(SurveySectionForm):
     def _link(self, obj, *args):
         return self.request.resource_url(obj, 'view')
 
-    """ Modify function """
     def next_success(self, *args):
-        """
-            I recup answers of the param args and after, It's not finish but I will want
-             to create a dictionary with the question_id returned by the function : self.context.get_question_id(lang='en')
-             in order to match with the correct answer. And I update self.context.responses with it.
-        :param args:
-        :return:
-        """
-        # args is a tuple with id and answers of the question in the surveySection
-
-
-        quest=[]
-        quest=self.context.get_question_id(lang='en')
 
         next_section = self._next_section()
-        #Do stuff if finished
-        """Modify Not Sure"""
-        # I recup answers of questions in the variable args
-        val = str(args[0])
-        val = val.replace('{','')
-        val = val.replace('}','')
-        val = val.replace(' ','')
-        listo = val.split(',')
-        i=0
-        for value in listo:
-            value=value.split(':')
-            value[1] = str(value[1])
-            value[1] = value[1].replace('u','',1)
-            self.context.responses.update(OOBTree({value[0]:value[1]}))
-        """ ******************** """
+
         if not next_section:
             return HTTPFound(location = self._link(self.context.__parent__, 'done'))
         return HTTPFound(location = self._link(next_section))

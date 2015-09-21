@@ -92,10 +92,10 @@ class ExportView(BaseView):
         for section in self.context.values():
             if not ISurveySection.providedBy(section):
                 continue
-            #print('Section:' +  section.title.encode('utf-8'))
-            #print('Responses:' + str(len(section.responses)))
+            print('Section:' +  section.title.encode('utf-8'))
+            print('Responses:' + str(len(section.responses)))
 
-            #section.get_question_id(lang_name)
+            section.get_question_id(lang_name)
 
             for question in section.get_questions(lang_name, resolve = True):
                 question_type = self.resolve_uid(question.question_type, perm = None)
@@ -108,7 +108,7 @@ class ExportView(BaseView):
                 if not question_widget:
                     raise HTTPForbidden("%r has no question widget set." % question_type)
                 response = question_widget.responses(section, question)
-                #print(question.title.encode('utf-8'))
+                print(question.title.encode('utf-8'))
                 #Choice responses
                 if isinstance(response, dict):
                     choices = dict([(choice.cluster, choice.title.encode('utf-8')) for choice in question_type.get_choices(lang_name)])
@@ -117,14 +117,13 @@ class ExportView(BaseView):
                     results.update(response)
 
                     for (k, v) in results.items():
-                        print("")
-                        #print(choices.get(k,k),v)
+                        print(choices.get(k,k),v)
                 #Text, number etc
                 else:
                     for x in response:
-                        #print(x)
-                        print("")
+                        print(x)
+
             # not a good idea but I could distincly see
-            section.responses=OOBTree()
+            #section.responses=OOBTree()
         contents = ''
         return Response(content_type = 'text/txt', body = contents)
