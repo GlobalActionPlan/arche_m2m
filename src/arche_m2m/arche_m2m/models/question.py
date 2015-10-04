@@ -29,7 +29,7 @@ class Question(Content):
     nav_visible = True
     listing_visible = True
     search_visible = True
-    question_type = None
+    question_type = ''
     language = ''
     cluster = ''
     required = False
