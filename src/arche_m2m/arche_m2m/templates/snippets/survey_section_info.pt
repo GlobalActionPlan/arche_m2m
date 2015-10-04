@@ -1,0 +1,31 @@
+<tal:main xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:tal="http://xml.zope.org/namespaces/tal"
+  xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+  i18n:domain="arche_m2m">
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">
+      <a href="${request.resource_url(context)}">${context.title}</a>
+      <small>${context.type_title|context.type_name}</small>
+    </h3>
+  </div>
+  <div class="panel-body">
+    <div>
+      <ul>
+      <tal:lang repeat="lang context.languages">
+        <li tal:define="q_lang len(context.get_questions(lang)); q_total len(context.question_ids);">
+          <form method="post" action="${request.resource_url(context, 'translate_questions')}">
+            <b>${lang}</b>
+            <span class="label ${q_lang == q_total and 'label-success' or 'label-danger'}">${q_lang} / ${q_total}</span>
+            <input type="hidden" name="language" value="${lang}" />
+            <a tal:condition="request.locale_name != lang"
+              class="btn btn-default btn-xs"
+              href="${request.resource_url(context, 'translate_questions', query = {'to_lang': lang})}"
+              i18n:translate="">Translate</a>
+          </form>
+        </li>
+      </tal:lang>
+      </ul>
+    </div>
+  </div>
+</div>

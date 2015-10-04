@@ -9,6 +9,7 @@ from pyramid.httpexceptions import HTTPForbidden
 from pyramid.httpexceptions import HTTPFound
 from pyramid.renderers import render
 from pyramid.traversal import find_interface
+from pyramid.view import render_view_to_response
 from pyramid.view import view_config
 from pyramid_mailer import get_mailer
 import colander
@@ -187,6 +188,11 @@ class ManageSurveyView(BaseView):
             if obj.cluster not in exclude:
                 yield obj
 
+    def render_info_panel(self, obj):
+        response = render_view_to_response(obj, self.request, 'info_panel')
+        if response and response.status_code == 200:
+            return response.body
+
 
 @view_config(name='participants',
              context=ISurvey,
@@ -353,6 +359,17 @@ class DummySurveySectionForm(SurveySectionForm):
         if previous is None:
             return HTTPFound(location = self._link(self.context.__parent__))
         return HTTPFound(location = self._link(previous))
+
+
+@view_config(context = ISurveySection,
+             name = 'info_panel',
+             permission = security.PERM_VIEW,
+             renderer = 'arche_m2m:templates/snippets/survey_section_info.pt')
+class SurveySectionInfo(BaseView):
+    """ Ment to be used as an inline rendering in listings.
+    """
+    def __call__(self):
+        return {}
 
 
 @view_config(context = ISurvey,
