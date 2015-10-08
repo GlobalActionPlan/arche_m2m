@@ -4,8 +4,8 @@ from pyramid import testing
 from zope.interface.verify import verifyClass
 from zope.interface.verify import verifyObject
 
-
 from arche_m2m.interfaces import ISurvey
+
 
 class SurveyTests(TestCase):
 
