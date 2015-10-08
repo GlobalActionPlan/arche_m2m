@@ -4,16 +4,39 @@ xmlns:i18n="http://xml.zope.org/namespaces/i18n"
 i18n:domain="arche_m2m"
 tal:define="variants getattr(view.organisation, 'variants', {});
             variant variants.get(question.uid, None)">
-  <li id="${question.cluster}"
-      class="question ${variant and 'list-group-item-info' or None} list-group-item">
-      <span class="question_text">${variant and variant or question.title}</span>
-      <a tal:condition="view.organisation"
-        href="${request.resource_url(view.organisation, 'variant', query = {'uid': question.uid})}"
-        class="btn btn-default btn-xs pull-right"
-        data-open-modal>
-        <span class="glyphicon glyphicon-edit"></span>
-      </a>
-      <input type="hidden" class="${' '.join(['tag_' + x for x in question.tags])}" value="${question.cluster}" 
+
+<!--  select by tag, use the id of the question -->
+  <li id="${question.cluster}" 
+      class="question ${variant and 'list-group-item-info' 
+				or view.isLocal(question.cluster) and 'list-group-item-local'
+				or None} list-group-item">
+		   
+	   <div class="row">
+				<div class="col-xs-6 col-sm-5">
+					<span class="question_text">${variant and variant or question.title}</span>
+				</div>
+				<div class="col-xs-6 col-sm-3" id="tags">
+					 <a tal:repeat="tag question.tags" id='${tag}'>
+							${tag}
+					</a>
+				</div>
+				<div class="col-xs-6 col-sm-2">
+					<span>${question.language}</span>
+				</div>
+			
+				<div  class="col-xs-6 col-sm-2">
+					<a tal:condition="view.organisation"
+						href="${request.resource_url(view.organisation, 'variant', query = {'uid': question.uid})}"
+						class="btn btn-default btn-xs pull-right"
+						data-open-modal>
+						<span class="glyphicon glyphicon-edit"></span>
+					</a>
+				</div>
+					
+           </div>
+	  
+	  <input type="hidden" class="${' '.join(['tag_' + x for x in question.tags])}" value="${question.cluster}" 
         tal:attributes="name section.__name__|''"/>
+		
   </li>
 </tal:main>

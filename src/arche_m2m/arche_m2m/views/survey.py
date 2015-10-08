@@ -4,12 +4,13 @@ from decimal import Decimal
 from arche import security
 from arche.views.base import BaseForm
 from arche.views.base import BaseView
+from operator import attrgetter, itemgetter
 from BTrees._OOBTree import OOBTree
 from pyramid.decorator import reify
 from pyramid.httpexceptions import HTTPForbidden
 from pyramid.httpexceptions import HTTPFound
 from pyramid.renderers import render
-from pyramid.traversal import find_interface
+from pyramid.traversal import find_interface, resource_path
 from pyramid.view import view_config
 from pyramid_mailer import get_mailer
 import colander
@@ -25,6 +26,7 @@ from arche_m2m.interfaces import ISurvey
 from arche_m2m.interfaces import ISurveySection
 from arche_m2m.permissions import PARTICIPATE_SURVEY
 from arche_m2m.interfaces import ILangCodes
+import repoze
 
 
 def calc_percentages(section):
@@ -147,6 +149,8 @@ class ManageSurveyView(BaseView):
             if sect_id in self.context: #Might be other things than section ids within the post
                 self.context[sect_id].question_ids = question_ids
 
+
+
     @view_config(context = ISurvey,
                  name = "manage",
                  permission = security.PERM_EDIT,
@@ -164,6 +168,7 @@ class ManageSurveyView(BaseView):
             self.flash_messages.add(_("Saved"))
             url = self.request.resource_url(self.context, 'manage')
             return HTTPFound(location = url)
+
         response = {}
         picked_questions = set()
         survey_sections = []
@@ -179,7 +184,7 @@ class ManageSurveyView(BaseView):
                         "and then use this view to manage the questions.")
             self.flash_messages.add(msg, auto_destruct = False)
         #Load all question objects that haven't been picked
-        response['available_questions'] = self.get_questions(exclude = picked_questions)
+        response['available_questions'] = self.get_sort_questions(exclude = picked_questions)
         return response
 
     def get_questions(self, exclude = ()):
@@ -188,6 +193,42 @@ class ManageSurveyView(BaseView):
             if obj.cluster not in exclude:
                 yield obj
 
+    # sort all of the question
+    def get_sort_questions(self,exclude = ()):
+        list_obj=[]
+        local_questions=[]
+        # use catalog_search for local questions.
+        for obj in self.catalog_search(resolve = True, language = self.request.locale_name, path = "gap/local", type_name = 'Question'):
+            local_questions.append(obj.cluster)
+        for obj in self.catalog_search(resolve =True,type_name ='Question', language = self.request.locale_name):
+            if obj.cluster not in exclude:
+                self.sort_tag(obj)
+                list_obj.append(obj)
+
+        # sorted by the first tag of the question
+        i=0
+        obj_tmp=None
+        while i < (len(list_obj)-1):
+           if list_obj[i].tags[0] > list_obj[i+1].tags[0]:
+               obj_tmp= list_obj[i]
+               list_obj[i]=list_obj[i+1]
+               list_obj[i+1]=obj_tmp
+               i=0
+           i+=1
+        for obj in list_obj:
+            if obj.cluster not in exclude:
+                yield obj
+
+
+    def isLocal(self,cluster):
+        for obj in self.catalog_search(resolve = True, language = self.request.locale_name, path = "gap/local", type_name = 'Question'):
+            if obj.cluster == cluster :
+                return True
+        return False
+
+    def sort_tag(self,question):
+        array=sorted(question.tags,reverse=False)
+        question.tags = tuple(array)
 
 @view_config(name='participants',
              context=ISurvey,

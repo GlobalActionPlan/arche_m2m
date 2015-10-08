@@ -20,6 +20,8 @@
   <div class="row">
     <div class="col-sm-6">
       <form method="POST">
+	    <input type="submit" class="btn btn-success" name="save" value="Save" i18n:attributes="value;" />
+        <input type="submit" class="btn btn-warning" name="cancel" value="Cancel" i18n:attributes="value;" />
         <tal:sections repeat="section survey_sections">
           <div class="panel panel-default">
             <div class="panel-heading">
@@ -32,31 +34,49 @@
                           name="${section.__name__}"
                           title="Remove from selected tag" i18n:attributes="title">&gt;</button>
               </span>
-              <h4><a data-toggle="collapse"
-							href="#${section.__name__}" aria-expanded="false" aria-controls="${section.__name__}"
+			  <!-- Check after wrong argument before ? -->
+              <h4><a data-toggle="collapse" href="#${section.__name__}" 
+						aria-expanded="false" aria-controls="${section.__name__}"
 							>${section.title}</a></h4>
             </div>			
 				<ul class="survey_section pickable_questions list-group" name="${section.__name__}" id="${section.__name__}">
-				  <tal:questions repeat="question section.get_questions(request.locale_name, resolve = True)">
+				  <tal:questions repeat="question section.get_sort_questions(request.locale_name, resolve = True)">
 					<tal:question replace="structure view.render_template('arche_m2m:templates/snippets/question_listing.pt', question = question, section = section)" />
 				  </tal:questions>
 				</ul>
           </div>
         </tal:sections>
-        <input type="submit" class="btn btn-success" name="save" value="Save" i18n:attributes="value;" />
-        <input type="submit" class="btn btn-warning" name="cancel" value="Cancel" i18n:attributes="value;" />
+        
                 </form>
     </div>
     <div class="col-sm-6">
       <div class="panel panel-default">
         <div class="panel-heading">
+			<span class="sectiontags pull-right">
+                  <select class="add_from_tag"><option value="" i18n:translate="">(tags)</option></select>
+				 <button type="button" class="select_questions btn btn-success btn-xs glyphicon glyphicon-ok"
+				 title="Display selected tag" i18n:attributes="title"></button>
+            </span>
           <h4 i18n:translate="">Question pool</h4>
-        </div>
-        <ul id="tag_listing" class="survey_section pickable_questions list-group">
+		   <div class="row">
+				<div class="col-xs-6 col-sm-5">
+					<h5>Title</h5>
+				</div>
+				<div class="col-xs-6 col-sm-3">
+					<a><h5>Tags</h5></a>
+				</div>
+				<div class="col-xs-6 col-sm-2">
+					<h5>Lang</h5>
+				</div>
+			</div>
+		</div>
+		
+        <ul id="tag_listing" class="survey_section pickable_questions list-group" name="Question Pool">
           <tal:questions repeat="question available_questions">
             <tal:question replace="structure view.render_template('arche_m2m:templates/snippets/question_listing.pt', question = question)" />
           </tal:questions>
-        </ul>
+			<span></span>
+		</ul>
       </div>
     </div>
   </div>
