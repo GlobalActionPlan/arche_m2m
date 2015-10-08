@@ -29,32 +29,9 @@
   <br/><br/>
 
   <tal:iterate repeat="obj context.values()">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h3 class="panel-title">
-          <a href="${request.resource_url(obj)}">${obj.title}</a>
-        </h3>
-      </div>
-      <div class="panel-body">
-        <div>
-          <ul>
-          <tal:lang repeat="lang context.languages">
-            <li tal:define="q_lang len(obj.get_questions(lang)); q_total len(obj.question_ids);">
-              <form method="post" action="${request.resource_url(obj, 'translate_questions')}">
-                <b>${lang}</b>
-                <span class="label ${q_lang == q_total and 'label-success' or 'label-danger'}">${q_lang} / ${q_total}</span>
-                <input type="hidden" name="language" value="${lang}" />
-                <a tal:condition="request.locale_name != lang"
-                  class="btn btn-default btn-xs"
-                  href="${request.resource_url(obj, 'translate_questions', query = {'to_lang': lang})}"
-                  i18n:translate="">Translate</a>
-              </form>
-            </li>
-          </tal:lang>
-          </ul>
-        </div>
-      </div>
-    </div>
+    <tal:tpl replace="structure view.render_info_panel(obj)">
+      Render info panel views, registered as 'info_panel' on any content that should have one.
+    </tal:tpl>
   </tal:iterate>
 
 </div>

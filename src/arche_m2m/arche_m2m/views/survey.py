@@ -2,21 +2,20 @@ from __future__ import unicode_literals
 from decimal import Decimal
 
 from arche import security
+from arche.models.workflow import get_context_wf
 from arche.views.base import BaseForm
 from arche.views.base import BaseView
-from operator import attrgetter, itemgetter
-from BTrees._OOBTree import OOBTree
 from pyramid.decorator import reify
 from pyramid.httpexceptions import HTTPForbidden
 from pyramid.httpexceptions import HTTPFound
 from pyramid.renderers import render
-from pyramid.traversal import find_interface, resource_path
+from pyramid.traversal import find_interface
+from pyramid.view import render_view_to_response
 from pyramid.view import view_config
 from pyramid_mailer import get_mailer
 import colander
 import deform
 
-from arche.models.workflow import get_context_wf
 from arche_m2m import _
 from arche_m2m.fanstatic import manage_css
 from arche_m2m.fanstatic import survey_manage
@@ -26,7 +25,6 @@ from arche_m2m.interfaces import ISurvey
 from arche_m2m.interfaces import ISurveySection
 from arche_m2m.permissions import PARTICIPATE_SURVEY
 from arche_m2m.interfaces import ILangCodes
-import repoze
 
 
 def calc_percentages(section):
@@ -204,21 +202,19 @@ class ManageSurveyView(BaseView):
             if obj.cluster not in exclude:
                 self.sort_tag(obj)
                 list_obj.append(obj)
-
         # sorted by the first tag of the question
         i=0
         obj_tmp=None
         while i < (len(list_obj)-1):
-           if list_obj[i].tags[0] > list_obj[i+1].tags[0]:
-               obj_tmp= list_obj[i]
-               list_obj[i]=list_obj[i+1]
-               list_obj[i+1]=obj_tmp
-               i=0
-           i+=1
+            if list_obj[i].tags[0] > list_obj[i+1].tags[0]:
+                obj_tmp= list_obj[i]
+                list_obj[i]=list_obj[i+1]
+                list_obj[i+1]=obj_tmp
+                i=0
+            i+=1
         for obj in list_obj:
             if obj.cluster not in exclude:
                 yield obj
-
 
     def isLocal(self,cluster):
         for obj in self.catalog_search(resolve = True, language = self.request.locale_name, path = "gap/local", type_name = 'Question'):
@@ -229,6 +225,12 @@ class ManageSurveyView(BaseView):
     def sort_tag(self,question):
         array=sorted(question.tags,reverse=False)
         question.tags = tuple(array)
+
+    def render_info_panel(self, obj):
+        response = render_view_to_response(obj, self.request, 'info_panel')
+        if response and response.status_code == 200:
+            return response.body
+
 
 @view_config(name='participants',
              context=ISurvey,
@@ -245,10 +247,7 @@ class ManageParticipantsView(BaseView):
         return response
 
 
-@view_config(context = ISurveySection,
-             permission = security.NO_PERMISSION_REQUIRED,
-             renderer = "arche_m2m:templates/survey_form_participant.pt")
-class SurveySectionForm(BaseForm):
+class BaseSurveySection(BaseForm):
 
     @property
     def buttons(self):
@@ -270,6 +269,48 @@ class SurveySectionForm(BaseForm):
     @reify
     def organisation(self):
         return find_interface(self.context, IOrganisation)
+
+    def next_section(self):
+        """ Return next section object if there is one.
+        """
+        parent = self.context.__parent__
+        section_order = tuple(parent.order)
+        cur_index = section_order.index(self.context.__name__)
+        try:
+            next_name = section_order[cur_index+1]
+            return parent[next_name]
+        except IndexError:
+            return
+
+    def previous_section(self):
+        """ Return previous section object if there is one.
+        """
+        parent = self.context.__parent__
+        section_order = tuple(parent.order)
+        cur_index = section_order.index(self.context.__name__)
+        if cur_index == 0:
+            #Since -1 is a valid index :)
+            return
+        try:
+            previous_name = section_order[cur_index-1]
+            return parent[previous_name]
+        except IndexError:
+            return  
+
+    def link(self, obj, *args, **kw):
+        uid = self.request.GET.get('uid', '')
+        query = {'uid': uid}
+        query.update(kw)
+        return self.request.resource_url(obj, *args, query = query)
+
+    def calc_percentages(self):
+        return calc_percentages(self.context)
+
+
+@view_config(context = ISurveySection,
+             permission = security.NO_PERMISSION_REQUIRED,
+             renderer = "arche_m2m:templates/survey_form_participant.pt")
+class SurveySectionForm(BaseSurveySection):
 
     def __call__(self):
         #FIXME: This is slow and stupid.
@@ -305,68 +346,34 @@ class SurveySectionForm(BaseForm):
                                                          title = title))
             else:
                 schema.add(colander.SchemaNode(colander.String(),
-                                                    widget = deform.widget.TextInputWidget(readonly = True),
-                                                    title = _("<Missing question>"),))
+                                               widget = deform.widget.TextInputWidget(readonly = True),
+                                               title = _("<Missing question>"),))
         return schema
 
     def appstruct(self):
         return self.context.responses.get(self.participant_uid, {})
 
-    def _next_section(self):
-        """ Return next section object if there is one.
-        """
-        parent = self.context.__parent__
-        section_order = tuple(parent.order)
-        cur_index = section_order.index(self.context.__name__)
-        try:
-            next_name = section_order[cur_index+1]
-            return parent[next_name]
-        except IndexError:
-            return
-
-    def _previous_section(self):
-        """ Return previous section object if there is one.
-        """
-        parent = self.context.__parent__
-        section_order = tuple(parent.order)
-        cur_index = section_order.index(self.context.__name__)
-        if cur_index == 0:
-            #Since -1 is a valid index :)
-            return
-        try:
-            previous_name = section_order[cur_index-1]
-            return parent[previous_name]
-        except IndexError:
-            return  
-
-    def _link(self, obj, *args):
-        uid = self.request.GET.get('uid', '')
-        return self.request.resource_url(obj, *args, query = {'uid': uid})
-
     def next_success(self, appstruct):
         #FIXME: Is this an okay way to save data? It should always be marked as dirty
         #but how about nested non-persistent structures within appstruct?
         self.context.responses[self.participant_uid] = appstruct
-        next_section = self._next_section()
+        next_section = self.next_section()
         #Do stuff if finished
         if not next_section:
-            return HTTPFound(location = self._link(self.context.__parent__, 'done'))
-        return HTTPFound(location = self._link(next_section))
+            return HTTPFound(location = self.link(self.context.__parent__, 'done'))
+        return HTTPFound(location = self.link(next_section))
 
     def previous_success(self, appstruct):
         self.context.responses[self.participant_uid] = appstruct
         return self.go_previous()
 
     def go_previous(self, *args):
-        previous = self._previous_section()
+        previous = self.previous_section()
         if previous is None:
-            return HTTPFound(location = self._link(self.context.__parent__, 'do'))
-        return HTTPFound(location = self._link(previous))
+            return HTTPFound(location = self.link(self.context.__parent__, 'do'))
+        return HTTPFound(location = self.link(previous))
 
     previous_failure = go_previous
-
-    def calc_percentages(self):
-        return calc_percentages(self.context)
 
 
 @view_config(context = ISurveySection,
@@ -378,24 +385,34 @@ class DummySurveySectionForm(SurveySectionForm):
     def __call__(self):
         return super(BaseForm, self).__call__()
 
-    def _link(self, obj, *args):
+    def link(self, obj, *args):
         return self.request.resource_url(obj, 'view')
 
     def next_success(self, *args):
-
-        next_section = self._next_section()
-
+        next_section = self.next_section()
+        #Do stuff if finished
         if not next_section:
-            return HTTPFound(location = self._link(self.context.__parent__, 'done'))
-        return HTTPFound(location = self._link(next_section))
+            return HTTPFound(location = self.link(self.context.__parent__, 'done'))
+        return HTTPFound(location = self.link(next_section))
 
     next_failure = next_success
 
     def previous_success(self, appstruct):
-        previous = self._previous_section()
+        previous = self.previous_section()
         if previous is None:
-            return HTTPFound(location = self._link(self.context.__parent__))
-        return HTTPFound(location = self._link(previous))
+            return HTTPFound(location = self.link(self.context.__parent__))
+        return HTTPFound(location = self.link(previous))
+
+
+@view_config(context = ISurveySection,
+             name = 'info_panel',
+             permission = security.PERM_VIEW,
+             renderer = 'arche_m2m:templates/snippets/survey_section_info.pt')
+class SurveySectionInfo(BaseView):
+    """ Ment to be used as an inline rendering in listings.
+    """
+    def __call__(self):
+        return {}
 
 
 @view_config(context = ISurvey,
