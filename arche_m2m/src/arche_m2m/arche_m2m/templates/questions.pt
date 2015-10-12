@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="view.macro('arche:templates/base_view.pt', 'arche:templates/inline.pt')"
+      i18n:domain="arche_m2m">
+<body>
+<div metal:fill-slot="main-content">
+  <script type="text/javascript">
+    function tag_filter(tag) {
+      if (tag === '') {
+        $("tbody#questions tr").show();
+        $("#tag_info").hide();
+      } else {
+        $("tbody#questions tr").hide();
+        $("#tag_info").show();
+        $("#tag_shown").html(tag);
+        $("tbody#questions tr").each(function() {
+          console.log(tag);
+          if ($(this).find('[data-tag="' + tag + '"]').length > 0) {
+            $(this).show();
+          }
+        })
+      }
+    }
+  </script>
+  <h3>
+    <span i18n:translate="">listing</span>
+    ${request.locale_name}
+  </h3>
+  
+  <div id="tag_info" style="display: none;">
+    <span i18n:translate="">Filtered list on: </span>
+    <strong id="tag_shown"></strong>
+    <a href="javascript:tag_filter('')" i18n:translate="">
+      <span class="glyphicon glyphicon-remove"></span>
+    </a>
+  </div>
+
+  <table class="table table-hover table-responsive table-striped">
+    <thead>
+      <tr>
+        <th i18n:translate="">Question</th>
+        <th i18n:translate="">Type</th>
+        <th i18n:translate="">Translations</th>
+        <th i18n:translate="">Tags</th>
+      </tr>
+    </thead>
+    <tbody id="questions">
+      <tal:iterate repeat="obj view.get_current_questions()">
+        <tr>
+          <td>
+            <a href="${request.resource_url(obj)}">
+              ${obj.title}
+            </a>
+          </td>
+          <td tal:define="question_type view.resolve_uid(obj.question_type, perm = None)">
+            ${question_type.title}
+          </td>
+          <td tal:define="siblings view.get_siblings(obj)">
+            <tal:iterate repeat="sibling siblings">
+              <a href="${request.resource_url(sibling)}" title="${sibling.title}">
+                ${sibling.language}
+              </a>
+            </tal:iterate>
+          </td>
+          <td>
+            <tal:iterate repeat="tag obj.tags">
+              <a href="javascript:tag_filter('${tag}')" data-tag="${tag}">${tag}</a>
+            </tal:iterate>
+          </td>
+        </tr>
+      </tal:iterate>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>

@@ -1,0 +1,9 @@
+.pickable_questions {
+  min-height: 20px;
+}
+.pickable_questions li {
+  cursor: move !important;
+}
+.pickable_questions li:hover {
+  background: #f5f5f5;
+}

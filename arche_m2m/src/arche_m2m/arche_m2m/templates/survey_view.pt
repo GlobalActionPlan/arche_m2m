@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="view.macro('arche:templates/base_view.pt', 'arche:templates/inline.pt')"
+      i18n:domain="arche_m2m">
+<body>
+<div metal:fill-slot="main-content">
+
+  <h1>${context.title}</h1>
+
+  <a href="${request.resource_url(context, 'invite')}"
+    class="btn btn-primary btn-sm"
+    i18n:translate="">Invite</a>
+  <a href="${request.resource_url(context, 'participants')}"
+    class="btn btn-primary btn-sm"
+    i18n:translate="">Participants</a>
+  <a href="${request.resource_url(context, 'manage')}"
+    class="btn btn-primary btn-sm"
+    i18n:translate="">Manage</a>
+  <a href="${request.resource_url(context, 'export.csv')}"
+    class="btn btn-primary btn-sm"
+    i18n:translate="">Export results</a>
+  <br/><br/>
+
+  <tal:iterate repeat="obj context.values()">
+    <tal:tpl replace="structure view.render_info_panel(obj)">
+      Render info panel views, registered as 'info_panel' on any content that should have one.
+    </tal:tpl>
+  </tal:iterate>
+
+</div>
+</body>
+</html>
