@@ -17,7 +17,7 @@ class Organisation(Content, LocalRolesMixin, ContextACLMixin):
     type_title = _("Organisation")
     type_name = "Organisation"
     add_permission = "Add %s" % type_name
-    nav_visible = True
+    nav_visible = False
     listing_visible = True
     search_visible = True
 
