@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+from operator import attrgetter
 
 from BTrees.OOBTree import OOBTree
 from arche.api import Content
@@ -52,7 +53,26 @@ class SurveySection(Content, TranslationMixin):
                 results.append(obj)
         return resolve and results or docids
 
+    """
+        Return a order list
+    """
+    def get_sort_questions(self,lang,resolve =False):
+        root = find_root(self)
+        docids = []
+        results = []
+        for qid in self.question_ids:
+            for docid in root.catalog.search(cluster = qid, language = lang)[1]:
+                docids.append(docid)
+        if resolve:
+            request = get_current_request()
+            for docid in docids:
+                path = root.document_map.address_for_docid(docid)
+                obj = find_resource(root, path)
+                results.append(obj)
 
+            results.sort(key=attrgetter('title'))
+
+        return resolve and results or docids
 
 
 class SurveySectionSchema(colander.Schema):

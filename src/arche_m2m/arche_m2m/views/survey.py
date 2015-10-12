@@ -5,6 +5,12 @@ from arche import security
 from arche.models.workflow import get_context_wf
 from arche.views.base import BaseForm
 from arche.views.base import BaseView
+<<<<<<< Updated upstream
+=======
+from operator import attrgetter, itemgetter
+import operator
+from BTrees._OOBTree import OOBTree
+>>>>>>> Stashed changes
 from pyramid.decorator import reify
 from pyramid.httpexceptions import HTTPForbidden
 from pyramid.httpexceptions import HTTPFound
@@ -182,7 +188,8 @@ class ManageSurveyView(BaseView):
                         "and then use this view to manage the questions.")
             self.flash_messages.add(msg, auto_destruct = False)
         #Load all question objects that haven't been picked
-        response['available_questions'] = self.get_sort_questions(exclude = picked_questions)
+        response['available_questions'] = self.get_questions(exclude = picked_questions)
+        self.get_sort_questions(exclude = picked_questions)
         return response
 
     def get_questions(self, exclude = ()):
@@ -194,13 +201,11 @@ class ManageSurveyView(BaseView):
     # sort all of the question
     def get_sort_questions(self,exclude = ()):
         list_obj=[]
-        local_questions=[]
-        # use catalog_search for local questions.
-        for obj in self.catalog_search(resolve = True, language = self.request.locale_name, path = "gap/local", type_name = 'Question'):
-            local_questions.append(obj.cluster)
+        list_tags=[]
+        dico = {}
         for obj in self.catalog_search(resolve =True,type_name ='Question', language = self.request.locale_name):
             if obj.cluster not in exclude:
-                self.sort_tag(obj)
+                dico[obj.cluster]=self.displayTags(obj)
                 list_obj.append(obj)
         # sorted by the first tag of the question
         i=0
@@ -212,19 +217,29 @@ class ManageSurveyView(BaseView):
                 list_obj[i+1]=obj_tmp
                 i=0
             i+=1
-        for obj in list_obj:
-            if obj.cluster not in exclude:
-                yield obj
+
+
+
+        L= dico.values()
+        print(L)
+        L.sort(key=operator.itemgetter(0))
+        print(L)
+        for val in L:
+            findKey = lambda d, val: [c for c,v in d.items() if v==val]
 
     def isLocal(self,cluster):
-        for obj in self.catalog_search(resolve = True, language = self.request.locale_name, path = "gap/local", type_name = 'Question'):
+        org_name = self.organisation.title.lower()
+        org_name = org_name + '/local'
+        for obj in self.catalog_search(resolve = True, language = self.request.locale_name, path = org_name, type_name = 'Question'):
             if obj.cluster == cluster :
                 return True
         return False
 
-    def sort_tag(self,question):
-        array=sorted(question.tags,reverse=False)
-        question.tags = tuple(array)
+    def displayTags(self,question):
+        array = sorted(question.tags,reverse=False)
+        return tuple(array)
+
+
 
     def render_info_panel(self, obj):
         response = render_view_to_response(obj, self.request, 'info_panel')

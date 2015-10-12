@@ -16,7 +16,7 @@ tal:define="variants getattr(view.organisation, 'variants', {});
 					<span class="question_text">${variant and variant or question.title}</span>
 				</div>
 				<div class="col-xs-6 col-sm-3" id="tags">
-					 <a tal:repeat="tag question.tags" id='${tag}'>
+					 <a tal:repeat="tag view.displayTags(question)" id='${tag}'>
 							${tag}
 					</a>
 				</div>

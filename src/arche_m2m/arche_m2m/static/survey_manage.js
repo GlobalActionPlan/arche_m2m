@@ -68,11 +68,10 @@ $(document).ready(function(){
     var name = $(this).attr('name');
 	var lis = document.querySelectorAll('#tag_listing li');
 	
-	for(var i=0; li=lis[i]; i++){
-		var list_tags= li.lastElementChild.className;
-		
+	// for(var i=0; li=lis[i]; i++){
+		// var list_tags= li.lastElementChild.className;		
 		// alert(li.lastElementChild.className);
-	}
+	// }
 	
 	for(var i=0; li=lis[i]; i++) {
 		$(li).show();
@@ -81,9 +80,7 @@ $(document).ready(function(){
 		if($(li).find('#'+tag).html() ===  undefined){
 			$(li).hide();
 		} 	
-	}
-		
-		
+	}		
 		// alert($('#'+tag).htsml());
 		//$('#tag_listing .tag_' + tag).parent().prependTo($('#tag_listing'));
   });

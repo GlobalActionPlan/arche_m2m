@@ -75,7 +75,6 @@
           <tal:questions repeat="question available_questions">
             <tal:question replace="structure view.render_template('arche_m2m:templates/snippets/question_listing.pt', question = question)" />
           </tal:questions>
-			<span></span>
 		</ul>
       </div>
     </div>
