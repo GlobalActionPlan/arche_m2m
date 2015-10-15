@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="view.macro('arche:templates/base_view.pt', 'arche:templates/inline.pt')"
+      i18n:domain="arche_m2m">
+<body>
+<div metal:fill-slot="main-content">
+  <div class="row">
+    <div class="col-sm-12">
+      <h1>${context.title}</h1>
+    </div>
+  </div>
+  
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title" i18n:translate="">Organisations</h3>
+    </div>
+    <div class="list-group">
+      <div class="list-group-item" tal:repeat="org organisations">
+        <a href="${request.resource_url(org)}">${org.title}</a>
+      </div>
+    </div>
+  </div>
+  
+</div>
+</body>
+</html>
