@@ -12,8 +12,8 @@ tal:define="variants getattr(view.organisation, 'variants', {});
 				or None} list-group-item">
 		   
 	   <div class="row">
-				<div class="col-xs-6 col-sm-5">
-					<span class="question_text">${variant and variant or question.title}</span>
+				<div class="col-xs-6 col-sm-5" >
+					<span class="question_text" id="title">${variant and variant or question.title}</span>
 				</div>
 				<div class="col-xs-6 col-sm-3" id="tags">
 					 <a tal:repeat="tag view.displayTags(question)" id='${tag}'>

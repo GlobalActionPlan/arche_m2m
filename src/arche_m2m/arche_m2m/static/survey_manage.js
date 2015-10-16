@@ -61,28 +61,31 @@ $(document).ready(function(){
   });
 
   
-  /* Display questions by tag in the question pool */
+  /* Display and sort questions by title in the question pool */
   $('.select_questions').click(function() {
 	  
 	var tag = $(this).siblings('.add_from_tag').val();
-    var name = $(this).attr('name');
+    	var name = $(this).attr('name');
 	var lis = document.querySelectorAll('#tag_listing li');
-	
-	// for(var i=0; li=lis[i]; i++){
-		// var list_tags= li.lastElementChild.className;		
-		// alert(li.lastElementChild.className);
-	// }
-	
+	var array = new Array()	
 	for(var i=0; li=lis[i]; i++) {
 		$(li).show();
 	}
 	for(var i=0; li=lis[i]; i++) {
 		if($(li).find('#'+tag).html() ===  undefined){
 			$(li).hide();
-		} 	
+		} 
+		else
+		{
+			array.push($(li))
+		}	
 	}		
-		// alert($('#'+tag).htsml());
-		//$('#tag_listing .tag_' + tag).parent().prependTo($('#tag_listing'));
+	array.sort(function(a,b)
+	{
+		return a.find('#title').html() > b.find('#title').html();
+	});
+	$('#tag_listing').append(array);
+
   });
 
 

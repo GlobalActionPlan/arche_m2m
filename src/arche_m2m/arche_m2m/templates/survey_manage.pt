@@ -40,7 +40,7 @@
 							>${section.title}</a></h4>
             </div>			
 				<ul class="survey_section pickable_questions list-group" name="${section.__name__}" id="${section.__name__}">
-				  <tal:questions repeat="question section.get_sort_questions(request.locale_name, resolve = True)">
+				  <tal:questions repeat="question section.get_questions(request.locale_name, resolve = True)">
 					<tal:question replace="structure view.render_template('arche_m2m:templates/snippets/question_listing.pt', question = question, section = section)" />
 				  </tal:questions>
 				</ul>

@@ -5,12 +5,7 @@ from arche import security
 from arche.models.workflow import get_context_wf
 from arche.views.base import BaseForm
 from arche.views.base import BaseView
-<<<<<<< Updated upstream
-=======
-from operator import attrgetter, itemgetter
-import operator
 from BTrees._OOBTree import OOBTree
->>>>>>> Stashed changes
 from pyramid.decorator import reify
 from pyramid.httpexceptions import HTTPForbidden
 from pyramid.httpexceptions import HTTPFound
@@ -189,7 +184,6 @@ class ManageSurveyView(BaseView):
             self.flash_messages.add(msg, auto_destruct = False)
         #Load all question objects that haven't been picked
         response['available_questions'] = self.get_questions(exclude = picked_questions)
-        self.get_sort_questions(exclude = picked_questions)
         return response
 
     def get_questions(self, exclude = ()):
@@ -197,35 +191,6 @@ class ManageSurveyView(BaseView):
         for obj in self.catalog_search(resolve = True, type_name = 'Question', language = self.request.locale_name):
             if obj.cluster not in exclude:
                 yield obj
-
-    # sort all of the question
-    def get_sort_questions(self,exclude = ()):
-        list_obj=[]
-        list_tags=[]
-        dico = {}
-        for obj in self.catalog_search(resolve =True,type_name ='Question', language = self.request.locale_name):
-            if obj.cluster not in exclude:
-                dico[obj.cluster]=self.displayTags(obj)
-                list_obj.append(obj)
-        # sorted by the first tag of the question
-        i=0
-        obj_tmp=None
-        while i < (len(list_obj)-1):
-            if list_obj[i].tags[0] > list_obj[i+1].tags[0]:
-                obj_tmp= list_obj[i]
-                list_obj[i]=list_obj[i+1]
-                list_obj[i+1]=obj_tmp
-                i=0
-            i+=1
-
-
-
-        L= dico.values()
-        print(L)
-        L.sort(key=operator.itemgetter(0))
-        print(L)
-        for val in L:
-            findKey = lambda d, val: [c for c,v in d.items() if v==val]
 
     def isLocal(self,cluster):
         org_name = self.organisation.title.lower()
