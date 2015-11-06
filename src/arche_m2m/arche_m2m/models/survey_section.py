@@ -52,7 +52,6 @@ class SurveySection(Content, TranslationMixin):
                 results.append(obj)
         return resolve and results or docids
 
-
 class SurveySectionSchema(colander.Schema):
     title = colander.SchemaNode(colander.String(),
                                 title = _("Title"),

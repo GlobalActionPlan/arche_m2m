@@ -32,6 +32,7 @@ class QuestionWidget(object):
             request = get_current_request()
             lang = request.locale_name
         self.question = question
+        #FIXME?
         #kw = copy(self.default_kwargs)
         kw = {}
         kw['name'] = name
@@ -88,7 +89,8 @@ class RadioChoiceWidget(QuestionWidget):
     def widget(self, lang, **kw):
         choices = [(choice.cluster, choice.title) for choice in self.context.get_choices(lang)]
         if self.question:
-            [choices.append((choice.cluster, choice.title)) for choice in self.question.get_choices(lang)]
+            for choice in self.question.get_choices(lang):
+                choices.append((choice.cluster, choice.title))
         return self.widget_factory(values = choices)
 
     def responses(self, section, question):

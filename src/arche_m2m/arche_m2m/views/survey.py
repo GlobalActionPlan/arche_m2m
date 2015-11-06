@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 from decimal import Decimal
 
 from arche import security
+from arche.models.workflow import get_context_wf
 from arche.views.base import BaseForm
 from arche.views.base import BaseView
 from pyramid.decorator import reify
@@ -9,13 +10,13 @@ from pyramid.httpexceptions import HTTPForbidden
 from pyramid.httpexceptions import HTTPFound
 from pyramid.renderers import render
 from pyramid.traversal import find_interface
+from pyramid.traversal import resource_path
 from pyramid.view import render_view_to_response
 from pyramid.view import view_config
 from pyramid_mailer import get_mailer
 import colander
 import deform
 
-from arche.models.workflow import get_context_wf
 from arche_m2m import _
 from arche_m2m.fanstatic import manage_css
 from arche_m2m.fanstatic import survey_manage
@@ -164,6 +165,7 @@ class ManageSurveyView(BaseView):
             self.flash_messages.add(_("Saved"))
             url = self.request.resource_url(self.context, 'manage')
             return HTTPFound(location = url)
+
         response = {}
         picked_questions = set()
         survey_sections = []
@@ -187,6 +189,15 @@ class ManageSurveyView(BaseView):
         for obj in self.catalog_search(resolve = True, type_name = 'Question', language = self.request.locale_name):
             if obj.cluster not in exclude:
                 yield obj
+
+    def isLocal(self, cluster):
+        if not self.organisation:
+            return False
+        path = resource_path(self.organisation)
+        return bool(self.catalog_search(resolve = False, cluster = cluster, path = path, type_name = 'Question'))
+
+    def displayTags(self, question):
+        return sorted(question.tags)
 
     def render_info_panel(self, obj):
         response = render_view_to_response(obj, self.request, 'info_panel')

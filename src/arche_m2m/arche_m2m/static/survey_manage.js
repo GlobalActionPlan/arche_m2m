@@ -60,6 +60,30 @@ $(document).ready(function(){
     }
   });
 
+  
+  /* Display and sort questions by title in the question pool */
+  $('.select_questions').click(function() {
+  	var tag = $(this).siblings('.add_from_tag').val();
+  	var name = $(this).attr('name');
+  	var lis = document.querySelectorAll('#tag_listing li.question');
+  	var array = new Array()
+  	$('#tag_listing li.question').show();
+  	for(var i=0; li=lis[i]; i++) {
+  		if(tag != '' && $(li).find('.tag[name="' + tag + '"]').length == 0) {
+  			$(li).hide();
+  		} 
+  		else
+  		{
+  			array.push($(li))
+  		}	
+  	}		
+  	array.sort(function(a,b)
+    	{
+  	    return a.find('.question_text').html().toLowerCase().localeCompare(b.find('.question_text').html().toLowerCase())
+    	});
+  	$('#tag_listing').append(array);
+  });
+
   /* Click handler for del-from-tag-button */
   $('.del_questions').click( function() {
     var tag = $(this).siblings('.add_from_tag').val();
@@ -68,6 +92,6 @@ $(document).ready(function(){
       var section = $('.survey_section[name=' + name + ']');
       section.find('.question .tag_' + tag).attr('name', '');
       section.find('.question .tag_' + tag).parent().appendTo($('#tag_listing'));
-    }
+	}
   });
 });
