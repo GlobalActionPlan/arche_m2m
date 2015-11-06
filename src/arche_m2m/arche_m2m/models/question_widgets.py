@@ -1,5 +1,4 @@
 from __future__ import unicode_literals
-from BTrees._OOBTree import OOBTree
 
 from pyramid.threadlocal import get_current_request
 from zope.component import adapter
@@ -33,6 +32,7 @@ class QuestionWidget(object):
             request = get_current_request()
             lang = request.locale_name
         self.question = question
+        #FIXME?
         #kw = copy(self.default_kwargs)
         kw = {}
         kw['name'] = name
@@ -50,12 +50,8 @@ class QuestionWidget(object):
         assert ISurveySection.providedBy(section), "Not a survey section"
         assert IQuestion.providedBy(question), "Not a question"
         results = []
-
         for response in section.responses.values():
-            """ Problem unicode no attribute get """
-            # I replace temporarily the line (same for radioChoiceWidget) to have the result
-            results.append(response)
-            #results.append(response.get(question.cluster, ''))
+            results.append(response.get(question.cluster, ''))
         return results
 
 
@@ -100,10 +96,8 @@ class RadioChoiceWidget(QuestionWidget):
         assert ISurveySection.providedBy(section), "Not a survey section"
         assert IQuestion.providedBy(question), "Not a question"
         results = {}
-
         for response in section.responses.values():
-            #val =  response.get(question.cluster, '')
-            val = response
+            val =  response.get(question.cluster, '')
             if val in results:
                 results[val] += 1
             else:

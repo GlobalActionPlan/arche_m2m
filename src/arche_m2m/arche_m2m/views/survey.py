@@ -5,12 +5,12 @@ from arche import security
 from arche.models.workflow import get_context_wf
 from arche.views.base import BaseForm
 from arche.views.base import BaseView
-from BTrees._OOBTree import OOBTree
 from pyramid.decorator import reify
 from pyramid.httpexceptions import HTTPForbidden
 from pyramid.httpexceptions import HTTPFound
 from pyramid.renderers import render
 from pyramid.traversal import find_interface
+from pyramid.traversal import resource_path
 from pyramid.view import render_view_to_response
 from pyramid.view import view_config
 from pyramid_mailer import get_mailer
@@ -148,8 +148,6 @@ class ManageSurveyView(BaseView):
             if sect_id in self.context: #Might be other things than section ids within the post
                 self.context[sect_id].question_ids = question_ids
 
-
-
     @view_config(context = ISurvey,
                  name = "manage",
                  permission = security.PERM_EDIT,
@@ -192,19 +190,14 @@ class ManageSurveyView(BaseView):
             if obj.cluster not in exclude:
                 yield obj
 
-    def isLocal(self,cluster):
-        org_name = self.organisation.title.lower()
-        org_name = org_name + '/local'
-        for obj in self.catalog_search(resolve = True, language = self.request.locale_name, path = org_name, type_name = 'Question'):
-            if obj.cluster == cluster :
-                return True
-        return False
+    def isLocal(self, cluster):
+        if not self.organisation:
+            return False
+        path = resource_path(self.organisation)
+        return bool(self.catalog_search(resolve = False, cluster = cluster, path = path, type_name = 'Question'))
 
-    def displayTags(self,question):
-        array = sorted(question.tags,reverse=False)
-        return tuple(array)
-
-
+    def displayTags(self, question):
+        return sorted(question.tags)
 
     def render_info_panel(self, obj):
         response = render_view_to_response(obj, self.request, 'info_panel')
