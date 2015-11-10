@@ -89,7 +89,8 @@ class RadioChoiceWidget(QuestionWidget):
     def widget(self, lang, **kw):
         choices = [(choice.cluster, choice.title) for choice in self.context.get_choices(lang)]
         if self.question:
-            [choices.append((choice.cluster, choice.title)) for choice in self.question.get_choices(lang)]
+            for choice in self.question.get_choices(lang):
+                choices.append((choice.cluster, choice.title))
         return self.widget_factory(values = choices)
 
     def responses(self, section, question):

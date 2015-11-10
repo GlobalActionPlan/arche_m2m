@@ -16,7 +16,7 @@ def includeme(config):
         if hasattr(factory, 'add_permission'):
             add_perms.append(factory.add_permission)
     #Root perms
-    del acl_reg['Root']    
+    del acl_reg['Root']
     root_acl = acl_reg.new_acl('Root')
     root_acl.add(security.ROLE_ADMIN, security.ALL_PERMISSIONS)
     root_acl.add(security.ROLE_EDITOR, add_perms)

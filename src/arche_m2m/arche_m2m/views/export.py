@@ -59,7 +59,8 @@ class ExportView(BaseView):
                         writer.writerow([choices.get(k, k), v])
                 #Text, number etc
                 else:
-                    [writer.writerow([x]) for x in response]
+                    for x in response:
+                        writer.writerow([x])
                 writer.writerow([])
         contents = output.getvalue()
         output.close()
