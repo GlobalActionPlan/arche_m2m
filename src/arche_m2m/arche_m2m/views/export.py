@@ -2,13 +2,11 @@ import csv
 
 from arche import security
 from arche.views.base import BaseView
-from BTrees._OOBTree import OOBTree
 from pyramid.httpexceptions import HTTPForbidden
 from pyramid.response import Response
 from pyramid.view import view_config
 from pyramid.view import view_defaults
 from six import StringIO
-
 
 from arche_m2m import _
 from arche_m2m.interfaces import IQuestionWidget
@@ -19,8 +17,6 @@ from arche_m2m.interfaces import ISurveySection
 @view_defaults(context = ISurvey, permission = security.PERM_VIEW)
 class ExportView(BaseView):
 
-
-
     @view_config(name = 'export.csv')
     def csv(self):
         output = StringIO()
@@ -28,15 +24,12 @@ class ExportView(BaseView):
         writer = csv.writer(output, delimiter=';', quotechar='"', quoting=csv.QUOTE_ALL, dialect = csv.excel)
         writer.writerow([self.context.title.encode('utf-8')])
         writer.writerow([_('Export using language:'), lang_name])
-        
         langs = self.context.languages
         lrow = [_("Survey languages").encode('utf-8')]
         for lang in langs:
             lrow.append(lang)
         writer.writerow(lrow)
-
         writer.writerow([])
-
         for section in self.context.values():
             if not ISurveySection.providedBy(section):
                 continue
@@ -62,7 +55,6 @@ class ExportView(BaseView):
                     choices.update([(choice.cluster, choice.title.encode('utf-8')) for choice in question.get_choices(lang_name)])
                     results = dict([(x, 0) for x in choices])
                     results.update(response)
-
                     for (k, v) in results.items():
                         writer.writerow([choices.get(k, k), v])
                 #Text, number etc
@@ -71,7 +63,4 @@ class ExportView(BaseView):
                 writer.writerow([])
         contents = output.getvalue()
         output.close()
-
-
         return Response(content_type = 'text/csv', body = contents)
-

@@ -7,21 +7,22 @@
       i18n:domain="arche_m2m">
 <body>
 <div metal:fill-slot="content">
-<div id="modal"></div>
 <!--  see js for actual template -->
 
   <div class="row">
     <div class="col-sm-12">
       <h1 i18n:translate="">Manage questions</h1>
       <p class="description" i18n:translate="">Drag and select...</p>
-      <p><span i18n:translate="">Working with</span> ${request.locale_name}</p>
+      <p><span i18n:translate="">Working with locale:</span> ${request.locale_name}</p>
     </div>
   </div>
   <div class="row">
     <div class="col-sm-6">
       <form method="POST">
-	    <input type="submit" class="btn btn-success" name="save" value="Save" i18n:attributes="value;" />
-        <input type="submit" class="btn btn-warning" name="cancel" value="Cancel" i18n:attributes="value;" />
+        <div class="form-group">
+  	      <input type="submit" class="btn btn-success" name="save" value="Save" i18n:attributes="value;" />
+          <input type="submit" class="btn btn-warning" name="cancel" value="Cancel" i18n:attributes="value;" />
+        </div>
         <tal:sections repeat="section survey_sections">
           <div class="panel panel-default">
             <div class="panel-heading">
@@ -34,48 +35,70 @@
                           name="${section.__name__}"
                           title="Remove from selected tag" i18n:attributes="title">&gt;</button>
               </span>
-			  <!-- Check after wrong argument before ? -->
-              <h4><a data-toggle="collapse" href="#${section.__name__}" 
-						aria-expanded="false" aria-controls="${section.__name__}"
-							>${section.title}</a></h4>
-            </div>			
-				<ul class="survey_section pickable_questions list-group" name="${section.__name__}" id="${section.__name__}">
-				  <tal:questions repeat="question section.get_questions(request.locale_name, resolve = True)">
-					<tal:question replace="structure view.render_template('arche_m2m:templates/snippets/question_listing.pt', question = question, section = section)" />
-				  </tal:questions>
-				</ul>
+			        <!-- Check after wrong argument before ? -->
+              <h4>
+                <a data-toggle="collapse"
+                  href="#${section.__name__}_section" 
+						      aria-expanded="true"
+                  aria-controls="${section.__name__}_section">
+                  ${section.title}
+                </a>
+              </h4>
+            </div>
+    				<ul id="${section.__name__}_section"
+              class="survey_section pickable_questions list-group collapse in"
+              name="${section.__name__}">
+    				  <tal:questions repeat="question section.get_questions(request.locale_name, resolve = True)">
+    					<tal:question replace="structure view.render_template('arche_m2m:templates/snippets/question_listing.pt', question = question, section = section)" />
+    				  </tal:questions>
+    				</ul>
           </div>
         </tal:sections>
-        
-                </form>
+
+      </form>
     </div>
     <div class="col-sm-6">
+    
       <div class="panel panel-default">
         <div class="panel-heading">
-			<span class="sectiontags pull-right">
-                  <select class="add_from_tag"><option value="" i18n:translate="">(tags)</option></select>
-				 <button type="button" class="select_questions btn btn-success btn-xs glyphicon glyphicon-ok"
-				 title="Display selected tag" i18n:attributes="title"></button>
-            </span>
+    			<span class="sectiontags pull-right">
+            <select class="add_from_tag">
+              <option value="" i18n:translate="">(show all)</option>
+            </select>
+      		  <button type="button"
+              class="select_questions btn btn-success btn-xs glyphicon glyphicon-filter"
+      		    title="Filter on selected tag" i18n:attributes="title"></button>
+          </span>
           <h4 i18n:translate="">Question pool</h4>
-		   <div class="row">
-				<div class="col-xs-6 col-sm-5">
-					<h5>Title</h5>
-				</div>
-				<div class="col-xs-6 col-sm-3">
-					<a><h5>Tags</h5></a>
-				</div>
-				<div class="col-xs-6 col-sm-2">
-					<h5>Lang</h5>
-				</div>
-			</div>
-		</div>
+  		   <div class="row">
+  				<div class="col-xs-6 col-sm-5">
+  					<h5 i18n:translate="">Title</h5>
+  				</div>
+  				<div class="col-xs-6 col-sm-3">
+  					<h5 i18n:translate="">Tags</h5>
+  				</div>
+  				<div class="col-xs-6 col-sm-2">
+  					<h5 i18n:translate="">Lang</h5>
+  				</div>
+  			</div>
+  		</div>
 		
-        <ul id="tag_listing" class="survey_section pickable_questions list-group" name="Question Pool">
-          <tal:questions repeat="question available_questions">
-            <tal:question replace="structure view.render_template('arche_m2m:templates/snippets/question_listing.pt', question = question)" />
-          </tal:questions>
-		</ul>
+      <ul id="tag_listing" class="survey_section pickable_questions list-group" name="Question Pool">
+        <tal:questions repeat="question available_questions">
+          <tal:question replace="structure view.render_template('arche_m2m:templates/snippets/question_listing.pt', question = question)" />
+        </tal:questions>
+  		</ul>
+      </div>
+      
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title" i18n:translate="">Question legend</h4>
+        </div>
+        <div class="list-group">
+          <div class="list-group-item" i18n:translate="">Regular question</div>
+          <div class="list-group-item list-group-item-info" i18n:translate="">Question local to this organisation</div>
+          <div class="list-group-item list-group-item-warning" i18n:translate="">Local variant</div>
+        </div>
       </div>
     </div>
   </div>
