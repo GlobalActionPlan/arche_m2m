@@ -20,3 +20,4 @@ Data.fs*
 *.egg-info
 Scripts
 local
+*.swp
