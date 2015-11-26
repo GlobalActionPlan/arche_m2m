@@ -111,7 +111,7 @@ class SurveyView(BaseView):
             previous_section = obj
             break
         uid = self.request.GET.get('uid', '')
-        return {'previous_link': self.request.resource_url(previous_section, query = {'uid': uid})}    
+        return {'previous_link': self.request.resource_url(previous_section, query = {'uid': uid})}
 
     @view_config(context = ISurvey,
                  name = "closed",
@@ -181,7 +181,9 @@ class ManageSurveyView(BaseView):
                         "and then use this view to manage the questions.")
             self.flash_messages.add(msg, auto_destruct = False)
         #Load all question objects that haven't been picked
-        response['available_questions'] = self.get_questions(exclude = picked_questions)
+
+        #response['available_questions'] = self.get_questions(exclude = picked_questions)
+        response['available_questions'] = self.get_questions_by_organisation(self.get_question_org(exclude = picked_questions))
         return response
 
     def get_questions(self, exclude = ()):
@@ -198,6 +200,31 @@ class ManageSurveyView(BaseView):
 
     def displayTags(self, question):
         return sorted(question.tags)
+
+    def get_question_org(self, exclude = ()):
+        """
+            I return a sort list because in the manage pool, questions aren't sort by title for the first time
+            Should be optimized
+
+            Recup all questions selected by organisation and all question for each questions
+        """
+        results = []
+        res = []
+        for uid in self.organisation.referenced_questions:
+            results.append(self.resolve_uid(uid))
+
+        for questions in results:
+            path = resource_path(questions)
+            for obj in self.catalog_search(resolve = True, language = self.request.locale_name,path = path,type_name = 'Question'):
+                if obj.cluster not in exclude:
+                        res.append(obj)
+        return sorted(res, key=lambda obj: obj.title)
+
+
+    def get_questions_by_organisation(self, result):
+        for obj in result:
+            yield obj
+
 
     def render_info_panel(self, obj):
         response = render_view_to_response(obj, self.request, 'info_panel')
@@ -268,7 +295,7 @@ class BaseSurveySection(BaseForm):
             previous_name = section_order[cur_index-1]
             return parent[previous_name]
         except IndexError:
-            return  
+            return
 
     def link(self, obj, *args, **kw):
         uid = self.request.GET.get('uid', '')
@@ -421,7 +448,6 @@ class SendInvitationForm(BaseForm):
         for email in emails:
             invitation_uid = str(self.context.create_token(email))
             _send_invitation_email(self, email, invitation_uid, subject, message)
-    
 
 def _send_invitation_email(view, email, uid, subject, message = ''):
     response = {}

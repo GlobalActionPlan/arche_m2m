@@ -9,7 +9,6 @@ from arche_m2m.interfaces import IOrganisation
 from arche_m2m.interfaces import IQuestions
 from arche_m2m.interfaces import ISurvey
 
-
 @view_config(name='view',
              context=IOrganisation,
              renderer='arche_m2m:templates/organisation.pt',
