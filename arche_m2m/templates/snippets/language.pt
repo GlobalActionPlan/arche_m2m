@@ -1,0 +1,22 @@
+<tal:main xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="arche_m2m">
+    <li class="dropdown language-menu">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <span class="glyphicon glyphicon-flag"></span>
+            <span i18n:translate="">Language</span>
+            <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+            <li tal:repeat="lang lang_codes">
+                <a href="${request.resource_url(root, 'set_language', query = {'lang': lang, 'return_url': request.url})}" class="">
+                    ${lang_codes[lang]}
+                    <span tal:condition="request.locale_name == lang"
+                          class="glyphicon glyphicon-ok"></span>
+                </a>
+            </li>
+        </ul>
+    </li>
+</tal:main>

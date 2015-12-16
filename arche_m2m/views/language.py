@@ -1,3 +1,4 @@
+from pyramid.renderers import render
 from arche.interfaces import IRoot
 from arche.views.base import BaseView
 from betahaus.viewcomponent.decorators import view_action
@@ -25,18 +26,10 @@ class LanguageView(BaseView):
         return HTTPFound(location = url, headers = self.request.response.headers)
 
 
-@view_action('actions_menu', 'set_language',
-             priority = 50)
+@view_action('nav_right', 'set_language',
+             priority = 1)
 def set_language_action(context, request, va, **kw):
-    out = """<li role="presentation" class="dropdown-header">%s</li>\n""" % _("Language")
     lang_codes = request.registry.getUtility(ILangCodes)
     root = find_root(context)
-    for name in lang_codes:
-        selected = ""
-        if request.locale_name == name:
-            selected = """<span class="glyphicon glyphicon-ok pull-right"></span>"""
-        out += """<li><a href="%(url)s">%(title)s %(selected)s</a></li>""" %\
-                {'url': request.resource_url(root, 'set_language', query = {'lang': name, 'return_url': request.url}),
-                 'title': lang_codes[name],
-                 'selected': selected}
-    return out
+    response = {'lang_codes': lang_codes, 'root': root}
+    return render('arche_m2m:templates/snippets/language.pt', response, request)
