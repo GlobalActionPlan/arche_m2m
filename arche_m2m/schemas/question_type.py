@@ -10,17 +10,20 @@ from arche_m2m.schemas.i18n import deferred_default_lang, deferred_lang_widget, 
 
 @colander.deferred
 def deferred_input_widget(node, kw):
-    values = []
     request = kw['request']
-    context = kw['context']
-    for (name, widget) in request.registry.getAdapters([context], IQuestionWidget):
-        values.append((name, widget.title))
-    return deform.widget.RadioChoiceWidget(values=values)
+    values = []
+    values.extend([(x.name, x.factory) for x in request.registry.registeredAdapters() if x.provided == IQuestionWidget])
+    return deform.widget.RadioChoiceWidget(values = values,
+                                           template = "object_radio_choice",
+                                           readonly_template = "readonly/object_radio_choice")
 
 
 class QuestionTypeSchema(colander.Schema):
     title = colander.SchemaNode(colander.String(),
                                 title=_("Title"))
+
+
+class AddQuestionTypeSchema(QuestionTypeSchema):
     input_widget = colander.SchemaNode(colander.String(),
                                        title=_("Input widget"),
                                        missing="",
@@ -43,6 +46,7 @@ class AddChoiceSchema(EditChoiceSchema):
 
 
 def includeme(config):
-    config.add_content_schema('QuestionType', QuestionTypeSchema, ('edit', 'add'))
+    config.add_content_schema('QuestionType', AddQuestionTypeSchema, 'add')
+    config.add_content_schema('QuestionType', QuestionTypeSchema, 'edit')
     config.add_content_schema('Choice', AddChoiceSchema, 'add')
     config.add_content_schema('Choice', EditChoiceSchema, ('edit', 'view'))
