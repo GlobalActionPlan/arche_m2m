@@ -1,0 +1,23 @@
+<tal:main xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:tal="http://xml.zope.org/namespaces/tal"
+  xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+  i18n:domain="arche_m2m">
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">
+      <a href="${request.resource_url(context)}">${context.title}</a>
+      <small>${context.type_title|context.type_name}</small>
+    </h3>
+  </div>
+  <div class="panel-body">
+    <div>
+      <ul>
+      <tal:lang repeat="lang context.languages">
+        <li>${lang}
+
+        </li>
+      </tal:lang>
+      </ul>
+    </div>
+  </div>
+</div>

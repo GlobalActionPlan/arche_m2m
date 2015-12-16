@@ -279,6 +279,10 @@ class BaseSurveySection(BaseForm):
     def calc_percentages(self):
         return calc_percentages(self.context)
 
+    @reify
+    def show_manager_controls(self):
+        return not self.participant_uid and self.request.has_permission(security.PERM_VIEW)
+
 
 @view_config(context = ISurveySection,
              permission = security.NO_PERMISSION_REQUIRED,

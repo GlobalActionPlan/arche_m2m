@@ -1,3 +1,4 @@
+from arche.interfaces import IContent
 from pyramid.interfaces import IDict
 from zope.interface import Attribute
 from zope.interface import Interface
@@ -31,6 +32,11 @@ class ISurveySection(Interface):
 
 class IOrganisation(Interface):
     pass
+
+
+class ITextSection(IContent):
+    """ A text section within a survey.
+    """
 
 #Adapters
 class ITranslations(Interface):
