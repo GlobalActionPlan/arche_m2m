@@ -202,7 +202,7 @@ class ManageSurveyView(BaseView):
     def render_info_panel(self, obj):
         response = render_view_to_response(obj, self.request, 'info_panel')
         if response and response.status_code == 200:
-            return response.body
+            return response.body.decode('utf-8')
 
 
 @view_config(name='participants',
