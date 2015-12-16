@@ -5,13 +5,10 @@ from arche.api import Content
 from pyramid.traversal import find_resource
 from pyramid.traversal import find_root
 from zope.interface import implementer
-import colander
-import deform
 
 from arche_m2m import _
 from arche_m2m.interfaces import ISurveySection
 from arche_m2m.models.i18n import TranslationMixin
-from arche_m2m.models.i18n import deferred_translations_node
 
 
 @implementer(ISurveySection)
@@ -52,20 +49,6 @@ class SurveySection(Content, TranslationMixin):
                 results.append(obj)
         return resolve and results or docids
 
-class SurveySectionSchema(colander.Schema):
-    title = colander.SchemaNode(colander.String(),
-                                title = _("Title"),
-                                translate = True,
-                                translate_missing = "")
-    body = colander.SchemaNode(colander.String(),
-                                title = _("Body"),
-                                widget = deform.widget.RichTextWidget(),
-                                translate = True,
-                                translate_missing = "")
-    translations = deferred_translations_node
-
 
 def includeme(config):
     config.add_content_factory(SurveySection, addable_to = ("Survey",))
-    config.add_content_schema('SurveySection', SurveySectionSchema, 'edit')
-    config.add_content_schema('SurveySection', SurveySectionSchema, 'add')

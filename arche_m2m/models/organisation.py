@@ -4,9 +4,7 @@ from BTrees.OOBTree import OOBTree
 from arche.api import Content
 from arche.api import ContextACLMixin
 from arche.api import LocalRolesMixin
-from arche.schemas import tagging_widget
 from zope.interface import implementer
-import colander
 
 from arche_m2m import _
 from arche_m2m.interfaces import IOrganisation
@@ -26,18 +24,7 @@ class Organisation(Content, LocalRolesMixin, ContextACLMixin):
         self.variants = OOBTree()
 
 
-class OrganisationSchema(colander.Schema):
-    title = colander.SchemaNode(colander.String(),
-                                title = _("Title"))
-    tags = colander.SchemaNode(colander.List(),
-                               title = _("Tags"),
-                               missing = "",
-                               widget = tagging_widget)
-
 
 def includeme(config):
     config.add_content_factory(Organisation)
     config.add_addable_content("Organisation", ("Root",))
-    config.add_content_schema('Organisation', OrganisationSchema, 'edit')
-    config.add_content_schema('Organisation', OrganisationSchema, 'add')
-    config.add_content_schema('Organisation', OrganisationSchema, 'view')
