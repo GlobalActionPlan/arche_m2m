@@ -23,6 +23,7 @@ class QuestionWidget(object):
     widget_factory = None
     question = None
     missing = ""
+    allow_choices = False
 
     def __init__(self, context):
         self.context = context
@@ -58,6 +59,7 @@ class QuestionWidget(object):
 class TextWidget(QuestionWidget):
     name = "text_widget"
     title = _("Text string")
+    description = _("Regular input line widget")
     widget_factory = deform.widget.TextInputWidget
 
 
@@ -70,6 +72,7 @@ class TextAreaWidget(QuestionWidget):
 class IntegerWidget(QuestionWidget):
     name = "int_widget"
     title = _("Integer number")
+    description = _("Only allows numbers")
     widget_factory = deform.widget.TextInputWidget
     data_type = colander.Int()
 
@@ -77,6 +80,7 @@ class IntegerWidget(QuestionWidget):
 class DecimalWidget(QuestionWidget):
     name = "decimal_widget"
     title = _("Decimal number")
+    description = _("Only allows decimals.")
     widget_factory = deform.widget.TextInputWidget
     data_type = colander.Decimal()
 
@@ -84,7 +88,9 @@ class DecimalWidget(QuestionWidget):
 class RadioChoiceWidget(QuestionWidget):
     name = "radio_choice_widget"
     title = _("Radio choice")
+    description = _("A choice widget with radio buttons")
     widget_factory = deform.widget.RadioChoiceWidget
+    allow_choices = True
 
     def widget(self, lang, **kw):
         choices = [(choice.cluster, choice.title) for choice in self.context.get_choices(lang)]
@@ -109,15 +115,19 @@ class RadioChoiceWidget(QuestionWidget):
 class DropdownChoiceWidget(RadioChoiceWidget):
     name = "dropdown_choice_widget"
     title = _("Dropdown choice")
+    description = _("A choice widget as a dropdown menu.")
     widget_factory = deform.widget.SelectWidget
+    allow_choices = True
 
 
 class CheckboxMultiChoiceWidget(RadioChoiceWidget):
     name = u"checkbox_multichoice_widget"
     title = _("Checkbox multichoice")
+    description = _("Allows several checkboxes to be ticked.")
     data_type = colander.Set()
     widget_factory = deform.widget.CheckboxChoiceWidget
     missing = ()
+    allow_choices = True
 
     def responses(self, section, question):
         assert ISurveySection.providedBy(section), "Not a survey section"
