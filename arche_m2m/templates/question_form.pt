@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      metal:use-macro="view.macro('arche:templates/master.pt')"
+      i18n:domain="arche_m2m">
+
+  <div metal:fill-slot="actionbar" />
+  <div metal:fill-slot="content">
+    <div class="row" tal:condition="view.allow_choices">
+      <div class="col-md-12">
+        <h3>
+          ${context.title}
+          <a href="${request.resource_url(context, 'edit')}"
+            class="btn btn-success">
+            <span class="glyphicon glyphicon-edit"></span>
+            <span i18n:translate="">Edit</span>
+          </a>
+        </h3>
+        <table class="table table-hover table-striped">
+          <thead>
+            <th i18n:translate="">Choice</th>
+            <th></th>
+            <th i18n:translate="">Languages</th>
+          </thead>
+          <tbody tal:define="choices context.get_choices(request.locale_name)">
+            <tr tal:repeat="choice choices">
+              <td>
+                ${choice.title}
+              </td>
+              <td>
+                <a href="${request.resource_url(choice)}"
+                  class="btn btn-success">
+                  <span class="glyphicon glyphicon-edit"></span>
+                  <span i18n:translate="">Edit</span>
+                </a>
+              </td>
+              <td tal:define="siblings view.get_siblings(choice)">
+                <tal:iter repeat="lang view.other_langs">
+                  <a tal:condition="lang not in siblings"
+                     href="${request.resource_url(context, 'add', query = {'content_type': choice.type_name, 'language': lang, 'cluster': choice.cluster})}"
+                    class="btn btn-warning">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    ${lang}
+                  </a>
+                  <a tal:condition="lang in siblings"
+                     href="${request.resource_url(siblings[lang])}"
+                    class="btn btn-success">
+                    <span class="glyphicon glyphicon-edit"></span>
+                    ${lang}
+                  </a>
+                </tal:iter>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="3">
+                <a href="${request.resource_url(context, 'add', query = {'content_type': 'Choice', 'language': request.locale_name})}"
+                  class="btn btn-success">
+                  <span class="glyphicon glyphicon-plus"></span>
+                  <tal:ts i18n:translate="">New choice</tal:ts>
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <form tal:replace="structure form" />
+      </div>
+    </div>
+  </div>
+</html>

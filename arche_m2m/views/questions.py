@@ -1,42 +1,63 @@
-from pyramid.view import view_config
-from arche import security
-from arche.views.base import BaseForm, DefaultEditForm
-from arche.views.base import BaseView
-from pyramid.decorator import reify
-from pyramid.traversal import resource_path
 import colander
 import deform
+from arche import security
+from arche.views.base import BaseForm
+from arche.views.base import BaseView
+from arche.views.base import DefaultEditForm
+from pyramid.decorator import reify
+from pyramid.httpexceptions import HTTPFound
+from pyramid.traversal import resource_path
+from pyramid.view import view_config
 
 from arche_m2m import _
 from arche_m2m.interfaces import IChoice
 from arche_m2m.interfaces import IQuestion
-from arche_m2m.interfaces import IQuestions
 from arche_m2m.interfaces import IQuestionType
 from arche_m2m.interfaces import IQuestionTypes
 from arche_m2m.interfaces import IQuestionWidget
-from pyramid.httpexceptions import HTTPFound
+from arche_m2m.interfaces import IQuestions
 
 
 @view_config(context = IQuestionType,
              name = 'view',
              permission = security.PERM_VIEW,
-             renderer = 'arche:templates/form.pt')
+             renderer = 'arche_m2m:templates/question_form.pt')
 class QuestionTypePreview(BaseForm):
     buttons = (deform.Button(name = 'check', css_class = 'btn btn-primary'),)
 
+    @reify
+    def other_langs(self):
+        langs = self.request.registry.settings.get('m2m.languages', 'en').split()
+        if self.request.locale_name in langs:
+            langs.remove(self.request.locale_name)
+        return langs
+
+    @reify
+    def question_widget(self):
+        return self.request.registry.queryAdapter(self.context,
+                                                  IQuestionWidget,
+                                                  name = self.context.input_widget)
+
+    @reify
+    def allow_choices(self):
+        return getattr(self.question_widget, 'allow_choices', False)
+
     def get_schema(self):
         schema = colander.Schema(title = _("Preview"))
-        question_widget = self.request.registry.queryAdapter(self.context,
-                                                             IQuestionWidget,
-                                                             name = self.context.input_widget)
-        if question_widget:
-            schema.add(question_widget.node(self.context.__name__))
+        if self.question_widget:
+            schema.add(self.question_widget.node(self.context.__name__))
         return schema
 
     def check_success(self, appstruct):
         self.flash_messages.add(_('Success, captured: ${appstruct}',
                                   mapping = {'appstruct': appstruct}))
         return HTTPFound(location = self.request.resource_url(self.context))
+
+    def get_siblings(self, choice):
+        siblings = {}
+        for obj in self.catalog_search(resolve = True, language = self.other_langs, cluster = choice.cluster):
+            siblings[obj.language] = obj
+        return siblings
 
 
 @view_config(context = IQuestion,
@@ -88,6 +109,16 @@ class ChoiceView(DefaultEditForm):
         for obj in self.catalog_search(resolve = True, language = self.languages, cluster = self.context.cluster):
             siblings[obj.language] = obj
         return siblings
+
+    def save_success(self, appstruct):
+        self.flash_messages.add(self.default_success, type="success")
+        self.context.update(**appstruct)
+        return HTTPFound(location = self.request.resource_url(self.context.__parent__))
+
+
+    def cancel(self, *args):
+        return HTTPFound(location=self.request.resource_url(self.context.__parent__))
+    cancel_success = cancel_failure = cancel
 
 
 @view_config(context = IQuestions,

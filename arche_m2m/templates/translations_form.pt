@@ -1,36 +1,37 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       metal:use-macro="view.macro('arche:templates/master.pt')"
-      i18n:domain="Arche">
+      i18n:domain="arche_m2m">
+
+  <div metal:fill-slot="actionbar" class="row" tal:define="siblings view.get_siblings()">
+    <div class="col-md-12">
+      <div class="btn-group">
+        <tal:iterate repeat="lang view.languages">
+          <tal:def define="obj siblings.get(lang, None)">
+          <tal:exist condition="obj">
+            <a href="${request.resource_url(obj)}"
+              title="${obj.title}"
+              tal:define="choices_glob view.question_type.get_choices(lang)|None;
+                          choices_local context.get_choices(lang)|None;"
+              class="btn ${obj is context and 'btn-default' or 'btn-success'}">
+              ${lang}
+              <tal:choices tal:condition="choices_glob or choices_local">
+                (${len(choices_glob)})
+                (${len(choices_local)})
+              </tal:choices>
+            </a>
+          </tal:exist>
+          <tal:dont_exist condition="not obj">
+            <a href="${request.resource_url(context.__parent__, 'add', query = {'content_type': context.type_name, 'language': lang, 'question_type': getattr(context, 'question_type', ''), 'cluster': context.cluster})}"
+              class="btn btn-warning">${lang}</a>
+          </tal:dont_exist>
+          </tal:def>
+        </tal:iterate>
+      </div>
+    </div>
+  </div>
+
   <div metal:fill-slot="content">
-  	<div class="row" tal:define="siblings view.get_siblings()">
-  	  <div class="col-md-12">
-        <div class="btn-group">
-          <tal:iterate repeat="lang view.languages">
-            <tal:def define="obj siblings.get(lang, None)">
-            <tal:exist condition="obj">
-              <a href="${request.resource_url(obj)}"
-                title="${obj.title}"
-                tal:define="choices_glob view.question_type.get_choices(lang)|None;
-                            choices_local context.get_choices(lang)|None;"
-                class="btn ${obj is context and 'btn-default' or 'btn-success'}">
-                ${lang}
-                <tal:choices tal:condition="choices_glob or choices_local">
-                  (${len(choices_glob)})
-                  (${len(choices_local)})
-                </tal:choices>
-              </a>
-            </tal:exist>
-            <tal:dont_exist condition="not obj">
-              <a href="${request.resource_url(context.__parent__, 'add', query = {'content_type': context.type_name, 'language': lang, 'question_type': getattr(context, 'question_type', ''), 'cluster': context.cluster})}"
-                class="btn btn-warning">${lang}</a>
-            </tal:dont_exist>
-            </tal:def>
-          </tal:iterate>
-        </div>
-  	  </div>
-  	</div>
-  	<hr/>
     <div class="row">
       <div class="col-md-12">
         <form tal:replace="structure form" />
