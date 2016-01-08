@@ -18,40 +18,63 @@ from arche_m2m.interfaces import IQuestionWidget
 from arche_m2m.interfaces import IQuestions
 
 
-@view_config(context = IQuestionType,
-             name = 'view',
-             permission = security.PERM_VIEW,
-             renderer = 'arche_m2m:templates/question_form.pt')
-class QuestionTypePreview(BaseForm):
-    buttons = (deform.Button(name = 'check', css_class = 'btn btn-primary'),)
+class BaseQuestionMixin(object):
+    """ Mixin for Question and QuestionType views.
+    """
+
+    @reify
+    def languages(self):
+        return self.request.registry.settings.get('m2m.languages', 'en').split()
 
     @reify
     def other_langs(self):
-        langs = self.request.registry.settings.get('m2m.languages', 'en').split()
+        langs = list(self.languages)
         if self.request.locale_name in langs:
             langs.remove(self.request.locale_name)
         return langs
 
     @reify
+    def question_type(self):
+        if IQuestionType.providedBy(self.context):
+            return self.context
+        return self.resolve_uid(self.context.question_type)
+
+    @reify
     def question_widget(self):
-        return self.request.registry.queryAdapter(self.context,
+        return self.request.registry.queryAdapter(self.question_type,
                                                   IQuestionWidget,
-                                                  name = self.context.input_widget)
+                                                  name = self.question_type.input_widget)
 
     @reify
     def allow_choices(self):
         return getattr(self.question_widget, 'allow_choices', False)
+
+    def get_object_siblings(self, context):
+        siblings = {}
+        if not hasattr(context, 'cluster'):
+            return siblings
+        for obj in self.catalog_search(resolve = True, language = self.languages, cluster = context.cluster):
+            siblings[obj.language] = obj
+        return siblings
+
+    def check_success(self, appstruct):
+        self.flash_messages.add(_('Success, captured: ${appstruct}',
+                                  mapping = {'appstruct': appstruct}))
+        return HTTPFound(location = self.request.resource_url(self.context))
+
+
+@view_config(context = IQuestionType,
+             name = 'view',
+             permission = security.PERM_VIEW,
+             renderer = 'arche_m2m:templates/question_form.pt')
+class QuestionTypePreview(BaseForm, BaseQuestionMixin):
+    buttons = (deform.Button(name = 'check', css_class = 'btn btn-primary'),)
 
     def get_schema(self):
         schema = colander.Schema(title = _("Preview"))
         if self.question_widget:
             schema.add(self.question_widget.node(self.context.__name__))
         return schema
-
-    def check_success(self, appstruct):
-        self.flash_messages.add(_('Success, captured: ${appstruct}',
-                                  mapping = {'appstruct': appstruct}))
-        return HTTPFound(location = self.request.resource_url(self.context))
 
     def get_siblings(self, choice):
         siblings = {}
@@ -63,31 +86,25 @@ class QuestionTypePreview(BaseForm):
 @view_config(context = IQuestion,
              name = 'view',
              permission = security.PERM_VIEW,
-             renderer='arche_m2m:templates/translations_form.pt')
-class QuestionPreview(QuestionTypePreview):
+             renderer='arche_m2m:templates/question_form.pt')
+class QuestionPreview(BaseForm, BaseQuestionMixin):
 
     @reify
     def languages(self):
         langs = self.request.registry.settings.get('m2m.languages', 'en').split()
         return langs
 
-    @reify
-    def question_type(self):
-        return self.resolve_uid(self.context.question_type)
-
     def get_schema(self):
         schema = colander.Schema(title = _("Preview"))
-        question_widget = self.request.registry.queryAdapter(self.question_type,
-                                                             IQuestionWidget,
-                                                             name = getattr(self.question_type, 'input_widget', ''))
-        if question_widget:
-            schema.add(question_widget.node(self.context.__name__,
-                                            lang = self.context.language,
-                                            question = self.context,
-                                            title = self.context.title))
+        if self.question_widget:
+            schema.add(self.question_widget.node(self.context.__name__,
+                                                lang = self.context.language,
+                                                question = self.context,
+                                                title = self.context.title))
         return schema
 
     def get_siblings(self):
+        #QUESTION siblings
         siblings = {}
         for obj in self.catalog_search(resolve = True, language = self.languages, cluster = self.context.cluster):
             siblings[obj.language] = obj
@@ -114,7 +131,6 @@ class ChoiceView(DefaultEditForm):
         self.flash_messages.add(self.default_success, type="success")
         self.context.update(**appstruct)
         return HTTPFound(location = self.request.resource_url(self.context.__parent__))
-
 
     def cancel(self, *args):
         return HTTPFound(location=self.request.resource_url(self.context.__parent__))
