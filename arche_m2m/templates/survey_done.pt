@@ -13,7 +13,8 @@
 
     <h1>${request.ttwt('done', 'Done')}</h1>
 
-    <p>${request.ttwt('participant_done_text')}</p>
+    <p>${request.ttwt('participant_done_text',
+    'Thank you for filling out the survey. In case you need to change anything, simply press the button below.')}</p>
 
     <a class="btn btn-default" href="${previous_link}">
         ${request.ttwt('previous_btn', 'Previous')}

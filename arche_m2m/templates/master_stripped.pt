@@ -14,6 +14,19 @@
   <body class="view-${request.view_name or 'default'}">
     <div class="container">
 
+      <div class="row"
+           tal:define="(completed, current) view.calc_percentages()|(False, False)"
+           tal:condition="current or completed">
+        <div class="col-md-12">
+          <br/>
+          <div class="progress">
+            <div class="progress-bar progress-bar-success" style="width: ${completed}%"></div>
+            <div class="progress-bar progress-bar-warning progress-bar-striped" style="width: ${current}%"></div>
+          </div>
+          <p>&nbsp;</p>
+        </div>
+      </div>
+
       <div tal:replace="structure view.flash_messages.render()">Flash messages, if any</div>
       <metal:content define-slot="content"></metal:content>
 

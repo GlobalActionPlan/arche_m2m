@@ -4,15 +4,6 @@
   i18n:domain="arche_m2m">
   <div metal:fill-slot="content">
 
-      <div class="row" tal:condition="not view.show_manager_controls">
-          <div class="col-m2-12">
-              <div class="progress" tal:define="(completed, current) view.calc_percentages()">
-                  <div class="progress-bar progress-bar-success" style="width: ${completed}%"></div>
-                  <div class="progress-bar progress-bar-warning progress-bar-striped" style="width: ${current}%"></div>
-              </div>
-          </div>
-      </div>
-
       <h1>${context.title}</h1>
 
       <div>${structure: context.body}</div>
