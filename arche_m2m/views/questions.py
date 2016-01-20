@@ -76,12 +76,6 @@ class QuestionTypePreview(BaseForm, BaseQuestionMixin):
             schema.add(self.question_widget.node(self.context.__name__))
         return schema
 
-    def get_siblings(self, choice):
-        siblings = {}
-        for obj in self.catalog_search(resolve = True, language = self.other_langs, cluster = choice.cluster):
-            siblings[obj.language] = obj
-        return siblings
-
 
 @view_config(context = IQuestion,
              name = 'view',
@@ -103,13 +97,6 @@ class QuestionPreview(BaseForm, BaseQuestionMixin):
                                                 question = self.context,
                                                 title = self.context.title))
         return schema
-
-    def get_siblings(self):
-        #QUESTION siblings
-        siblings = {}
-        for obj in self.catalog_search(resolve = True, language = self.languages, cluster = self.context.cluster):
-            siblings[obj.language] = obj
-        return siblings
 
 
 @view_config(context = IChoice,

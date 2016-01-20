@@ -62,7 +62,7 @@
                   <span i18n:translate="">Edit</span>
                 </a>
               </td>
-              <td tal:define="siblings view.get_siblings(choice)">
+              <td tal:define="siblings view.get_object_siblings(choice)">
                 <tal:iter repeat="lang view.other_langs">
                   <a tal:condition="lang not in siblings"
                      href="${request.resource_url(context, 'add',
