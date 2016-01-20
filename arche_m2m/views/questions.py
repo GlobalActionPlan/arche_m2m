@@ -88,6 +88,7 @@ class QuestionTypePreview(BaseForm, BaseQuestionMixin):
              permission = security.PERM_VIEW,
              renderer='arche_m2m:templates/question_form.pt')
 class QuestionPreview(BaseForm, BaseQuestionMixin):
+    buttons = (deform.Button(name = 'check', css_class = 'btn btn-primary'),)
 
     @reify
     def languages(self):
