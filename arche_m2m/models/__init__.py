@@ -3,6 +3,7 @@ def includeme(config):
     config.include('.cluster_tags')
     config.include('.i18n')
     config.include('.organisation')
+    config.include('.request_utils')
     config.include('.question')
     config.include('.question_type')
     config.include('.question_types')

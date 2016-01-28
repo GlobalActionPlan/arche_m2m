@@ -21,25 +21,9 @@ class BaseExportView(BaseView):
             if ISurveySection.providedBy(obj):
                 yield obj
 
-    def get_question_type(self, question):
-        question_type = self.resolve_uid(question.question_type, perm = None)
-        if not question_type:
-            raise HTTPForbidden("%r has no question type set." % question)
-        return question_type
-
-    def get_widget(self, question_type):
-        if IQuestion.providedBy(question_type):
-            question_type = self.get_question_type(question_type)
-        question_widget = self.request.registry.queryAdapter(question_type,
-                                                             IQuestionWidget,
-                                                             name = getattr(question_type, 'input_widget', ''))
-        if not question_widget:
-            raise HTTPForbidden("%r has no question widget set." % question_type)
-        return question_widget
-
     def get_choices(self, question):
         assert IQuestion.providedBy(question)
-        question_type = self.get_question_type(question)
+        question_type = self.request.get_question_type(question)
         results = [x for x in question_type.get_choices(self.request.locale_name)]
         results.extend([x for x in question.get_choices(self.request.locale_name)])
         return results
@@ -76,8 +60,7 @@ class CSVExport(BaseExportView):
             for (choices, questions) in self.get_choice_sorted_questions(section).items():
                 write_header = True
                 for question in questions:
-                    question_type = self.get_question_type(question)
-                    question_widget = self.get_widget(question_type)
+                    question_widget = self.request.get_question_widget(question)
                     choice_objects = self.get_choices(question)
                     if write_header:
                         row = ['']

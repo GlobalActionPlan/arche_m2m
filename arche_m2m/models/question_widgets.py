@@ -24,6 +24,7 @@ class QuestionWidget(object):
     question = None
     missing = ""
     allow_choices = False
+    multichoice = False
 
     def __init__(self, context):
         self.context = context
@@ -128,6 +129,7 @@ class CheckboxMultiChoiceWidget(RadioChoiceWidget):
     widget_factory = deform.widget.CheckboxChoiceWidget
     missing = ()
     allow_choices = True
+    multichoice = True
 
     def responses(self, section, question):
         assert ISurveySection.providedBy(section), "Not a survey section"

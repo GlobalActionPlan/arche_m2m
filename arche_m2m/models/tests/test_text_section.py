@@ -1,7 +1,6 @@
 from __future__ import unicode_literals
 from unittest import TestCase
 
-from arche.interfaces import IPopulator
 from pyramid import testing
 from zope.interface.verify import verifyClass
 from zope.interface.verify import verifyObject
