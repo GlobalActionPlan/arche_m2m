@@ -224,12 +224,12 @@ class BaseSurveySection(BaseForm):
 
     @property
     def buttons(self):
-        return (deform.Button(name = 'previous',
-                              title = self.request.ttwt('previous_btn', 'Previous'),
-                              css_class = 'btn btn-default'),
-                deform.Button(name = 'next',
+        return (deform.Button(name = 'next',
                               title = self.request.ttwt('next_btn', 'Next'),
-                              css_class = 'btn btn-primary submit-default'))
+                              css_class = 'btn btn-primary submit-default pull-right'),
+                deform.Button(name = 'previous',
+                              title = self.request.ttwt('previous_btn', 'Previous'),
+                              css_class = 'btn btn-default'),)
 
     @reify
     def survey(self):
