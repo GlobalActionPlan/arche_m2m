@@ -27,7 +27,8 @@
         </div>
       </div>
 
-      <div tal:replace="structure view.flash_messages.render()">Flash messages, if any</div>
+      <div data-flash-slot="main"></div>
+
       <metal:content define-slot="content"></metal:content>
 
     </div><!-- container -->
