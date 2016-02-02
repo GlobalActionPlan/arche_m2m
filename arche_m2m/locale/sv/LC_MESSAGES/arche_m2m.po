@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2015-09-01 09:57+0200\n"
-"PO-Revision-Date: 2015-09-01 09:39+0100\n"
+"POT-Creation-Date: 2016-02-02 14:40+0100\n"
+"PO-Revision-Date: 2016-02-02 15:10+0100\n"
 "Last-Translator: Robin Harms Oredsson <robin@betahaus.net>\n"
 "Language-Team: Swedish\n"
 "Language: sv\n"
@@ -14,401 +14,474 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.6.9\n"
+"X-Generator: Poedit 1.8.6\n"
 
-#: src/arche_m2m/arche_m2m/models/i18n.py:67
-#: src/arche_m2m/arche_m2m/templates/questions.pt:46
+#: arche_m2m/models/i18n.py:71 arche_m2m/templates/questions.pt:46
 msgid "Translations"
 msgstr "Översättningar"
 
-#: src/arche_m2m/arche_m2m/models/organisation.py:17
+#: arche_m2m/models/organisation.py:15
 msgid "Organisation"
 msgstr "Organization"
 
-#: src/arche_m2m/arche_m2m/models/organisation.py:31
-#: src/arche_m2m/arche_m2m/models/question.py:143
-#: src/arche_m2m/arche_m2m/models/question_type.py:65
-#: src/arche_m2m/arche_m2m/models/question_types.py:27
-#: src/arche_m2m/arche_m2m/models/questions.py:26
-#: src/arche_m2m/arche_m2m/models/survey.py:66
-#: src/arche_m2m/arche_m2m/models/survey_section.py:56
-msgid "Title"
-msgstr "Rubrik"
-
-#: src/arche_m2m/arche_m2m/models/organisation.py:33
-#: src/arche_m2m/arche_m2m/models/question.py:157
-#: src/arche_m2m/arche_m2m/templates/questions.pt:47
-msgid "Tags"
-msgstr "Tags"
-
-#: src/arche_m2m/arche_m2m/models/question.py:25
-#: src/arche_m2m/arche_m2m/templates/question_types.pt:15
-#: src/arche_m2m/arche_m2m/templates/questions.pt:44
+#: arche_m2m/models/question.py:21 arche_m2m/templates/question_types.pt:15
+#: arche_m2m/templates/questions.pt:44
 msgid "Question"
 msgstr "Fråga"
 
-#: src/arche_m2m/arche_m2m/models/question.py:145
-#: src/arche_m2m/arche_m2m/models/question_type.py:79
-#: src/arche_m2m/arche_m2m/views/language.py:29
-msgid "Language"
-msgstr "Språk"
-
-#: src/arche_m2m/arche_m2m/models/question.py:149
-msgid "Required"
-msgstr "Krävd"
-
-#: src/arche_m2m/arche_m2m/models/question.py:153
-#: src/arche_m2m/arche_m2m/models/question_type.py:25
+#: arche_m2m/models/question_type.py:19 arche_m2m/schemas/question.py:55
 msgid "Question type"
 msgstr "Frågetyp"
 
-#: src/arche_m2m/arche_m2m/models/question_type.py:44
+#: arche_m2m/models/question_type.py:38 arche_m2m/templates/question_form.pt:48
 msgid "Choice"
 msgstr "Val"
 
-#: src/arche_m2m/arche_m2m/models/question_type.py:67
-msgid "Input widget"
-msgstr ""
-
-#: src/arche_m2m/arche_m2m/models/question_type.py:74
-msgid "Text on choice"
-msgstr "Text för val"
-
-#: src/arche_m2m/arche_m2m/models/question_types.py:16
+#: arche_m2m/models/question_types.py:15
 msgid "Question types"
 msgstr "Frågetyp"
 
-#: src/arche_m2m/arche_m2m/models/question_widgets.py:59
+#: arche_m2m/models/question_widgets.py:62
 msgid "Text string"
 msgstr "Textsträng"
 
-#: src/arche_m2m/arche_m2m/models/question_widgets.py:65
+#: arche_m2m/models/question_widgets.py:63
+msgid "Regular input line widget"
+msgstr "Normal input "
+
+#: arche_m2m/models/question_widgets.py:69
 msgid "Text area (paragraph)"
 msgstr "Textarea (paragraf)"
 
-#: src/arche_m2m/arche_m2m/models/question_widgets.py:71
+#: arche_m2m/models/question_widgets.py:75
 msgid "Integer number"
 msgstr "Heltal"
 
-#: src/arche_m2m/arche_m2m/models/question_widgets.py:78
+#: arche_m2m/models/question_widgets.py:76
+msgid "Only allows numbers"
+msgstr "Tillåter bara nummer"
+
+#: arche_m2m/models/question_widgets.py:83
 msgid "Decimal number"
 msgstr "Decimaltal"
 
-#: src/arche_m2m/arche_m2m/models/question_widgets.py:85
+#: arche_m2m/models/question_widgets.py:84
+msgid "Only allows decimals."
+msgstr "Tillåter bara decimaler"
+
+#: arche_m2m/models/question_widgets.py:91
 msgid "Radio choice"
 msgstr "Radioval"
 
-#: src/arche_m2m/arche_m2m/models/question_widgets.py:109
-msgid "Dropdown choice"
-msgstr "Dropdownmeny"
+#: arche_m2m/models/question_widgets.py:92
+msgid "A choice widget with radio buttons"
+msgstr "En val-widget med radioknappar"
 
-#: src/arche_m2m/arche_m2m/models/question_widgets.py:115
+#: arche_m2m/models/question_widgets.py:118
+msgid "Dropdown choice"
+msgstr "Dropdown-val"
+
+#: arche_m2m/models/question_widgets.py:119
+msgid "A choice widget as a dropdown menu."
+msgstr "En val-widget med dropdown-meny."
+
+#: arche_m2m/models/question_widgets.py:126
 msgid "Checkbox multichoice"
 msgstr "Checkbox flerval"
 
-#: src/arche_m2m/arche_m2m/models/questions.py:15
+#: arche_m2m/models/question_widgets.py:127
+msgid "Allows several checkboxes to be ticked."
+msgstr "Tillåter markering av flera kryssrutor."
+
+#: arche_m2m/models/questions.py:14
 msgid "Questions"
 msgstr "Frågor"
 
-#: src/arche_m2m/arche_m2m/models/survey.py:23
+#: arche_m2m/models/survey.py:19
 msgid "Survey"
 msgstr "Enkät"
 
-#: src/arche_m2m/arche_m2m/models/survey.py:72
+#: arche_m2m/models/survey_section.py:16
+msgid "Survey section"
+msgstr "Enkätsektion"
+
+#: arche_m2m/models/text_section.py:12
+msgid "Text section"
+msgstr "Textsektion"
+
+#: arche_m2m/models/workflows.py:13 arche_m2m/models/workflows.py:28
+msgid "Open"
+msgstr "Öppen"
+
+#: arche_m2m/models/workflows.py:14
+msgid "Survey opened for participants"
+msgstr "Enkäten är öppen för deltagare"
+
+#: arche_m2m/models/workflows.py:20 arche_m2m/models/workflows.py:29
+#: arche_m2m/templates/survey_closed.pt:12
+msgid "Closed"
+msgstr "Stägd"
+
+#: arche_m2m/models/workflows.py:21
+msgid "Now closed for new participants"
+msgstr "Nu stängd för nya deltagare"
+
+#: arche_m2m/models/workflows.py:27
+msgid "Survey workflow"
+msgstr "Arbetsflöde för enkät"
+
+#: arche_m2m/schemas/organisation.py:11 arche_m2m/schemas/question.py:45
+#: arche_m2m/schemas/question_type.py:26 arche_m2m/schemas/question_types.py:10
+#: arche_m2m/schemas/questions.py:10 arche_m2m/schemas/survey.py:15
+#: arche_m2m/schemas/survey_section.py:12 arche_m2m/schemas/text_section.py:14
+#: arche_m2m/templates/survey_manage.pt:75
+msgid "Title"
+msgstr "Rubrik"
+
+#: arche_m2m/schemas/organisation.py:13 arche_m2m/schemas/question.py:59
+#: arche_m2m/templates/questions.pt:47 arche_m2m/templates/survey_manage.pt:78
+msgid "Tags"
+msgstr "Tags"
+
+#: arche_m2m/schemas/question.py:47 arche_m2m/schemas/question_type.py:47
+#: arche_m2m/templates/snippets/language.pt:9
+msgid "Language"
+msgstr "Språk"
+
+#: arche_m2m/schemas/question.py:51
+msgid "Are participants required to answer this?"
+msgstr "Är deltagare tvungna att svara på detta?"
+
+#: arche_m2m/schemas/question_type.py:35
+msgid "Input widget"
+msgstr "Inmatnings-widget"
+
+#: arche_m2m/schemas/question_type.py:42
+msgid "Text on choice"
+msgstr "Text för val"
+
+#. Default: Allow anonymous people to invite themselves to the survey?
+#: arche_m2m/schemas/survey.py:18
+msgid "allow_anonymous_to_invite_themselves_title"
+msgstr ""
+
+#. Default: When someone reaches the survey link, allow them to enter their
+#. email address to get an invitation and participate in the survey.
+#: arche_m2m/schemas/survey.py:20
+msgid "allow_anonymous_to_participate_description"
+msgstr ""
+
+#: arche_m2m/schemas/survey.py:36
 msgid "Email subject and text header"
 msgstr "Ämne för eposten och rubrik i eposttexten"
 
-#: src/arche_m2m/arche_m2m/models/survey.py:73
+#: arche_m2m/schemas/survey.py:37
 msgid "Will be visible in the subject line, and as a header in the email body."
 msgstr "Kommer att synas i ämnesraden och som rubrik i eposttexten"
 
 #. Default: Message - please note that the link will be added as a new line
 #. below the message
-#: src/arche_m2m/arche_m2m/models/survey.py:75
+#: arche_m2m/schemas/survey.py:39
 msgid "survey_invitation_message_title"
 msgstr ""
 "Meddelande – länken till enkäten kommer att läggas till sist i meddelandet"
 
-#: src/arche_m2m/arche_m2m/models/survey.py:78
+#: arche_m2m/schemas/survey.py:42
 msgid "Please fill in the survey. Click the link below to access it:"
 msgstr ""
 "Var vänlig fyll i enkäten. Klicka på länken längst ned för att starta den."
 
-#: src/arche_m2m/arche_m2m/models/survey.py:80
+#: arche_m2m/schemas/survey.py:44
 msgid "Participant email addresses - add one per row."
 msgstr "Deltagarnas epostadresser – en adress per rad."
 
 #. Default: Remember to only add users who should recieve the message in this
 #. language.
-#: src/arche_m2m/arche_m2m/models/survey.py:81
+#: arche_m2m/schemas/survey.py:45
 msgid "invitation_emails_lang_notice"
 msgstr "Lägg endast till mottagare som ska få enkäten på detta språk"
 
-#: src/arche_m2m/arche_m2m/models/survey_section.py:21
-msgid "Survey section"
-msgstr "Enkätsektion"
+#: arche_m2m/schemas/survey.py:52
+msgid "Your email adress"
+msgstr "Din epostadress"
 
-#: src/arche_m2m/arche_m2m/models/survey_section.py:60
+#. Default: You'll get an email with the link to start the survey.
+#: arche_m2m/schemas/survey.py:53
+msgid "self_invite_form_description"
+msgstr "Du kommer få ett epostmeddelande med en länk för att starta enkäten."
+
+#: arche_m2m/schemas/survey_section.py:16 arche_m2m/schemas/text_section.py:16
 msgid "Body"
 msgstr "Textinnehåll"
 
-#: src/arche_m2m/arche_m2m/models/workflows.py:27
-msgid "Survey workflow"
-msgstr "Arbetsflöde för enkät"
-
-#: src/arche_m2m/arche_m2m/models/workflows.py:13
-#: src/arche_m2m/arche_m2m/models/workflows.py:28
-msgid "Open"
-msgstr "Öppen"
-
-#: src/arche_m2m/arche_m2m/models/workflows.py:14
-msgid "Survey opened for participants"
-msgstr "Enkäten är öppen för deltagare"
-
-#: src/arche_m2m/arche_m2m/models/workflows.py:20
-#: src/arche_m2m/arche_m2m/models/workflows.py:29
-#: src/arche_m2m/arche_m2m/templates/survey_closed.pt:12
-msgid "Closed"
-msgstr "Stägd"
-
-#: src/arche_m2m/arche_m2m/models/workflows.py:21
-msgid "Now closed for new participants"
-msgstr "Nu stängd för nya deltagare"
-
-#: src/arche_m2m/arche_m2m/schemas/validators.py:22
+#: arche_m2m/schemas/validators.py:22
 #, python-format
 msgid "The following addresses is invalid: ${emails}"
 msgstr "Dessa epostadresser är inte godkända: ${emails}"
 
-#: src/arche_m2m/arche_m2m/templates/modal_form.pt:10
+#: arche_m2m/templates/modal_form.pt:8
 msgid "Variant"
 msgstr "Variant"
 
-#: src/arche_m2m/arche_m2m/templates/modal_form.pt:17
-#: src/arche_m2m/arche_m2m/templates/survey_manage.pt:44
+#: arche_m2m/templates/modal_form.pt:15 arche_m2m/templates/survey_manage.pt:23
 msgid "Save"
 msgstr "Spara"
 
-#: src/arche_m2m/arche_m2m/templates/modal_form.pt:18
+#: arche_m2m/templates/modal_form.pt:16
 msgid "Close"
 msgstr "Stäng"
 
-#: src/arche_m2m/arche_m2m/templates/organisation.pt:16
+#: arche_m2m/templates/organisation.pt:16
 msgid "Local questions:"
 msgstr "Lokala frågor:"
 
-#: src/arche_m2m/arche_m2m/templates/organisation.pt:26
+#: arche_m2m/templates/organisation.pt:26
 msgid "Surveys"
 msgstr "Enkäter"
 
-#: src/arche_m2m/arche_m2m/templates/organisation.pt:30
+#: arche_m2m/templates/organisation.pt:30
 msgid "Name"
 msgstr "Namn"
 
-#: src/arche_m2m/arche_m2m/templates/organisation.pt:31
-#: src/arche_m2m/arche_m2m/templates/survey_view.pt:18
+#: arche_m2m/templates/organisation.pt:31 arche_m2m/templates/survey_view.pt:18
 msgid "Participants"
 msgstr "Deltagare"
 
-#: src/arche_m2m/arche_m2m/templates/organisation.pt:32
+#: arche_m2m/templates/organisation.pt:32
 msgid "Sections"
 msgstr "Sektioner"
 
-#: src/arche_m2m/arche_m2m/templates/question_types.pt:16
+#: arche_m2m/templates/question_form.pt:15
+#: arche_m2m/templates/question_form.pt:61
+msgid "Edit"
+msgstr "Redigera"
+
+#: arche_m2m/templates/question_form.pt:50
+msgid "Languages"
+msgstr "Språk"
+
+#: arche_m2m/templates/question_form.pt:89
+msgid "New choice"
+msgstr "Nytt val"
+
+#: arche_m2m/templates/question_types.pt:16
 msgid "Choices"
 msgstr "Val"
 
-#: src/arche_m2m/arche_m2m/templates/questions.pt:29
+#: arche_m2m/templates/questions.pt:29
 msgid "listing"
 msgstr "lista"
 
-#: src/arche_m2m/arche_m2m/templates/questions.pt:34
+#: arche_m2m/templates/questions.pt:34
 msgid "Filtered list on:"
 msgstr "Listan är filtrerad på:"
 
-#: src/arche_m2m/arche_m2m/templates/questions.pt:36
+#: arche_m2m/templates/questions.pt:36
 msgid "<dynamic element>"
 msgstr "<dynamiskt element>"
 
-#: src/arche_m2m/arche_m2m/templates/questions.pt:45
+#: arche_m2m/templates/questions.pt:45
 msgid "Type"
 msgstr "Typ"
 
-#: src/arche_m2m/arche_m2m/templates/survey_closed.pt:13
+#: arche_m2m/templates/site.pt:18
+msgid "Organisations"
+msgstr "Organisationer"
+
+#: arche_m2m/templates/survey_closed.pt:13
 msgid "This survey is closed and not open for participation."
 msgstr "Enkäten är stängd för deltagande"
 
-#: src/arche_m2m/arche_m2m/templates/survey_done.pt:14
-msgid "Done"
-msgstr "Färdig"
-
-#. Default: Thank you for filling out the survey. In case you need to change
-#. anything, simply press the button below.
-#: src/arche_m2m/arche_m2m/templates/survey_done.pt:16
-msgid "participant_done_text"
-msgstr ""
-"Tack för att du svarat på enkäten. Om du vill ändra något, klicka på knappen "
-"nedan."
-
-#: src/arche_m2m/arche_m2m/templates/survey_done.pt:20
-msgid "Previous"
-msgstr "Föregående"
-
-#: src/arche_m2m/arche_m2m/templates/survey_manage.pt:15
+#: arche_m2m/templates/survey_manage.pt:14
 msgid "Manage questions"
 msgstr "Hantera frågor"
 
-#: src/arche_m2m/arche_m2m/templates/survey_manage.pt:16
+#: arche_m2m/templates/survey_manage.pt:15
 msgid "Drag and select..."
 msgstr "Klicka på en fråga och drag den…"
 
-#: src/arche_m2m/arche_m2m/templates/survey_manage.pt:17
-msgid "Working with"
-msgstr "Arbetar med"
+#: arche_m2m/templates/survey_manage.pt:16
+msgid "Working with locale:"
+msgstr "Arbetar med språk:"
 
-#: src/arche_m2m/arche_m2m/templates/survey_manage.pt:27
-msgid "(tags)"
-msgstr "(tags)"
-
-#: src/arche_m2m/arche_m2m/templates/survey_manage.pt:30
-msgid "Add from selected tag"
-msgstr "Lägg till från vald tag"
-
-#: src/arche_m2m/arche_m2m/templates/survey_manage.pt:33
-msgid "Remove from selected tag"
-msgstr "Ta bort från vald tag"
-
-#: src/arche_m2m/arche_m2m/templates/survey_manage.pt:45
+#: arche_m2m/templates/survey_manage.pt:24
 msgid "Cancel"
 msgstr "Avbryt"
 
-#: src/arche_m2m/arche_m2m/templates/survey_manage.pt:51
+#: arche_m2m/templates/survey_manage.pt:30
+msgid "(tags)"
+msgstr "(taggar)"
+
+#: arche_m2m/templates/survey_manage.pt:33
+msgid "Add from selected tag"
+msgstr "Lägg till från vald tagg"
+
+#: arche_m2m/templates/survey_manage.pt:36
+msgid "Remove from selected tag"
+msgstr "Ta bort från vald tag"
+
+#: arche_m2m/templates/survey_manage.pt:66
+msgid "(show all)"
+msgstr "(visa alla)"
+
+#: arche_m2m/templates/survey_manage.pt:70
+msgid "Filter on selected tag"
+msgstr "Filtrera på vald tagg"
+
+#: arche_m2m/templates/survey_manage.pt:72
 msgid "Question pool"
 msgstr "Samtliga frågor"
 
-#: src/arche_m2m/arche_m2m/templates/survey_participans.pt:11
+#: arche_m2m/templates/survey_manage.pt:81
+msgid "Lang"
+msgstr "Språk"
+
+#: arche_m2m/templates/survey_manage.pt:95
+msgid "Question legend"
+msgstr "Frågelegend"
+
+#: arche_m2m/templates/survey_manage.pt:98
+msgid "Regular question"
+msgstr "Normal fråga"
+
+#: arche_m2m/templates/survey_manage.pt:99
+msgid "Question local to this organisation"
+msgstr ""
+
+#: arche_m2m/templates/survey_manage.pt:100
+msgid "Local variant"
+msgstr "Lokal variant"
+
+#: arche_m2m/templates/survey_participans.pt:11
 msgid "Manage participants"
 msgstr "Hantera deltagare"
 
-#: src/arche_m2m/arche_m2m/templates/survey_participans.pt:14
+#: arche_m2m/templates/survey_participans.pt:14
 msgid "Invited"
 msgstr "inbjudna"
 
-#: src/arche_m2m/arche_m2m/templates/survey_participans.pt:18
+#: arche_m2m/templates/survey_participans.pt:18
 msgid "Finished"
 msgstr "Avslutade"
 
-#: src/arche_m2m/arche_m2m/templates/survey_participans.pt:22
+#: arche_m2m/templates/survey_participans.pt:22
 msgid "Remaining"
 msgstr "Återstående"
 
 #. Default: There aren't any participants invited yet. Try clicking the
 #. invitations link and invite some.
-#: src/arche_m2m/arche_m2m/templates/survey_participans.pt:28
+#: arche_m2m/templates/survey_participans.pt:28
 msgid "no_participants_invited"
 msgstr ""
-"Inga deltagare har bjudits in ännu. Klicka på inbjudningslänken och bjud in "
-"några :)"
+"Inga deltagare har bjudits in ännu. Klicka på inbjudningar för att bjuda in."
 
-#: src/arche_m2m/arche_m2m/templates/survey_participans.pt:31
-#: src/arche_m2m/arche_m2m/templates/survey_view.pt:15
+#: arche_m2m/templates/survey_participans.pt:31
+#: arche_m2m/templates/survey_view.pt:15
 msgid "Invite"
 msgstr "Bjud in"
 
-#: src/arche_m2m/arche_m2m/templates/survey_participans.pt:35
+#: arche_m2m/templates/survey_participans.pt:35
 msgid "Send reminder"
 msgstr "Skicka påminnelse"
 
 #. Default: Will only be sent to participants who haven't done 100 percent of
 #. the survey.
-#: src/arche_m2m/arche_m2m/templates/survey_participans.pt:36
+#: arche_m2m/templates/survey_participans.pt:36
 msgid "send_reminder_description_text"
 msgstr ""
 "Kommer endast att skickas till deltagare som inte gjort klart 100% av "
 "enkäten."
 
-#: src/arche_m2m/arche_m2m/templates/survey_translate_questions.pt:12
+#: arche_m2m/templates/survey_translate_questions.pt:12
 msgid "Translate questions"
 msgstr "Översätt frågor"
 
-#: src/arche_m2m/arche_m2m/templates/survey_translate_questions.pt:13
+#: arche_m2m/templates/survey_translate_questions.pt:13
 msgid "Translating"
 msgstr "Översätter"
 
-#: src/arche_m2m/arche_m2m/templates/survey_view.pt:21
+#: arche_m2m/templates/survey_view.pt:21
 msgid "Manage"
 msgstr "Hantera"
 
-#: src/arche_m2m/arche_m2m/templates/survey_view.pt:24
+#: arche_m2m/templates/survey_view.pt:24
 msgid "Export results"
 msgstr "Exportera resultat"
 
-#: src/arche_m2m/arche_m2m/templates/survey_view.pt:46
-msgid "Translate"
-msgstr "Översätt"
-
-#: src/arche_m2m/arche_m2m/views/export.py:26
+#: arche_m2m/views/export.py:48
 msgid "Export using language:"
 msgstr "Exporterar med språk:"
 
-#: src/arche_m2m/arche_m2m/views/export.py:29
+#: arche_m2m/views/export.py:50
 msgid "Survey languages"
 msgstr "Enkätspråk"
 
-#: src/arche_m2m/arche_m2m/views/export.py:40
+#: arche_m2m/views/export.py:57
 msgid "Section:"
 msgstr "Sektion:"
 
-#: src/arche_m2m/arche_m2m/views/export.py:41
+#: arche_m2m/views/export.py:58
 msgid "Responses:"
 msgstr "Svar:"
 
-#: src/arche_m2m/arche_m2m/views/language.py:17
+#: arche_m2m/views/language.py:20
 #, python-format
 msgid "Language set to ${selected_lang}"
 msgstr "Språk satt till ${selected_lang}"
 
-#: src/arche_m2m/arche_m2m/views/questions.py:38
+#: arche_m2m/views/questions.py:61
 #, python-format
 msgid "Success, captured: ${appstruct}"
-msgstr "Succé, avläst: ${appstruct}"
+msgstr "Fungerade, avläst: ${appstruct}"
 
-#: src/arche_m2m/arche_m2m/views/questions.py:28
-#: src/arche_m2m/arche_m2m/views/questions.py:59
+#: arche_m2m/views/questions.py:74 arche_m2m/views/questions.py:93
 msgid "Preview"
 msgstr "Förhandsvisning"
 
-#: src/arche_m2m/arche_m2m/views/survey.py:329
-msgid "Send invitation(s)"
-msgstr "Skicka inbjudning(ar)"
-
-#. Default: You need to add a Survey section and then use this view to manage
-#. the questions.
-#: src/arche_m2m/arche_m2m/views/survey.py:145
-msgid "no_sections_added_notice"
-msgstr ""
-"Lägg först till en enkätsektion, kom sedan tillbaka hit för att hantera "
-"frågor för sektionen."
-
-#: src/arche_m2m/arche_m2m/views/survey.py:343
-msgid "Invitations sent"
-msgstr "Inbjudningarna har sänts"
-
-#: src/arche_m2m/arche_m2m/views/survey.py:127
+#: arche_m2m/views/survey.py:160
 msgid "Canceled"
 msgstr "Avbruten"
 
-#: src/arche_m2m/arche_m2m/views/survey.py:132
+#: arche_m2m/views/survey.py:165
 msgid "Saved"
 msgstr "Sparad"
 
-#: src/arche_m2m/arche_m2m/views/survey.py:230
+#. Default: You need to add a Survey section and then use this view to manage
+#. the questions.
+#: arche_m2m/views/survey.py:179
+msgid "no_sections_added_notice"
+msgstr ""
+"Du måste lägga till en enkätsektion och sedan använda denna vy för att "
+"hantera frågorna."
+
+#: arche_m2m/views/survey.py:327
 msgid "<Missing question>"
 msgstr "<En fråga saknas>"
 
-#: src/arche_m2m/arche_m2m/views/user.py:4
-msgid "Hello world"
-msgstr ""
+#: arche_m2m/views/survey.py:403
+msgid "Send invitation(s)"
+msgstr "Skicka inbjudning(ar)"
+
+#: arche_m2m/views/survey.py:417
+msgid "Invitations sent"
+msgstr "Inbjudningarna har sänts"
+
+#~ msgid "Required"
+#~ msgstr "Krävd"
+
+#~ msgid "Done"
+#~ msgstr "Färdig"
+
+#~ msgid "participant_done_text"
+#~ msgstr ""
+#~ "Tack för att du svarat på enkäten. Om du vill ändra något, klicka på "
+#~ "knappen nedan."
+
+#~ msgid "Previous"
+#~ msgstr "Föregående"
+
+#~ msgid "Translate"
+#~ msgstr "Översätt"
 
 #~ msgid ""
 #~ "Message - please note that the link will be added as a new line below the "
