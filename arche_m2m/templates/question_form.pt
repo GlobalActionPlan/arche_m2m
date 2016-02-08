@@ -50,7 +50,7 @@
             <th></th>
             <th i18n:translate="">Languages</th>
           </thead>
-          <tbody tal:define="choices context.get_choices(request.locale_name)">
+          <tbody tal:define="choices context.get_choices(getattr(context, 'language', request.locale_name))">
             <tr tal:repeat="choice choices">
               <td>
                 ${choice.title}

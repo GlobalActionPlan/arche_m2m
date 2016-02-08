@@ -30,7 +30,7 @@ class BaseQuestionMixin(object):
     def other_langs(self):
         langs = list(self.languages)
         if self.request.locale_name in langs:
-            langs.remove(self.request.locale_name)
+            langs.remove(getattr(self.context, 'language', self.request.locale_name))
         return langs
 
     @reify
