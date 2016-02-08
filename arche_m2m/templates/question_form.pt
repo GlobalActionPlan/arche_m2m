@@ -3,7 +3,8 @@
       metal:use-macro="view.macro('arche:templates/master.pt')"
       i18n:domain="arche_m2m">
 
-  <div metal:fill-slot="content">
+  <tal:content metal:fill-slot="content"
+               tal:define="question_siblings view.get_object_siblings(context)">
     <div class="row" >
       <div class="col-md-12">
         <h3>
@@ -14,9 +15,9 @@
             <span class="glyphicon glyphicon-edit"></span>
             <span i18n:translate="">Edit</span>
           </a>
-          <div class="btn-group" role="group" tal:define="siblings view.get_object_siblings(context)">
+          <div class="btn-group" role="group">
             <tal:iterate repeat="lang view.languages">
-              <tal:def define="obj siblings.get(lang, None)">
+              <tal:def define="obj question_siblings.get(lang, None)">
               <tal:exist condition="obj">
                 <a href="${request.resource_url(obj)}"
                   title="${obj.title}"
@@ -63,8 +64,8 @@
               </td>
               <td tal:define="siblings view.get_object_siblings(choice)">
                 <tal:iter repeat="lang view.other_langs">
-                  <a tal:condition="lang not in siblings"
-                     href="${request.resource_url(context, 'add',
+                  <a tal:condition="lang not in siblings and lang in question_siblings"
+                     href="${request.resource_url(question_siblings[lang], 'add',
                                                   query = {'content_type': choice.type_name,
                                                            'language': lang, 'cluster': choice.cluster})}"
                     class="btn btn-warning">
@@ -83,7 +84,7 @@
             <tr>
               <td colspan="3">
                 <a href="${request.resource_url(context, 'add',
-                                                query = {'content_type': 'Choice', 'language': request.locale_name})}"
+                                                query = {'content_type': 'Choice', 'language': getattr(context, 'language', request.locale_name)})}"
                   class="btn btn-success">
                   <span class="glyphicon glyphicon-plus"></span>
                   <tal:ts i18n:translate="">New choice</tal:ts>
@@ -99,5 +100,5 @@
         <form tal:replace="structure form" />
       </div>
     </div>
-  </div>
+  </tal:content>
 </html>

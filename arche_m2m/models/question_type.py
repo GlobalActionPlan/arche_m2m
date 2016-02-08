@@ -1,8 +1,11 @@
 from __future__ import unicode_literals
 
+from pyramid.httpexceptions import HTTPForbidden
+
 from arche.api import Base
 from arche.api import Content
 from arche.interfaces import IIndexedContent
+from arche.interfaces import IObjectAddedEvent
 from zope.interface import implementer
 
 from arche_m2m import _
@@ -43,8 +46,15 @@ class Choice(Base):
     cluster = ""
     language = ""
 
+def choice_language_guard(context, event):
+    parent_lang = getattr(context.__parent__, 'language', None)
+    if parent_lang and parent_lang != context.language:
+        raise HTTPForbidden(_("It's not possible to add choices with language "
+                              "'${choice_lang}' to a parent with the language '${parent_lang}'.",
+                              mapping = {'choice_lang': context.language,
+                                         'parent_lang': parent_lang}))
 
 def includeme(config):
     config.add_content_factory(QuestionType, addable_to = 'QuestionTypes')
     config.add_content_factory(Choice, addable_to = ('QuestionType', 'Question'))
-
+    config.add_subscriber(choice_language_guard, [IChoice, IObjectAddedEvent])
