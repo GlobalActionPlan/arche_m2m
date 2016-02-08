@@ -5,7 +5,7 @@
 <div class="panel panel-default">
   <div class="panel-heading">
     <h3 class="panel-title">
-      <a href="${request.resource_url(context)}">${context.title}</a>
+      <a href="${request.resource_url(context)}">${context.translate('title', request.locale_name)}</a>
       <small>${context.type_title|context.type_name}</small>
     </h3>
   </div>

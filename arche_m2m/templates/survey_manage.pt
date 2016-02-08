@@ -41,7 +41,7 @@
                   href="#${section.__name__}_section" 
 						      aria-expanded="true"
                   aria-controls="${section.__name__}_section">
-                  ${section.title}
+                  ${section.translate('title', request.locale_name)}
                 </a>
               </h4>
             </div>
