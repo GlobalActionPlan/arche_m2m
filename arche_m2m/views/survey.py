@@ -1,6 +1,11 @@
 from __future__ import unicode_literals
-from decimal import Decimal
 
+from copy import deepcopy
+from decimal import Decimal
+from uuid import uuid4
+
+from repoze.folder import ObjectAddedEvent
+from zope.component.event import objectEventNotify
 from arche import security
 from arche.models.workflow import get_context_wf
 from arche.views.base import BaseForm
@@ -10,6 +15,7 @@ from pyramid.httpexceptions import HTTPForbidden
 from pyramid.httpexceptions import HTTPFound
 from pyramid.renderers import render
 from pyramid.traversal import find_interface
+from pyramid.traversal import find_resource
 from pyramid.traversal import resource_path
 from pyramid.view import render_view_to_response
 from pyramid.view import view_config
@@ -435,3 +441,37 @@ def _send_invitation_email(view, email, uid, subject, message = ''):
     body_html = render('arche_m2m:templates/mail/survey_invitation.pt',
                        response, request = view.request)
     view.request.send_email(subject, [email], body_html)
+
+
+@view_config(context = ISurvey,
+             name = 'clone_survey',
+             permission = security.PERM_EDIT,
+             renderer = "arche:templates/form.pt")
+class CloneSurveyForm(BaseForm):
+    schema_name = "clone"
+    type_name = "Survey"
+    buttons = (deform.Button('clone'),)
+    title = _("Clone survey")
+
+    def clone_success(self, appstruct):
+        #Already validated here, see schema
+        obj = self.clone_survey(appstruct['new_parent'], appstruct['new_name'])
+        return HTTPFound(location = self.request.resource_url(obj, 'edit'))
+
+    def clone_survey(self, parent_path, name):
+        new_survey = deepcopy(self.context)
+        #new_survey.title = title
+        new_survey.uid = unicode(uuid4())
+        #Clear tokens
+        new_survey.tokens.clear()
+        #Reset uid and clear responses
+        for obj in new_survey.values():
+            obj.uid = unicode(uuid4())
+            if ISurveySection.providedBy(obj):
+                obj.responses.clear()
+        #Attach and reindex contained
+        parent = find_resource(self.root, parent_path)
+        parent[name] = new_survey
+        for obj in new_survey.values():
+            objectEventNotify(ObjectAddedEvent(obj, new_survey, obj.__name__))
+        return new_survey

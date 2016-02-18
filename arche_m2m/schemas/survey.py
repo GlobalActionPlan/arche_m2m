@@ -1,8 +1,12 @@
 from __future__ import unicode_literals
 
+from pyramid.traversal import find_resource
+from pyramid.traversal import find_root
+from pyramid.traversal import resource_path
 import colander
 import deform
 
+from arche.utils import generate_slug
 from arche_m2m import _
 from arche_m2m.models.i18n import deferred_translations_node
 from arche_m2m.schemas.validators import multiple_email_validator
@@ -55,7 +59,48 @@ class SurveyAddYourselfSchema(colander.Schema):
                                 validator = colander.Email())
 
 
+@colander.deferred
+def new_parent_widget(node, kw):
+    choices = [('', _("<Pick>")), ('/', _("Root"))]
+    view = kw['view']
+    for obj in view.catalog_query("type_name == 'Survey'", resolve = True):
+        choices.append((resource_path(obj), obj.title))
+    return deform.widget.SelectWidget(values = choices)
+
+@colander.deferred
+def new_name_validator(node, kw):
+    context = kw['context']
+    return CloneSurveyValidator(context)
+
+
+class CloneSurveyValidator(object):
+
+    def __init__(self, context):
+        self.context = context
+
+    def __call__(self, form, value):
+        root = find_root(self.context)
+        parent = find_resource(root, value['new_parent'])
+        slug = generate_slug(parent, value['new_name'])
+        if slug != value['new_name']:
+            exc = colander.Invalid(form, _("Check name"))
+            exc['new_name'] = _("bad_name_error",
+                                default = "Name isn't valid. This would work: '${name}'",
+                                mapping = {'name': slug})
+            raise exc
+
+
+class CloneSurveySchema(colander.Schema):
+    new_parent = colander.SchemaNode(colander.String(),
+                                     title = _("Where do you want to create the new survey?"),
+                                     widget = new_parent_widget)
+    new_name = colander.SchemaNode(colander.String(),
+                                   title = _("New name"),
+                                   description = _("Part of the url so use only a-z0-9"),)
+    validator = new_name_validator
+
 def includeme(config):
     config.add_content_schema('Survey', SurveySchema, ('edit','add'))
     config.add_content_schema('Survey', SurveyInvitationSchema, 'send_invitation')
     config.add_content_schema('Survey', SurveyAddYourselfSchema, 'add_yourself')
+    config.add_content_schema('Survey', CloneSurveySchema, 'clone')
