@@ -12,13 +12,14 @@ from arche_m2m import _
 from arche_m2m.interfaces import ISurveySection
 from arche_m2m.interfaces import ISurvey
 from arche_m2m.models.i18n import TranslationMixin
+from arche_m2m.permissions import ADD_SURVEY
 
 
 @implementer(ISurvey)
 class Survey(Content, ContextACLMixin, LocalRolesMixin, TranslationMixin):
     type_title = _("Survey")
     type_name = "Survey"
-    add_permission = "Add %s" % type_name
+    add_permission = ADD_SURVEY
     allow_anonymous_to_invite_themselves = False
 #    allow_anonymous_to_start = False
 

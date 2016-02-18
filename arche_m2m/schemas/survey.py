@@ -9,6 +9,7 @@ import deform
 from arche.utils import generate_slug
 from arche_m2m import _
 from arche_m2m.models.i18n import deferred_translations_node
+from arche_m2m.permissions import ADD_SURVEY
 from arche_m2m.schemas.validators import multiple_email_validator
 
 
@@ -61,10 +62,15 @@ class SurveyAddYourselfSchema(colander.Schema):
 
 @colander.deferred
 def new_parent_widget(node, kw):
-    choices = [('', _("<Pick>")), ('/', _("Root"))]
+    choices = [('', _("<Pick>"))]
+    root = find_root(kw['context'])
+    request = kw['request']
+    if request.has_permission(ADD_SURVEY, root):
+        choices.append(('/', _("Root")))
     view = kw['view']
-    for obj in view.catalog_query("type_name == 'Survey'", resolve = True):
-        choices.append((resource_path(obj), obj.title))
+    for obj in view.catalog_query("type_name == 'Organisation'", resolve = True):
+        if request.has_permission(ADD_SURVEY, obj):
+            choices.append((resource_path(obj), obj.title))
     return deform.widget.SelectWidget(values = choices)
 
 @colander.deferred

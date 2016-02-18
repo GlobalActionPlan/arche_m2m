@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from arche import security
 from arche.utils import get_content_factories
 
-
+ADD_SURVEY = "Add Survey"
 PARTICIPATE_SURVEY = "Participate survey"
 
 
