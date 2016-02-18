@@ -450,8 +450,11 @@ def _send_invitation_email(view, email, uid, subject, message = ''):
 class CloneSurveyForm(BaseForm):
     schema_name = "clone"
     type_name = "Survey"
-    buttons = (deform.Button('clone'),)
     title = _("Clone survey")
+
+    @property
+    def buttons(self):
+        return (deform.Button('clone'), self.button_cancel)
 
     def clone_success(self, appstruct):
         #Already validated here, see schema
