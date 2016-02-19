@@ -11,7 +11,6 @@ from arche_m2m.interfaces import IQuestionType
 from arche_m2m.interfaces import IChoice
 
 
-
 class TestingAbstract(object):
 
     def setUp(self):
@@ -42,21 +41,21 @@ class GetQuestionWidgetTests(TestingAbstract, TestCase):
         init_request_methods(request)
         self.failUnless(hasattr(request, 'get_question_widget'))
 
-        def test_func_from_question(self):
-            root = self.fixture()
-            request = testing.DummyRequest()
-            init_request_methods(request)
-            request.root = root
-            widget = self._fut(request, root['questions']['q1'])
-            self.assertTrue(IQuestionWidget.providedBy(widget))
-            self.assertEqual(widget.name, 'dropdown_choice_widget')
+    def test_func_from_question(self):
+        root = self.fixture()
+        request = testing.DummyRequest()
+        init_request_methods(request)
+        request.root = root
+        widget = self._fut(request, root['questions']['q1'])
+        self.assertTrue(IQuestionWidget.providedBy(widget))
+        self.assertEqual(widget.name, 'dropdown_choice_widget')
 
-        def test_func_from_question_type(self):
-            root = self.fixture()
-            request = testing.DummyRequest()
-            widget = self._fut(request, root['qtypes']['qt1'])
-            self.assertTrue(IQuestionWidget.providedBy(widget))
-            self.assertEqual(widget.name, 'dropdown_choice_widget')
+    def test_func_from_question_type(self):
+        root = self.fixture()
+        request = testing.DummyRequest()
+        widget = self._fut(request, root['qtypes']['qt1'])
+        self.assertTrue(IQuestionWidget.providedBy(widget))
+        self.assertEqual(widget.name, 'dropdown_choice_widget')
 
 
 class GetQuestionTypeTests(TestingAbstract, TestCase):
