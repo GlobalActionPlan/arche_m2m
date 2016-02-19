@@ -25,6 +25,8 @@
   <a href="${request.resource_url(context, 'export.csv')}"
     class="btn btn-primary btn-sm"
     i18n:translate="">Export results</a>
+  <a tal:condition="your_token_url" href="${your_token_url}"
+    class="btn btn-primary btn-sm">Your survey URL</a>
   <br/><br/>
 
   <tal:iterate repeat="obj context.values()">

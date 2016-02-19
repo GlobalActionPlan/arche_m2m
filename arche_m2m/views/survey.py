@@ -141,7 +141,11 @@ class ManageSurveyView(BaseView):
     def view(self):
         #Is the current user a manager?
         if self.request.has_permission(security.PERM_VIEW, self.context):
-            return {}
+            response = {'your_token_url': ''}
+            if self.profile.email and self.profile.email in self.context.tokens:
+                response['your_token_url'] = self.request.resource_url(self.context, 'do',
+                                                                       query = {'uid': self.context.tokens[self.profile.email]})
+            return response
         #This is not a manager - in some cases users are allowed to start the survey anyway
         return HTTPFound(location = self.request.resource_url(self.context, 'do'))
 
