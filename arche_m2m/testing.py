@@ -18,7 +18,7 @@ def question_fixture(root):
     root['questions']['q1'] = Question(question_type = 'qt_uid', cluster = 'q_cluster', language = 'sv')
     root['questions']['q2'] = q2 = Question(question_type = 'qt_uid2', cluster = 'q_cluster2', language = 'sv')
     root['questions']['q3'] = q3 = Question(question_type = 'qt_uid3', cluster = 'q_cluster3', language = 'sv')
-    root['questions']['q4'] = q4 = Question(question_type = 'qt_uid4', cluster = 'q_cluster3', language = 'en')
+    root['questions']['q4'] = q4 = Question(question_type = 'qt_uid3', cluster = 'q_cluster3', language = 'en')
     q2['c2'] = Choice(cluster = 'd', uid = 'c_uid5', language = 'sv')
     q2['c3'] = Choice(cluster = 'e', uid = 'c_uid6', language = 'sv')
     q3['c2'] = Choice(cluster = 'f', uid = 'c_uid8', language = 'sv')

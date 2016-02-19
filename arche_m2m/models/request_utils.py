@@ -22,10 +22,13 @@ def get_question_type(request, context):
     """
     if not IQuestion.providedBy(context):
         raise TypeError("context must be a Question object") #pragma: no coverage
+    if not context.question_type:
+        raise ValueError("%r doesn't have the question_type attribute set" % context) #pragma: no coverage
     for docid in request.root.catalog.query("uid == '%s'" % context.question_type)[1]:
         for obj in request.resolve_docids(docid, perm = None):
             #Generator with one item in this case
             return obj
+    raise ValueError("%r has a question_type set that doesn't exist" % context)
 
 def get_picked_choice(request, section, question, participant_uid, default = None, lang = None):
     """
@@ -48,9 +51,12 @@ def get_picked_choice(request, section, question, participant_uid, default = Non
         choice_id = section.responses.get(participant_uid, {}).get(question.cluster)
         if choice_id:
             query = "type_name == 'Choice' and cluster == '%s'" % choice_id
-            query += " and language == '%s'" % lang
-            for docid in request.root.catalog.query(query)[1]:
+            for docid in request.root.catalog.query(query + " and language == '%s'" % lang)[1]:
                 #Generator with one item in this case
+                for obj in request.resolve_docids(docid, perm = None):
+                    return obj
+            for docid in request.root.catalog.query(query)[1]:
+                #Generator that may have more items, but we're interested in any of them
                 for obj in request.resolve_docids(docid, perm = None):
                     return obj
     return default
