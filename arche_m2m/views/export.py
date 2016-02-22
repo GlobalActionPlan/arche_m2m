@@ -81,7 +81,10 @@ class CSVExport(BaseExportView):
                         writer.writerow([question.title.encode('utf-8')])
                         for x in response:
                             if x:
-                                writer.writerow([x])
+                                if isinstance(x, unicode):
+                                    writer.writerow([x.encode('utf-8')])
+                                else:
+                                    writer.writerow([x])
         contents = output.getvalue()
         output.close()
         return Response(content_type = 'text/csv', body = contents)
