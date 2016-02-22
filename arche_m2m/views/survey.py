@@ -4,6 +4,7 @@ from copy import deepcopy
 from decimal import Decimal
 from uuid import uuid4
 
+from BTrees.OOBTree import OOBTree
 from repoze.folder import ObjectAddedEvent
 from zope.component.event import objectEventNotify
 from arche import security
@@ -343,7 +344,7 @@ class SurveySectionForm(BaseSurveySection):
     def next_success(self, appstruct):
         #FIXME: Is this an okay way to save data? It should always be marked as dirty
         #but how about nested non-persistent structures within appstruct?
-        self.context.responses[self.participant_uid] = appstruct
+        self.context.responses[self.participant_uid] = OOBTree(appstruct)
         next_section = self.next_section()
         #Do stuff if finished
         if not next_section:
